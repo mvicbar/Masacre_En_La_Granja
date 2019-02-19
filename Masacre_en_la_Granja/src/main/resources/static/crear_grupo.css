@@ -1,0 +1,56 @@
+* {
+    padding: 0;
+    margin: 0;
+    font-size: 20px;
+}
+
+body {
+    background-color: #252525;
+}
+
+nav {
+    display: flex;
+    background-color: #161616;
+    color: #ff5151;
+
+    border-bottom-left-radius: 30px;
+    border-bottom-right-radius: 30px;
+
+    align-items: center;
+    justify-content: space-evenly;
+    min-height: 60px;
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    background-color: #c4794d;
+    margin-top: 8%;
+    margin-left: auto;
+    margin-right: auto;
+    width: 80%;
+    padding: 15px;
+    border-radius: 8px;
+    color: #161616;
+}
+
+.codigo {
+    align-self: center;
+}
+
+.miembros {
+    display: flex;
+    flex-direction: column;
+}
+
+.acciones {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.boton {
+    background-color: #161616;
+    color: #ff5151;
+    padding: 10px;
+    border-radius: 5px;
+}

@@ -1,0 +1,71 @@
+@import url('https://fonts.googleapis.com/css?family=Felipa');
+
+*{
+	padding: 0;
+	margin: 0;
+}
+
+div.nav{
+	display: flex;
+    justify-content: space-evenly;
+    background-color: black;
+    padding: 1%;
+    color: red;
+    font-family: 'Felipa', cursive;
+}
+
+div.cuerpo{
+	background-color: #2E2E2E;
+	color: red;
+	padding-top: 1%;
+	font-family: 'Felipa', cursive;
+}
+
+div.intro h1{
+	text-align: center;
+}
+
+div.tabla_contenidos{
+	border: solid;
+    width: 30%;
+    padding-left: 1%;
+    margin-left: 5%;
+    margin-top: 3%;
+    background-color: #BF5F32;
+    color: black;
+}
+
+div.tabla_contenidos a{
+	color:black;
+	text-decoration: none;
+}
+
+div.tabla_contenidos a:hover{
+	color:red;
+}
+
+div.tabla_contenidos ol{
+	margin-left: 10%;
+    margin-top: 1%;
+    margin-bottom: 1%;
+}
+
+div.intro, .historia, .personajes, .mecanica{
+	padding-left: 2%;
+    padding-right: 2%;
+	padding-top: 4%;
+}
+
+div.personajes h3{
+	text-decoration: strong;
+	margin-left: 3%;
+	margin-top: 2%;
+}
+
+div.personajes h4{
+	margin-left: 5%;
+	margin-top:1%;
+}
+
+
+
