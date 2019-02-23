@@ -1,0 +1,120 @@
+@import url('https://fonts.googleapis.com/css?family=Felipa');
+
+body {
+  font-size: 100%;
+  font-family: 'Felipa', cursive;
+  background-color: #2E2E2E;
+  color: red;
+}
+
+a {
+  text-decoration: none;
+}
+
+.nav{
+	display: flex;
+    justify-content: space-evenly;
+    background-color: black;
+    padding: 1%;
+}
+
+header {
+  position: relative;
+  height: 180px;
+  line-height: 180px;
+  text-align: center;
+  background-color: #BF5F32;
+}
+
+header h1 {
+  color: black;
+  font-size: 30px;
+}
+
+.faq {
+  width: 90%;
+  max-width: 1024px;
+  position: relative;
+  margin: 4em auto;
+  box-shadow: none;
+}
+
+.faq ul{
+	list-style: none;
+}
+
+.categorias-faq a {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  height: 50px;
+  line-height: 50px;
+  padding: 0 28px 0 16px;
+  background-color: black;
+  color: red;
+  white-space: nowrap;
+  border-bottom: 1px solid #555b61;
+  text-overflow: ellipsis;
+}
+
+.categorias-faq {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 170px;
+    z-index: 2;
+}
+
+.items-faq {
+    float: none;
+    width: 90%;
+    padding-left: 220px;
+ }
+
+.grupo-faq .titulo-faq {
+  background: transparent;
+  box-shadow: none;
+}
+
+.grupo-faq .titulo-faq h2 {
+  text-transform: uppercase;
+  font-size: 12px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: red;
+}
+
+.grupo-faq {
+  display: block;
+}
+
+.grupo-faq > li {
+   background: #BF5F32;
+   margin-bottom: 6px;
+   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+   transition: box-shadow 0.2s;
+}
+
+ .grupo-faq .titulo-faq {
+   margin: 2em 0 1em;
+ }
+
+.pregunta-faq {
+  position: relative;
+  display: block;
+  margin: 1.6em 0 .4em;
+  line-height: 1.2;
+  font-size: 24px;
+  font-size: 1.5rem;
+  font-weight: 300;
+  margin: 0;
+  padding: 24px 72px 24px 24px;
+  color: black;
+}
+
+.respuesta-faq p {
+  font-size: 14px;
+  color: black;
+  line-height: 1.6;
+  padding: 0% 3% 1% 3%;
+}
