@@ -30,7 +30,8 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `deaths` (
   `id_killer` int(11) UNSIGNED NOT NULL,
-  `id_murdered` int(11) UNSIGNED NOT NULL
+  `id_murdered` int(11) UNSIGNED NOT NULL,
+  `num_deaths` int(11) UNSIGNED NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
 
 -- --------------------------------------------------------
