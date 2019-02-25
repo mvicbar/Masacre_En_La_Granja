@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 25-02-2019 a las 14:06:31
+-- Tiempo de generación: 25-02-2019 a las 19:42:58
 -- Versión del servidor: 10.1.36-MariaDB
 -- Versión de PHP: 7.2.11
 
@@ -30,7 +30,7 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `deaths` (
   `id_killer` int(11) UNSIGNED NOT NULL,
-  `id_murdered` int(11) UNSIGNED NOT NULL,
+  `id_victim` int(11) UNSIGNED NOT NULL,
   `num_deaths` int(11) UNSIGNED NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
@@ -42,8 +42,7 @@ CREATE TABLE `deaths` (
 
 CREATE TABLE `game` (
   `id` int(11) UNSIGNED NOT NULL,
-  `date` date NOT NULL,
-  `time` time NOT NULL
+  `creation_time` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 -- --------------------------------------------------------
@@ -54,9 +53,8 @@ CREATE TABLE `game` (
 
 CREATE TABLE `status` (
   `id_game` int(11) UNSIGNED NOT NULL,
-  `id_status` int(11) UNSIGNED NOT NULL,
-  `order` varchar(500) CHARACTER SET latin1 COLLATE latin1_spanish_ci NOT NULL,
-  `data` varchar(1000) CHARACTER SET latin1 COLLATE latin1_spanish_ci NOT NULL
+  `status_order` int(11) NOT NULL,
+  `data` varchar(1000) COLLATE utf8_spanish_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 -- --------------------------------------------------------
@@ -67,10 +65,11 @@ CREATE TABLE `status` (
 
 CREATE TABLE `user` (
   `id` int(11) UNSIGNED NOT NULL,
-  `name` varchar(100) CHARACTER SET latin1 COLLATE latin1_spanish_ci NOT NULL,
-  `password` varchar(100) CHARACTER SET latin1 COLLATE latin1_spanish_ci NOT NULL,
-  `won_games` int(11) UNSIGNED NOT NULL DEFAULT '0',
-  `lost_games` int(11) UNSIGNED NOT NULL DEFAULT '0'
+  `name` varchar(100) COLLATE utf8_spanish_ci NOT NULL,
+  `password` varchar(100) COLLATE utf8_spanish_ci NOT NULL,
+  `role` varchar(100) COLLATE utf8_spanish_ci NOT NULL,
+  `victories` int(11) UNSIGNED NOT NULL DEFAULT '0',
+  `defeats` int(11) UNSIGNED NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 -- --------------------------------------------------------
@@ -138,9 +137,9 @@ CREATE TABLE `user_roles` (
 -- Indices de la tabla `deaths`
 --
 ALTER TABLE `deaths`
-  ADD UNIQUE KEY `unique_user_murder` (`id_killer`,`id_murdered`),
+  ADD UNIQUE KEY `unique_user_murder` (`id_killer`,`id_victim`),
   ADD KEY `id_killer` (`id_killer`),
-  ADD KEY `id_murdered` (`id_murdered`);
+  ADD KEY `id_murdered` (`id_victim`);
 
 --
 -- Indices de la tabla `game`
@@ -152,9 +151,8 @@ ALTER TABLE `game`
 -- Indices de la tabla `status`
 --
 ALTER TABLE `status`
-  ADD UNIQUE KEY `unique_status_game` (`id_game`,`id_status`),
-  ADD KEY `id_game` (`id_game`),
-  ADD KEY `id_status` (`id_status`);
+  ADD UNIQUE KEY `unique_status_game` (`id_game`),
+  ADD KEY `id_game` (`id_game`);
 
 --
 -- Indices de la tabla `user`
@@ -194,12 +192,6 @@ ALTER TABLE `game`
   MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT de la tabla `status`
---
-ALTER TABLE `status`
-  MODIFY `id_status` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT de la tabla `user`
 --
 ALTER TABLE `user`
@@ -214,7 +206,7 @@ ALTER TABLE `user`
 --
 ALTER TABLE `deaths`
   ADD CONSTRAINT `id_killer_fk` FOREIGN KEY (`id_killer`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `id_murdered_fk` FOREIGN KEY (`id_murdered`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `id_murdered_fk` FOREIGN KEY (`id_victim`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `status`
