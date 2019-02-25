@@ -9,13 +9,15 @@ body{
 }
 div.nav{
 	display: flex;
-    justify-content: space-evenly;
-    background-color: black;
-    padding: 1%;
+	justify-content: space-evenly;
+	align-items: center;
+	background-image: linear-gradient(to bottom right, rgb(15, 15, 15) , rgb(49, 49, 49));
     color: red;
 	font-family: 'Felipa', cursive;
     border-bottom-left-radius: 30px;
-    border-bottom-right-radius: 30px;
+	border-bottom-right-radius: 30px;
+	min-height: 60px;
+	font-size: 20px;
 }
 
 div.cuerpo{

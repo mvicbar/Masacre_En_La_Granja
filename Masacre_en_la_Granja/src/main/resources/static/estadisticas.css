@@ -1,14 +1,18 @@
+@import url('https://fonts.googleapis.com/css?family=Felipa');
+
 * {
 	padding: 0;
 	margin: 0;
 	font-size: 20px;
 }
+
 body {
 	background-color: #252525;
+	font-family: 'Felipa', cursive;
 }
 nav {
 	display: flex;
-	background-color: #161616;
+	background-image: linear-gradient(to bottom right, rgb(15, 15, 15) , rgb(49, 49, 49));
 	color: #ff5151;
 
 	border-bottom-left-radius: 30px;
@@ -49,6 +53,16 @@ td {
 	border: solid 1px;
 }
 
-.button-nav {
+.a-nav {
 	border: none;
+}
+
+.a-nav:visited{
+	color: white;
+	text-decoration: none;
+}
+
+.a-nav:hover{
+	color: #d14545;
+	text-decoration: none;
 }
