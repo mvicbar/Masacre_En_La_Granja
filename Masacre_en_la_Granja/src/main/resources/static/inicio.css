@@ -1,10 +1,13 @@
-* {
+@import url('https://fonts.googleapis.com/css?family=Felipa');
+
+*{
     padding: 0;
     margin: 0;
     font-size: 20px;
 }
 body{
     background-color: #252525;
+    font-family: 'Felipa', cursive;
 }
 nav {
     display: flex;
@@ -20,13 +23,15 @@ nav {
 }   
 
 .titulo{
-  font-size: 80px;
-  width: 520px;
+  display: flex;
+  font-size: 58PX;
+  width: 100%;
   margin: auto;
-  height: 80px;
+  height: 15vw;
   line-height: 90px;
   color: #ff5151;
   text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+  JUSTIFY-CONTENT: CENTER;
 }
 .button {
   display: block;
