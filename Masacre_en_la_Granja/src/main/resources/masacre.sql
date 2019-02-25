@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 23-02-2019 a las 13:55:54
+-- Tiempo de generación: 25-02-2019 a las 14:06:31
 -- Versión del servidor: 10.1.36-MariaDB
 -- Versión de PHP: 7.2.11
 
@@ -31,8 +31,8 @@ SET time_zone = "+00:00";
 CREATE TABLE `deaths` (
   `id_killer` int(11) UNSIGNED NOT NULL,
   `id_murdered` int(11) UNSIGNED NOT NULL,
-  `num_deaths` int(11) UNSIGNED NOT NULL DEFAULT 1
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
+  `num_deaths` int(11) UNSIGNED NOT NULL DEFAULT '1'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 -- --------------------------------------------------------
 
@@ -44,7 +44,7 @@ CREATE TABLE `game` (
   `id` int(11) UNSIGNED NOT NULL,
   `date` date NOT NULL,
   `time` time NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 -- --------------------------------------------------------
 
@@ -55,9 +55,9 @@ CREATE TABLE `game` (
 CREATE TABLE `status` (
   `id_game` int(11) UNSIGNED NOT NULL,
   `id_status` int(11) UNSIGNED NOT NULL,
-  `order` varchar(500) COLLATE latin1_spanish_ci NOT NULL,
-  `data` varchar(1000) COLLATE latin1_spanish_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
+  `order` varchar(500) CHARACTER SET latin1 COLLATE latin1_spanish_ci NOT NULL,
+  `data` varchar(1000) CHARACTER SET latin1 COLLATE latin1_spanish_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 -- --------------------------------------------------------
 
@@ -67,11 +67,11 @@ CREATE TABLE `status` (
 
 CREATE TABLE `user` (
   `id` int(11) UNSIGNED NOT NULL,
-  `name` varchar(100) COLLATE latin1_spanish_ci NOT NULL,
-  `password` varchar(100) COLLATE latin1_spanish_ci NOT NULL,
+  `name` varchar(100) CHARACTER SET latin1 COLLATE latin1_spanish_ci NOT NULL,
+  `password` varchar(100) CHARACTER SET latin1 COLLATE latin1_spanish_ci NOT NULL,
   `won_games` int(11) UNSIGNED NOT NULL DEFAULT '0',
   `lost_games` int(11) UNSIGNED NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 -- --------------------------------------------------------
 
@@ -94,7 +94,7 @@ CREATE TABLE `user_achievements` (
   `boring_night` tinyint(1) UNSIGNED NOT NULL DEFAULT '0',
   `fool_discovered` tinyint(1) UNSIGNED NOT NULL DEFAULT '0',
   `kill_the_old_man` tinyint(1) UNSIGNED NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 -- --------------------------------------------------------
 
@@ -105,7 +105,7 @@ CREATE TABLE `user_achievements` (
 CREATE TABLE `user_game` (
   `id_user` int(11) UNSIGNED NOT NULL,
   `id_game` int(11) UNSIGNED NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 -- --------------------------------------------------------
 
@@ -128,7 +128,7 @@ CREATE TABLE `user_roles` (
   `borracho` int(11) UNSIGNED NOT NULL DEFAULT '0',
   `tonto` int(11) UNSIGNED NOT NULL DEFAULT '0',
   `anciano` int(11) UNSIGNED NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 --
 -- Índices para tablas volcadas
@@ -183,32 +183,27 @@ ALTER TABLE `user_game`
 ALTER TABLE `user_roles`
   ADD PRIMARY KEY (`id_user`);
 
-
 --
 -- AUTO_INCREMENT de las tablas volcadas
 --
-
-
---
--- AUTO_INCREMENT de la tabla `user`
---
-ALTER TABLE `user`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
-
 
 --
 -- AUTO_INCREMENT de la tabla `game`
 --
 ALTER TABLE `game`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
-
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `status`
 --
 ALTER TABLE `status`
-  MODIFY `id_status` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
+  MODIFY `id_status` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
 
+--
+-- AUTO_INCREMENT de la tabla `user`
+--
+ALTER TABLE `user`
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- Restricciones para tablas volcadas
