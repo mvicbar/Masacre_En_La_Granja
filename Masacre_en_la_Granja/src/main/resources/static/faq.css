@@ -7,7 +7,7 @@
 body {
   font-size: 100%;
   font-family: 'Felipa', cursive;
-  background-color: #2E2E2E;
+  background-color: #5c1414;
   color: red;
 }
 
@@ -16,10 +16,11 @@ a {
 }
 
 .nav{
+  color: rgb(184, 183, 183);
   display: flex;
   justify-content: space-evenly;
   align-items: center;
-  background-image: linear-gradient(to bottom right, rgb(15, 15, 15) , rgb(49, 49, 49));
+  background-image: linear-gradient(to bottom right, rgb(31, 30, 30) , rgb(63, 63, 63));
   border-bottom-left-radius: 30px;
   border-bottom-right-radius: 30px;
   min-height: 60px;
@@ -32,7 +33,7 @@ header {
   line-height: 180px;
   text-align: center;
   margin: 2%;
-  background-color: #BF5F32;
+  background-image: linear-gradient(to bottom right, #acaba1, #d4d4cb);
   border-radius: 5px;
 }
 
@@ -62,7 +63,7 @@ header h1 {
   line-height: 50px;
   padding: 0 28px 0 16px;
   background-color: black;
-  color: red;
+  color: rgb(196, 196, 196);
   white-space: nowrap;
   border-bottom: 1px solid #555b61;
   text-overflow: ellipsis;
@@ -80,11 +81,13 @@ header h1 {
     float: none;
     width: 90%;
     padding-left: 220px;
+    color: black;
  }
 
 .grupo-faq .titulo-faq {
   background: transparent;
   box-shadow: none;
+  color: black;
 }
 
 .grupo-faq .titulo-faq h2 {
@@ -92,7 +95,7 @@ header h1 {
   font-size: 12px;
   font-size: 0.75rem;
   font-weight: 700;
-  color: red;
+  color: rgb(196, 196, 196);
 }
 
 .grupo-faq {
@@ -100,7 +103,7 @@ header h1 {
 }
 
 .grupo-faq > li {
-   background: #BF5F32;
+   background:rgb(196, 196, 196);
    margin-bottom: 6px;
    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
    transition: box-shadow 0.2s;
@@ -121,7 +124,7 @@ header h1 {
   font-weight: 300;
   margin: 0;
   padding: 24px 72px 24px 24px;
-  color: black;
+  color: rgb(196, 196, 196);
 }
 
 .respuesta-faq p {
