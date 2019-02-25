@@ -62,19 +62,23 @@ header h1 {
   height: 50px;
   line-height: 50px;
   padding: 0 28px 0 16px;
-  background-color: black;
+  background-color: rgb(63, 63, 63);
   color: rgb(196, 196, 196);
   white-space: nowrap;
   border-bottom: 1px solid #555b61;
-  text-overflow: ellipsis;
+  border-radius: 10px;
+}
+
+.categorias-faq a:hover{
+  background-color: rgb(49, 49, 49);
 }
 
 .categorias-faq {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 170px;
-    z-index: 2;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 170px;
+  z-index: 2;
 }
 
 .items-faq {
@@ -124,7 +128,7 @@ header h1 {
   font-weight: 300;
   margin: 0;
   padding: 24px 72px 24px 24px;
-  color: rgb(196, 196, 196);
+  color: black;
 }
 
 .respuesta-faq p {

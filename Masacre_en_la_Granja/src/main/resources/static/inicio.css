@@ -5,10 +5,12 @@
     margin: 0;
     font-size: 20px;
 }
+
 body{
   background-color: #5c1414;
     font-family: 'Felipa', cursive;
 }
+
 nav {
     display: flex;
     background-image: linear-gradient(to bottom right, rgb(31, 30, 30) , rgb(63, 63, 63));
@@ -25,14 +27,12 @@ nav {
 .titulo{
   display: flex;
   font-size: 58PX;
-  width: 100%;
-  margin: auto;
-  height: 15vw;
-  line-height: 90px;
+  line-height: 225px;
   color: rgb(165, 165, 165);
   text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
-  JUSTIFY-CONTENT: CENTER;
+  justify-content: center;
 }
+
 .button {
   display: block;
   text-align: center;
@@ -42,15 +42,12 @@ nav {
   height: 60px;
   line-height: 55px;
   border: 1px solid #000000;
-  color: #ff5151;
+  color: rgb(196, 196, 196);
   text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
-  background-color: #161616;
-  background-image: -webkit-linear-gradient(bottom, #bfbfbf 0%, #161616 100%);
-  background-image:         linear-gradient(to bottom, #bfbfbf 0%, #161616 100%);
+  background-color: rgb(63, 63, 63);
   border-radius: 5px;
 }
+
 .button:hover {
-  background-color: #bfbfbf;
-  background-image: -webkit-linear-gradient(bottom, #161616 0%, #bfbfbf 100%);
-  background-image:         linear-gradient(to bottom, #161616 0%, #bfbfbf 100%);
+  background-color: rgb(49, 49, 49);
 }
