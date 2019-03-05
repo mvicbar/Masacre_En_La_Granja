@@ -1,4 +1,4 @@
-package com.example.demo.model;
+package es.ucm.fdi.iw.model;
 
 import java.util.ArrayList;
 import java.util.List;
