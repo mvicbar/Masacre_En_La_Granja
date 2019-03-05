@@ -40,7 +40,7 @@ div.mesa{
     width: 96%;
     height: 96%;
     border-radius: 10%;
-    background-image: url("../static/img/marmol.jpeg");
+    background-image: url("../static/img/marble.jpg");
     border: solid;
     display: flex;
     justify-content: space-evenly;
