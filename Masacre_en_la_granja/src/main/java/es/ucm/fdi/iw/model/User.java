@@ -1,4 +1,4 @@
-package com.example.demo.model;
+package es.ucm.fdi.iw.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +15,7 @@ public class User {
 	private long id;
 	private String name;
 	private String password;
+	private UserRole role;
 	
 	private List<Stat> stats = new ArrayList<>();
 	private List<Game> games = new ArrayList<>();
@@ -53,6 +54,14 @@ public class User {
 	
 	public void setStats(List<Stat> stats) {
 		this.stats = stats;
+	}
+	
+	public UserRole getRole() {
+		return role;
+	}
+
+	public void setRole(UserRole role) {
+		this.role = role;
 	}
 	
 }
