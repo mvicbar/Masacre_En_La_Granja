@@ -8,8 +8,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.security.Principal;
 
 import javax.persistence.EntityManager;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
 
@@ -27,6 +29,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
 
 import es.ucm.fdi.iw.LocalData;
 import es.ucm.fdi.iw.model.User;
@@ -38,10 +46,16 @@ public class UserController {
 	private static final Logger log = LogManager.getLogger(UserController.class);
 	
 	@Autowired 
+	private PasswordEncoder passwordEncoder;
+	
+	@Autowired 
 	private EntityManager entityManager;
 	
 	@Autowired
 	private LocalData localData;
+	
+	@Autowired 
+	private AuthenticationManager authenticationManager;
 
 	@GetMapping("/{id}")
 	public String getUser(@PathVariable long id, Model model, HttpSession session) {
@@ -69,7 +83,7 @@ public class UserController {
 		if (edited.getPassword() != null && edited.getPassword().equals(pass2)) {
 			target.setPassword(edited.getPassword());
 		}		
-		target.setLogin(edited.getLogin());
+		target.setName(edited.getName());
 		return "user";
 	}	
 	
@@ -120,4 +134,70 @@ public class UserController {
 		}
 		return "user";
 	}
+	
+	
+	@GetMapping("/enter")
+	public String getEnter(Model model) {
+		return "enter";
+	}
+	
+	/**
+	 * Registra a un usuario e inicia sesión automáticamente con el usuario creado.
+	 * @param model
+	 * @param request
+	 * @param principal
+	 * @param userName	Nombre del usuario creado
+	 * @param userPass	Contraseña introducida por el usuario
+	 * @param session
+	 * @return
+	 */
+	@PostMapping("/enter")
+	@Transactional
+	public String enter(Model model, HttpServletRequest request, Principal principal, @RequestParam String userName,
+			@RequestParam String userPass, HttpSession session) {
+
+		Long usersWithLogin = entityManager.createNamedQuery("User.HasName", Long.class)
+				.setParameter("userName", userName).getSingleResult();
+		
+		// if the user exists, we have a problem
+		if (usersWithLogin != 0) {
+			return "test";
+		}
+
+		// Creación de un usuario
+		String userPassword = passwordEncoder.encode(userPass);
+		User u = new User();
+		u.setName(userName);
+		u.setPassword(passwordEncoder.encode(userPassword));
+		u.setRole("USER");
+		entityManager.persist(u);
+		entityManager.flush();
+		log.info("Creating & logging in student {}, with ID {} and password {}", userName, u.getId(), userPassword);
+
+		doAutoLogin(userName, userPassword, request);
+		log.info("Created & logged in student {}, with ID {} and password {}", userName, u.getId(), userPassword);
+
+		return "redirect:/user/";
+	}
+	
+	/**
+	 * Non-interactive authentication; user and password must already exist
+	 * @param username
+	 * @param password
+	 * @param request
+	 */
+	private void doAutoLogin(String username, String password, HttpServletRequest request) {
+	    try {
+	        // Must be called from request filtered by Spring Security, otherwise SecurityContextHolder is not updated
+	        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username, password);
+	        token.setDetails(new WebAuthenticationDetails(request));
+	        Authentication authentication = authenticationManager.authenticate(token);
+	        log.debug("Logging in with [{}]", authentication.getPrincipal());
+	        SecurityContextHolder.getContext().setAuthentication(authentication);
+	    } catch (Exception e) {
+	        SecurityContextHolder.getContext().setAuthentication(null);
+	        log.error("Failure in autoLogin", e);
+	    }
+}
+	
 }

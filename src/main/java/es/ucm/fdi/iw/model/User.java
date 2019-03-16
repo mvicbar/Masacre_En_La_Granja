@@ -1,56 +1,38 @@
 package es.ucm.fdi.iw.model;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 
 /**
- * A user.
  * 
- * Note that, in this particular application, we will automatically be creating
- * users for students. Those users will have the group password as their "password", 
- * but will be generally unable to actually log in without the group password.  
- * 
- * @author mfreire
  */
 @Entity
 @NamedQueries({
-	@NamedQuery(name="User.ByLogin",
+	@NamedQuery(name="User.ByName",
 	query="SELECT u FROM User u "
-			+ "WHERE u.login = :userLogin"),
-	@NamedQuery(name="User.HasLogin",
+			+ "WHERE u.name = :userName"),
+	@NamedQuery(name="User.HasName",
 	query="SELECT COUNT(u) "
 			+ "FROM User u "
-			+ "WHERE u.login = :userLogin")	
+			+ "WHERE u.name = :userName")	
 })
 public class User {
 	private long id;
-	private String login;
+	private String name;
 	private String password;
-	private String roles; // split by ',' to separate roles
-	private byte enabled;
+	private String role;
 	
 	public boolean hasRole(String roleName) {
 		String requested = roleName.toLowerCase();
-		return Arrays.stream(roles.split(","))
-				.anyMatch(r -> r.equals(requested));
+		return Arrays.stream(role.split(",")).anyMatch(r -> r.equals(requested));
 	}
-	
-	// application-specific fields
-	private List<Vote> votes = new ArrayList<>(); 
-	private List<Question> questions = new ArrayList<>();
-	private List<CGroup> groups = new ArrayList<>();
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -63,12 +45,12 @@ public class User {
 	}	
 
 	@Column(unique=true)
-	public String getLogin() {
-		return login;
+	public String getName() {
+		return name;
 	}
 
-	public void setLogin(String login) {
-		this.login = login;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public String getPassword() {
@@ -79,53 +61,16 @@ public class User {
 		this.password = password;
 	}
 
-	public String getRoles() {
-		return roles;
+	public String getRole() {
+		return role;
 	}
 
-	public void setRoles(String roles) {
-		this.roles = roles;
-	}
-
-	public byte getEnabled() {
-		return enabled;
-	}
-
-	public void setEnabled(byte enabled) {
-		this.enabled = enabled;
-	}
-	
-	@OneToMany(targetEntity=Vote.class)
-	@JoinColumn(name="author_id")
-	public List<Vote> getVotes() {
-		return votes;
-	}
-
-	public void setVotes(List<Vote> votes) {
-		this.votes = votes;
-	}
-
-	@OneToMany(targetEntity=Question.class)
-	@JoinColumn(name="participant_id")
-	public List<Question> getQuestions() {
-		return questions;
-	}
-
-	public void setQuestions(List<Question> questions) {
-		this.questions = questions;
-	}	
-	
-	@ManyToMany(targetEntity=CGroup.class, mappedBy="participants")
-	public List<CGroup> getGroups() {
-		return groups;
-	}
-	public void setGroups(List<CGroup> groups) {
-		this.groups = groups;
+	public void setRole(String role) {
+		this.role = role;
 	}
 
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", login=" + login + ", password=" + password + ", roles=" + roles + ", enabled="
-				+ enabled + "]";
+		return "User [id=" + id + ", login=" + name + ", password=" + password + ", roles=" + role + "]";
 	}
 }
