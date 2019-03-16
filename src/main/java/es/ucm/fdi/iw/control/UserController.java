@@ -138,7 +138,7 @@ public class UserController {
 	
 	@GetMapping("/enter")
 	public String getEnter(Model model) {
-		return "enter";
+		return "registro";
 	}
 	
 	/**
@@ -161,7 +161,7 @@ public class UserController {
 		
 		// if the user exists, we have a problem
 		if (usersWithLogin != 0) {
-			return "test";
+			return "user";	// Crear una plantilla que muestre información del usuario logeado
 		}
 
 		// Creación de un usuario
