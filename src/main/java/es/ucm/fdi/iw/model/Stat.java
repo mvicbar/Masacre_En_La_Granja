@@ -1,24 +1,21 @@
 package es.ucm.fdi.iw.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
+import javax.persistence.*;
+import java.util.List;
 
 /**
  */
 
 @Entity
 public class Stat {
-	
 	private long id;
 	private String name;
 	private String description;
 	private String code;
-	
+
+	@OneToMany(mappedBy = "user")
+	private List<User_Stat> user_stat;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	public long getId() {
@@ -45,5 +42,12 @@ public class Stat {
 	public void setCode(String code) {
 		this.code = code;
 	}
-	
+
+    public List<User_Stat> getUser_stat() {
+        return user_stat;
+    }
+
+    public void setUser_stat(List<User_Stat> user_stat) {
+        this.user_stat = user_stat;
+    }
 }

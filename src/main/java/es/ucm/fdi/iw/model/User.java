@@ -4,14 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
+import javax.persistence.*;
 
 /**
  * 
@@ -21,10 +14,13 @@ import javax.persistence.NamedQuery;
 		@NamedQuery(name = "User.HasName", query = "SELECT COUNT(u) " + "FROM User u " + "WHERE u.name = :userName") })
 public class User {
 	private long id;
+
 	private String name;
 	private String password;
 	private String role;
-	private List<Game> games = new ArrayList<>();
+
+	@OneToMany(mappedBy = "stat")
+	private List<User_Stat> user_stats = new ArrayList<>();
 
 	public boolean hasRole(String roleName) {
 		String requested = roleName.toLowerCase();
@@ -71,12 +67,12 @@ public class User {
 		return "User [id=" + id + ", login=" + name + ", password=" + password + ", roles=" + role + "]";
 	}
 
-	public void setGames(List<Game> games) {
-		this.games = games;
+	public void setUser_stats(List<User_Stat> user_stat) {
+		this.user_stats = user_stats;
 	}
 
 	@ManyToMany(targetEntity = Game.class)
-	List<Game> getGames() {
-		return games;
+	List<User_Stat> getUser_Stat() {
+		return user_stats;
 	}
 }

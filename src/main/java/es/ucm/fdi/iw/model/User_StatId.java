@@ -24,10 +24,30 @@ public class User_StatId implements Serializable {
 	
 	//to do
 	public boolean equals(Object obj) {
-		return false;
-	}
+
+        return obj instanceof User_StatId &&
+                idUser.equals(((User_StatId) obj).idUser) &&
+                idStat.equals(((User_StatId) obj).idStat);
+
+    }
 	
 	public int hashCode() {
-		return 0;
+		return 2 * idStat + 3 * idUser;
 	}
+
+    public Integer getIdUser() {
+        return idUser;
+    }
+
+    public void setIdUser(Integer idUser) {
+        this.idUser = idUser;
+    }
+
+    public Integer getIdStat() {
+        return idStat;
+    }
+
+    public void setIdStat(Integer idStat) {
+        this.idStat = idStat;
+    }
 }
