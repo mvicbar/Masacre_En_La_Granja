@@ -1,12 +1,14 @@
 package es.ucm.fdi.iw.model;
 
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.ManyToMany;
 
 /**
  */
@@ -14,8 +16,10 @@ import javax.persistence.ManyToOne;
 public class Game {
 	
 	private long id;
-	private Date creation_time;
+	private Date creationTime;
 	private String status;
+	private List<User> users = new ArrayList<>();
+
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -27,12 +31,12 @@ public class Game {
 		this.id = id;
 	}
 	
-	public Date getCreation_time() {
-		return creation_time;
+	public Date getCreationTime() {
+		return creationTime;
 	}
 	
-	public void setCreation_time(Date creation_time) {
-		this.creation_time = creation_time;
+	public void setCreationTime(Date creation_time) {
+		this.creationTime = creation_time;
 	}
 	
 	public String getStatus() {
@@ -41,6 +45,15 @@ public class Game {
 	
 	public void setStatus(String status) {
 		this.status = status;
+	}
+	
+	public void setUsers(List<User> users) {
+		this.users = users;
+	}
+	
+	@ManyToMany(targetEntity = User.class, mappedBy = "games")
+	List<User> getUsers(){
+		return users;
 	}
 	
 }

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Masacre en la granja</title>
-  <link rel="stylesheet" href="inicio.css" type="text/css" media="screen">
+  <link rel="stylesheet" href="../css/inicio.css" type="text/css" media="screen">
 </head>
 <body>
   <main class="wrapper">
@@ -14,6 +14,9 @@
             <a href="http://localhost:8080/estadisticas-globales.html" class="button">Estadísticas</a>
             <a href="http://localhost:8080/reglas.html" class="button">Reglas</a>
             <a href="http://localhost:8080/faq.html" class="button">FAQ</a>
+          </ul>
+          <ul th:class="|ruta_${algo}|">
+          	<li th:each="x: ${xs}" th:text="${x}">Esto no se ve</li>
           </ul>
   </main>
 </body>

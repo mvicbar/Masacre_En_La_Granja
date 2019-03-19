@@ -12,6 +12,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.MapsId;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -20,29 +22,41 @@ import javax.persistence.OneToMany;
  */
 @Entity
 public class User_Stat implements Serializable {
-	private Integer id_user;
-	private Integer id_stat;
+
 	private Integer status;
 	
-	@Id
-	public Integer getId_user() {
-		return id_user;
+	@ManyToOne
+	@MapsId("idUser")
+	private User user;
+	
+	@ManyToOne
+	@MapsId("idStat")
+	private Stat stat;
+
+	
+	public User getUser() {
+		return user;
 	}
-	public void setId_user(Integer id_user) {
-		this.id_user = id_user;
+
+	public void setUser(User user) {
+		this.user = user;
 	}
-	@Id
-	public Integer getId_stat() {
-		return id_stat;
+
+	public Stat getStat() {
+		return stat;
 	}
-	public void setId_stat(Integer id_stat) {
-		this.id_stat = id_stat;
+
+	public void setStat(Stat stat) {
+		this.stat = stat;
 	}
+
 	public Integer getStatus() {
 		return status;
 	}
+
 	public void setStatus(Integer status) {
 		this.status = status;
 	}
+	
 	
 }
