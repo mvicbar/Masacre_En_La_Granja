@@ -13,14 +13,20 @@ import javax.persistence.*;
 @NamedQueries({ @NamedQuery(name = "User.ByName", query = "SELECT u FROM User u " + "WHERE u.name = :userName"),
 		@NamedQuery(name = "User.HasName", query = "SELECT COUNT(u) " + "FROM User u " + "WHERE u.name = :userName") })
 public class User {
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	private long id;
 
 	private String name;
 	private String password;
 	private String role;
+
+	@ManyToMany
 	private List<Game> games;
 
-	@OneToMany(mappedBy = "stat")
+	@OneToMany
+	@MapsId("user")
 	private List<User_Stat> user_stats = new ArrayList<>();
 
 	public boolean hasRole(String roleName) {
@@ -28,8 +34,7 @@ public class User {
 		return Arrays.stream(role.split(",")).anyMatch(r -> r.equals(requested));
 	}
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+
 	public long getId() {
 		return id;
 	}
@@ -73,12 +78,11 @@ public class User {
 		this.user_stats = user_stats;
 	}
 
-	@ManyToMany(targetEntity = Stat.class)
+
 	List<User_Stat> getUser_Stats() {
 		return user_stats;
 	}
 
-	@ManyToMany(targetEntity = Game.class)
 	public List<Game> getGames() {
 		return games;
 	}

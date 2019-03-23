@@ -51,7 +51,7 @@ public class Game {
 		this.users = users;
 	}
 	
-	@ManyToMany(targetEntity = User.class, mappedBy = "games")
+	@ManyToMany(mappedBy = "games")
 	List<User> getUsers(){
 		return users;
 	}

@@ -8,16 +8,18 @@ import java.util.List;
 
 @Entity
 public class Stat {
+	@Id
+	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	private long id;
+	
 	private String name;
 	private String description;
 	private String code;
 
-	@OneToMany(mappedBy = "user")
-	private List<User_Stat> user_stat;
+	@OneToMany(mappedBy = "stat")
+	private List<User_Stat> user_stats;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+
 	public long getId() {
 		return id;
 	}
@@ -43,11 +45,11 @@ public class Stat {
 		this.code = code;
 	}
 
-    public List<User_Stat> getUser_stat() {
-        return user_stat;
+    public List<User_Stat> getUser_stats() {
+        return user_stats;
     }
 
-    public void setUser_stat(List<User_Stat> user_stat) {
-        this.user_stat = user_stat;
+    public void setUser_stats(List<User_Stat> _user_stats) {
+        this.user_stats = _user_stats;
     }
 }
