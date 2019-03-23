@@ -20,7 +20,7 @@ public class User {
 	private String role;
 	private List<Game> games;
 
-	@OneToMany(mappedBy = "stat")
+	@OneToMany(mappedBy = "user")
 	private List<User_Stat> user_stats = new ArrayList<>();
 
 	public boolean hasRole(String roleName) {
@@ -73,7 +73,7 @@ public class User {
 		this.user_stats = user_stats;
 	}
 
-	@ManyToMany(targetEntity = Stat.class)
+	@OneToMany(targetEntity = Stat.class)
 	List<User_Stat> getUser_Stats() {
 		return user_stats;
 	}
