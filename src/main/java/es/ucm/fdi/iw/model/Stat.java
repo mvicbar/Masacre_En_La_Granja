@@ -19,7 +19,6 @@ public class Stat {
 	@OneToMany(mappedBy = "stat")
 	private List<User_Stat> user_stats;
 
-
 	public long getId() {
 		return id;
 	}

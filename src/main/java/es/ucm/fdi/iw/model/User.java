@@ -78,7 +78,6 @@ public class User {
 		this.user_stats = user_stats;
 	}
 
-
 	List<User_Stat> getUser_Stats() {
 		return user_stats;
 	}
