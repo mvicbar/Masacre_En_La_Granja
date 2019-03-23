@@ -18,6 +18,7 @@ public class User {
 	private String name;
 	private String password;
 	private String role;
+	private List<Game> games;
 
 	@OneToMany(mappedBy = "stat")
 	private List<User_Stat> user_stats = new ArrayList<>();
@@ -62,17 +63,28 @@ public class User {
 		this.role = role;
 	}
 
+
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", login=" + name + ", password=" + password + ", roles=" + role + "]";
 	}
 
-	public void setUser_stats(List<User_Stat> user_stat) {
+	public void setUser_stats(List<User_Stat> user_stats) {
 		this.user_stats = user_stats;
 	}
 
-	@ManyToMany(targetEntity = Game.class)
-	List<User_Stat> getUser_Stat() {
+	@ManyToMany(targetEntity = Stat.class)
+	List<User_Stat> getUser_Stats() {
 		return user_stats;
 	}
+
+	@ManyToMany(targetEntity = Game.class)
+	public List<Game> getGames() {
+		return games;
+	}
+
+	public void setGames(List<Game> games) {
+		this.games = games;
+	}
+
 }

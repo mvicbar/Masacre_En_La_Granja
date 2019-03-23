@@ -12,6 +12,10 @@ import javax.persistence.*;
 @Entity
 public class User_Stat implements Serializable {
 
+	
+
+	private static final long serialVersionUID = 1L;
+
 	private Integer status;
 
 	@EmbeddedId

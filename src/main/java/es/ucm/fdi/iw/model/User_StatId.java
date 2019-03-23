@@ -10,7 +10,7 @@ public class User_StatId implements Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 0;
+	private static final long serialVersionUID = 0L;
 	private Integer idUser;
 	private Integer idStat;
 	
