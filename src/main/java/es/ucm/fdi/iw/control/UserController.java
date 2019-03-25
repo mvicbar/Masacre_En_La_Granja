@@ -143,7 +143,7 @@ public class UserController {
 
 	@PostMapping("/register")
 	public String register(Model model){
-		logger.info("hola");
+		log.info("hola");
 		return "inicio";
 	}
 	
