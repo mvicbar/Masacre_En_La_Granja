@@ -26,8 +26,8 @@ public class RootController {
 
 	@GetMapping("/")
 	public String index(Model model) {
-		model.addAttribute("xs", "uno dos tres cuatro cinco".split(" "));
-		model.addAttribute("algo", 42);
+	//	model.addAttribute("xs", "uno dos tres cuatro cinco".split(" "));
+	//	model.addAttribute("algo", 42);
 		return "inicio";
 	}
 	
