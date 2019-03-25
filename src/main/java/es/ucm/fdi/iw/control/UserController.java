@@ -140,6 +140,12 @@ public class UserController {
 	public String getEnter(Model model) {
 		return "registro";
 	}
+
+	@PostMapping("/register")
+	public String register(Model model){
+		logger.info("hola");
+		return "inicio";
+	}
 	
 	/**
 	 * Registra a un usuario e inicia sesión automáticamente con el usuario creado.
