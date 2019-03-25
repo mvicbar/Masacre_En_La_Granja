@@ -136,15 +136,9 @@ public class UserController {
 	}
 	
 	
-	@GetMapping("/enter")
+	@GetMapping("/register")
 	public String getEnter(Model model) {
 		return "registro";
-	}
-
-	@PostMapping("/register")
-	public String register(Model model){
-		log.info("hola");
-		return "inicio";
 	}
 	
 	/**
@@ -157,10 +151,10 @@ public class UserController {
 	 * @param session
 	 * @return
 	 */
-	@PostMapping("/enter")
+	@PostMapping("/register")
 	@Transactional
-	public String enter(Model model, HttpServletRequest request, Principal principal, @RequestParam String userName,
-			@RequestParam String userPass, HttpSession session) {
+	public String register(Model model, HttpServletRequest request, Principal principal, @RequestParam String userName,
+			@RequestParam String userPassword, @RequestParam String userPassword2, HttpSession session) {
 
 		Long usersWithLogin = entityManager.createNamedQuery("User.HasName", Long.class)
 				.setParameter("userName", userName).getSingleResult();
@@ -170,20 +164,27 @@ public class UserController {
 			return "user";	// Crear una plantilla que muestre información del usuario logeado
 		}
 
+		//	Comprobación de que las dos contraseñas insertadas son iguales
+		if(!userPassword.equals(userPassword2)) {
+			return "redirect:/user/register";
+		}
+		
 		// Creación de un usuario
-		String userPassword = passwordEncoder.encode(userPass);
+		String userPass = passwordEncoder.encode(userPassword);
 		User u = new User();
 		u.setName(userName);
-		u.setPassword(passwordEncoder.encode(userPassword));
+		u.setPassword(passwordEncoder.encode(userPass));
 		u.setRole("USER");
 		entityManager.persist(u);
 		entityManager.flush();
-		log.info("Creating & logging in student {}, with ID {} and password {}", userName, u.getId(), userPassword);
+		log.info("Creating & logging in student {}, with ID {} and password {}", userName, u.getId(), userPass);
 
 		doAutoLogin(userName, userPassword, request);
-		log.info("Created & logged in student {}, with ID {} and password {}", userName, u.getId(), userPassword);
+		log.info("Created & logged in student {}, with ID {} and password {}", userName, u.getId(), userPass);
+		
+		session.setAttribute("user", u);
 
-		return "redirect:/user/";
+		return "redirect:/user/{u.getId()}";
 	}
 	
 	/**
