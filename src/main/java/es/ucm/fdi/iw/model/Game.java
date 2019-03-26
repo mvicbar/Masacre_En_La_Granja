@@ -14,15 +14,15 @@ import javax.persistence.ManyToMany;
  */
 @Entity
 public class Game {
-	
+	@Id
+	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	private long id;
 	private Date creationTime;
 	private String status;
 	private List<User> users = new ArrayList<>();
 
 	
-	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+
 	public long getId() {
 		return id;
 	}
