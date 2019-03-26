@@ -184,7 +184,7 @@ public class UserController {
 		
 		session.setAttribute("user", u);
 
-		return "redirect:/user/{u.getId()}";
+		return "redirect:/user/" + u.getId();
 	}
 	
 	/**
