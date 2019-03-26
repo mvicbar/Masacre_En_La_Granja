@@ -17,8 +17,10 @@ public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	private long id;
-
+    
+    @Column(unique = true)
 	private String name;
+ 
 	private String password;
 	private String role;
 
@@ -42,8 +44,7 @@ public class User {
 	public void setId(long id) {
 		this.id = id;
 	}
-
-	@Column(unique = true)
+	
 	public String getName() {
 		return name;
 	}
