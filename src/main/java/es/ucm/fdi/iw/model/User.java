@@ -28,8 +28,8 @@ public class User {
 	private List<Game> games;
 
 	@OneToMany
-	@MapsId("user")
-	private List<User_Stat> user_stats = new ArrayList<>();
+	@JoinColumn(name="user_id")
+	private List<UserStat> userStats = new ArrayList<>();
 
 	public boolean hasRole(String roleName) {
 		String requested = roleName.toLowerCase();
@@ -75,17 +75,20 @@ public class User {
 		return "User [id=" + id + ", login=" + name + ", password=" + password + ", roles=" + role + "]";
 	}
 
-	public void setUser_stats(List<User_Stat> user_stats) {
-		this.user_stats = user_stats;
-	}
-
-	List<User_Stat> getUser_Stats() {
-		return user_stats;
-	}
 
 	public List<Game> getGames() {
 		return games;
 	}
+
+	public List<UserStat> getUserStats() {
+		return userStats;
+	}
+
+
+	public void setUserStats(List<UserStat> userStats) {
+		this.userStats = userStats;
+	}
+
 
 	public void setGames(List<Game> games) {
 		this.games = games;

@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Usuario | Masacre en la granja</title>
-	<link rel="stylesheet" type="text/css" media="screen" href="../static/css/registro.css">
+	<link rel="stylesheet" type="text/css" media="screen" href="../css/user.css">
 </head>
 
 <body>
@@ -17,7 +17,7 @@
 
 	<h4>Información del usuario <span th:text="${user.name}">Pepe</span></h4>
 	
-	<div name="userInfo" th:if="(${session.user.id} eq ${user.id}) or ${user.hasRole('ADMIN')}">
+	<div class="userInfo" th:if="(${session.user.id} eq ${user.id}) or ${user.hasRole('ADMIN')}">
 		<!-- puedes cambiar todo -->
 		<img th:src="@{/user/{id}/photo(id=${user.id})}">
 		<div name="name" th:text="${user.name}">Pepe</div>
