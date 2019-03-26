@@ -180,7 +180,7 @@ public class UserController {
 		entityManager.flush();
 		log.info("Creating & logging in student {}, with ID {} and password {}", userName, u.getId(), userPass);
 
-		//doAutoLogin(userName, userPassword, request);
+		doAutoLogin(userName, userPassword, request);
 		log.info("Created & logged in student {}, with ID {} and password {}", userName, u.getId(), userPass);
 		
 		session.setAttribute("user", u);

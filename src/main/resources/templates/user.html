@@ -3,30 +3,33 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Usuario | Masacre en la granja</title>
-	<link rel="stylesheet" type="text/css" media="screen" href="../css/registro.css">
+	<link rel="stylesheet" type="text/css" media="screen" href="../static/css/registro.css">
 </head>
 
 <body>
 
+	<div class="nav">
+			<a>Partida</a>
+	        <a href="http://localhost:8080/estadisticas-globales.html">Estadísticas</a>
+	        <a href="http://localhost:8080/reglas.html">Reglas</a>
+	        <a href="http://localhost:8080/faq.html">FAQ</a>
+	</div> <!-- nav -->
+
 	<h4>Información del usuario <span th:text="${user.name}">Pepe</span></h4>
 	
-	<div th:if="(${session.user.id} eq ${user.id}) or ${user.hasRole('ADMIN')}">
+	<div name="userInfo" th:if="(${session.user.id} eq ${user.id}) or ${user.hasRole('ADMIN')}">
 		<!-- puedes cambiar todo -->
-		<form class="smallform" th:action="@{/user/{id}(id=${user.id})}" method="POST">
-			<input name="name" required placeholder="Nombre de usuario" th:value="${user.login}"/>
-			<input name="roles" required placeholder="Roles" th:value="${user.roles}"/>
-			<input type="password" required name="password" placeholder="Contraseña"/>
-			<input type="password" required name="pass2" placeholder="Confirmación"/>
-			<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />			
-			<button type="submit">Modificar</button>
-		</form>
+		<img th:src="@{/user/{id}/photo(id=${user.id})}">
+		<div name="name" th:text="${user.name}">Pepe</div>
+		<div name="roles" th:text="${user.role}">Usuario</div>
+		<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />			
+
 		<form th:action="@{/user/{id}/photo(id=${user.id})}" method="POST" enctype="multipart/form-data">
 			Nueva foto <input type="file" name="photo"/>
 			<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />			
 			<button type="submit">Actualizar</button>
 		</form>
 	</div>
-	<img th:src="@{/user/{id}/photo(id=${user.id})}">
 </div>
 
 
