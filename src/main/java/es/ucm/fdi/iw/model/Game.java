@@ -19,6 +19,8 @@ public class Game {
 	private long id;
 	private Date creationTime;
 	private String status;
+
+	@ManyToMany(mappedBy = "games")
 	private List<User> users = new ArrayList<>();
 
 	
@@ -51,7 +53,7 @@ public class Game {
 		this.users = users;
 	}
 	
-	@ManyToMany(mappedBy = "games")
+
 	List<User> getUsers(){
 		return users;
 	}
