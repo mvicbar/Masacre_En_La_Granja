@@ -13,24 +13,19 @@ body {
     font-family: 'Felipa', cursive;
 }
 
-.nav {
+.titulo{
     display: flex;
-    background-image: linear-gradient(to bottom right, rgb(31, 30, 30) , rgb(63, 63, 63));
-    color: rgb(184, 183, 183);
-
-    border-bottom-left-radius: 30px;
-    border-bottom-right-radius: 30px;
-
-    align-items: center;
-    justify-content: space-evenly;
-    min-height: 60px;
+    font-size: 58PX;
+    line-height: 225px;
+    color: rgb(165, 165, 165);
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+    justify-content: center;
 }
 
 .cuerpo {
     display: flex;
     flex-direction: column;
     background-image: linear-gradient(to bottom right, #acaba1, #d4d4cb);
-    margin-top: 8%;
     margin-left: auto;
     margin-right: auto;
     width: 60%;
