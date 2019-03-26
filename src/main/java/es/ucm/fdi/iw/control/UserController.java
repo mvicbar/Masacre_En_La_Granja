@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -179,12 +180,12 @@ public class UserController {
 		entityManager.flush();
 		log.info("Creating & logging in student {}, with ID {} and password {}", userName, u.getId(), userPass);
 
-		doAutoLogin(userName, userPassword, request);
+		//doAutoLogin(userName, userPassword, request);
 		log.info("Created & logged in student {}, with ID {} and password {}", userName, u.getId(), userPass);
 		
 		session.setAttribute("user", u);
-
-		return "redirect:/user/{u.getId()}";
+		
+		return "redirect:/user/" + u.getId();
 	}
 	
 	/**
