@@ -147,7 +147,7 @@ public class UserController {
 	 * @param request
 	 * @param principal
 	 * @param userName	Nombre del usuario creado
-	 * @param userPass	Contraseña introducida por el usuario
+	 * @param userPassword	Contraseña introducida por el usuario
 	 * @param session
 	 * @return
 	 */

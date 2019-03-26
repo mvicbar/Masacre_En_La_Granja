@@ -47,5 +47,7 @@ public class RootController {
 				.replaceFirst("[^:]*", "ws")
 				.replace("chat", "ws"));
 		return "chat";
-	} 
+	}
+	
+
 }

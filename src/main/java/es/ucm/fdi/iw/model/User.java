@@ -10,8 +10,8 @@ import javax.persistence.*;
  * 
  */
 @Entity
-@NamedQueries({ @NamedQuery(name = "User.ByName", query = "SELECT u FROM User u " + "WHERE u.name = :userName"),
-		@NamedQuery(name = "User.HasName", query = "SELECT COUNT(u) " + "FROM User u " + "WHERE u.name = :userName") })
+@NamedQueries({ @NamedQuery(name = "User.ByName", query = "SELECT u FROM User u WHERE u.name = :userName"),
+		@NamedQuery(name = "User.HasName", query = "SELECT COUNT(u) FROM User u WHERE u.name = :userName") })
 public class User {
 
 	@Id
