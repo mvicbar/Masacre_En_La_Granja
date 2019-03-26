@@ -124,7 +124,7 @@ public class UserController {
 			log.info("failed to upload photo: emtpy file?");
 		} else {
 			try (BufferedOutputStream stream =
-					new BufferedOutputStream(new FileOutputStream(f))) {
+						 new BufferedOutputStream(new FileOutputStream(f))) {
 				byte[] bytes = photo.getBytes();
 				stream.write(bytes);
 			} catch (Exception e) {

@@ -30,8 +30,7 @@ public class User {
 	private List<User_Stat> user_stats = new ArrayList<>();
 
 	public boolean hasRole(String roleName) {
-		String requested = roleName.toLowerCase();
-		return Arrays.stream(role.split(",")).anyMatch(r -> r.equals(requested));
+		return Arrays.stream(role.split(",")).anyMatch(r -> r.equalsIgnoreCase(roleName));
 	}
 
 
