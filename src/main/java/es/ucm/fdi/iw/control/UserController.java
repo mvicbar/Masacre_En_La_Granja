@@ -186,7 +186,34 @@ public class UserController {
 
 		return "redirect:/user/" + u.getId();
 	}
-	
+
+
+	@GetMapping("/login")
+	public String getLogin(Model model) {
+		return "login";
+	}
+
+	@PostMapping("/login")
+	@Transactional
+	public String login(Model model, HttpServletRequest request, Principal principal, @RequestParam String userName,
+						   @RequestParam String userPassword, HttpSession session) {
+
+		Long usersWithLogin = entityManager.createNamedQuery("User.ByName", Long.class)
+				.setParameter("userName", userName).getSingleResult();
+
+		// if the user exists, we check the if the password is correct
+		if (usersWithLogin != 0) {
+			User u = entityManager.createNamedQuery(("User.CorrectPassword", Long.class)
+					.setParameter("userName", userName).setParameter("userPassword", userPassword).getSingleResult();
+			if(u != null) {
+				return "redirect:/user/" + u.getId();	// Devuelve el usuario loggeado
+			}
+		}
+
+		return "redirect:/user/login";
+	}
+
+
 	/**
 	 * Non-interactive authentication; user and password must already exist
 	 * @param username
