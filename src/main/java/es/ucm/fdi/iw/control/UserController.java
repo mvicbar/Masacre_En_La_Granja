@@ -184,7 +184,7 @@ public class UserController {
 		log.info("Created & logged in student {}, with ID {} and password {}", userName, u.getId(), userPass);
 		
 		session.setAttribute("user", u);
-		
+
 		return "redirect:/user/" + u.getId();
 	}
 	
