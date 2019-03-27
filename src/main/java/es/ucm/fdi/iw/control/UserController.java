@@ -189,9 +189,7 @@ public class UserController {
 
 
 	@GetMapping("/login")
-	public String getLogin(Model model) {
-		return "login";
-	}
+	public String getLogin(Model model) { return "login"; }
 
 	@PostMapping("/login")
 	@Transactional
@@ -203,7 +201,7 @@ public class UserController {
 
 		// if the user exists, we check the if the password is correct
 		if (usersWithLogin != 0) {
-			User u = entityManager.createNamedQuery(("User.CorrectPassword", Long.class)
+			User u = entityManager.createNamedQuery("User.CorrectPassword", Long.class)
 					.setParameter("userName", userName).setParameter("userPassword", userPassword).getSingleResult();
 			if(u != null) {
 				return "redirect:/user/" + u.getId();	// Devuelve el usuario loggeado
