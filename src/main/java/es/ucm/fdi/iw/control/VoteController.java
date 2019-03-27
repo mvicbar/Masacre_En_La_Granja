@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import es.ucm.fdi.iw.IwUserDetailsService;
-import es.ucm.fdi.iw.model.User_Stat;
+import es.ucm.fdi.iw.model.UserStat;
 import es.ucm.fdi.iw.model.User;
 
 @Controller()
@@ -74,17 +74,17 @@ public class VoteController {
 	@Transactional
 	public String enter(Model model, HttpServletRequest request, Principal principal, 
 			@RequestParam String userName, @RequestParam String groupCode) {
-		User_Stat g = null;
+		UserStat g = null;
 		try {
-	        g = entityManager.createNamedQuery("CGroup.ByCode", User_Stat.class)
+	        g = entityManager.createNamedQuery("CGroup.ByCode", UserStat.class)
 	                            .setParameter("groupCode", groupCode)
 	                            .getSingleResult();
 	        // if no exception here, the group code is valid - yay!
 		} catch (Exception e) {
-			List<User_Stat> groups = (List<User_Stat>)entityManager
+			List<UserStat> groups = (List<UserStat>)entityManager
 					.createQuery("select g from CGroup g").getResultList();
     		log.info("No such group code: {}; listing {} valid groups", groupCode, groups.size());
-    		for (User_Stat i : groups) {
+    		for (UserStat i : groups) {
     			log.info(i.toString());
     		}
     		return "bad";

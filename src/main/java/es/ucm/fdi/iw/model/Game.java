@@ -14,6 +14,7 @@ import javax.persistence.ManyToMany;
  */
 @Entity
 public class Game {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	private long id;

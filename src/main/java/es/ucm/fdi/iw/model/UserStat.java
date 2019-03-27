@@ -10,29 +10,22 @@ import javax.persistence.*;
 /**
  */
 @Entity
-public class User_Stat implements Serializable {
-
-	
+public class UserStat implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	private Integer status;
-
-	@EmbeddedId
-	private User_StatId user_statId;
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+	private long id;
 	
 	@ManyToOne
-	@MapsId("idUser")
 	private User user;
 	
 	@ManyToOne
-	@MapsId("idStat")
 	private Stat stat;
 
-	public User_Stat() {
-
-	}
-	
 	public User getUser() {
 		return user;
 	}
