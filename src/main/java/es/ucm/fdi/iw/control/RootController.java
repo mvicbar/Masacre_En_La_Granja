@@ -26,9 +26,22 @@ public class RootController {
 
 	@GetMapping("/")
 	public String index(Model model) {
-	//	model.addAttribute("xs", "uno dos tres cuatro cinco".split(" "));
-	//	model.addAttribute("algo", 42);
 		return "inicio";
+	}
+	
+	@GetMapping("/reglas")
+	public String rules(Model model) {
+		return "reglas";
+	}
+	
+	@GetMapping("/faq")
+	public String faq(Model model) {
+		return "faq";
+	}
+	
+	@GetMapping("/estadisticas")
+	public String globalStats(Model model) {
+		return "estadisticas-globales";
 	}
 	
 	@GetMapping("/admin")
