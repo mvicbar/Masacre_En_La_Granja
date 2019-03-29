@@ -7,12 +7,9 @@
 	</head>
 
 	<body>
-		<nav>
-	        <a class="a-nav">Partida</a>
-	        <a class="a-nav" href="http://localhost:8080/estadisticas-globales.html">Estadísticas</a>
-	        <a class="a-nav" href="http://localhost:8080/reglas.html">Reglas</a>
-	        <a class="a-nav" href="http://localhost:8080/faq.html">FAQ</a>
-	    </nav>
+		<nav th:replace="fragments/nav.html :: nav">
+			Nav goes here
+		</nav>
 		<main>
 			<table name="stats">
 				<thead>

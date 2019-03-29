@@ -8,12 +8,9 @@
 
 <body>
 
-	<div class="nav">
-			<a>Partida</a>
-	        <a href="http://localhost:8080/estadisticas-globales.html">Estadísticas</a>
-	        <a href="http://localhost:8080/reglas.html">Reglas</a>
-	        <a href="http://localhost:8080/faq.html">FAQ</a>
-	</div> <!-- nav -->
+	<nav th:replace="fragments/nav.html :: nav">
+		Nav goes here
+	</nav>
 
 	<h4>Información del usuario <span th:text="${user.name}">Pepe</span></h4>
 	
@@ -30,7 +27,5 @@
 			<button type="submit">Actualizar</button>
 		</form>
 	</div>
-</div>
-
 
 </body>

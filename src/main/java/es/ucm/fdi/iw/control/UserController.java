@@ -138,7 +138,7 @@ public class UserController {
 	
 	
 	@GetMapping("/register")
-	public String getEnter(Model model) {
+	public String getRegister(Model model) {
 		return "registro";
 	}
 	
@@ -162,7 +162,7 @@ public class UserController {
 		
 		// if the user exists, we have a problem
 		if (usersWithLogin != 0) {
-			return "user";	// Crear una plantilla que muestre información del usuario logeado
+			return "user";
 		}
 
 		//	Comprobación de que las dos contraseñas insertadas son iguales
@@ -188,7 +188,6 @@ public class UserController {
 		return "redirect:/user/" + u.getId();
 	}
 
-
 	@GetMapping("/login")
 	public String getLogin(Model model) { return "iniciosesion"; }
 
@@ -212,6 +211,13 @@ public class UserController {
 		return "redirect:/user/login";
 	}
 
+	
+	@GetMapping("/logout")
+	public String logout(Model model, HttpSession session) {
+		//	¿Borrar el atributo "user" de sesión? En ese caso, en la función 'register'
+		//	y 'login' habría que añadirlo, no cambiar su valor
+		return "redirect:/";
+	}
 
 	/**
 	 * Non-interactive authentication; user and password must already exist
