@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.Principal;
+import java.util.HashSet;
 
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
@@ -45,6 +46,7 @@ import es.ucm.fdi.iw.model.User;
 public class UserController {
 	
 	private static final Logger log = LogManager.getLogger(UserController.class);
+	private static HashSet<String> lobby;
 	
 	@Autowired 
 	private PasswordEncoder passwordEncoder;
@@ -57,7 +59,11 @@ public class UserController {
 	
 	@Autowired 
 	private AuthenticationManager authenticationManager;
-
+	
+	public UserController() {
+		lobby = new HashSet<>();
+	}
+	
 	@GetMapping("/{id}")
 	public String getUser(@PathVariable long id, Model model, HttpSession session) {
 		User u = entityManager.find(User.class, id);
@@ -201,11 +207,18 @@ public class UserController {
 	}
 	
 	@GetMapping("/join")
-	public String joinQueue(Model model, HttpSession session) {
+	public String joinLobby(Model model, HttpSession session) {
 		
+		lobby.add(((User) session.getAttribute("user")).getName());
 		
+		if(lobby.contains(((User) session.getAttribute("user")).getName())) {
+			log.info("SE HA AÑADIDO EL USUARIO " + ((User) session.getAttribute("user")).getName() +" AL LOBBY");
+		} else
+		{
+			log.info("OH OH PROBLEMAS");
+		}
 		
-		return "";
+		return "/join";
 	}
 	
 	/**
