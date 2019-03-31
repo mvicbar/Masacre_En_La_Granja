@@ -204,9 +204,11 @@ public class UserController {
 			User u = entityManager.createNamedQuery("User.CorrectPassword", User.class)
 					.setParameter("userName", userName).setParameter("userPassword", userPassword).getSingleResult();
 			if(u != null) {
+				session.setAttribute("user", u);
 				return "redirect:/user/" + u.getId();	// Devuelve el usuario loggeado
 			}
 		}
+
 
 		return "redirect:/user/login";
 	}
