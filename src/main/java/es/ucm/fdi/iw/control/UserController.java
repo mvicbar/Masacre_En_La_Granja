@@ -200,6 +200,13 @@ public class UserController {
 		return "redirect:/";
 	}
 	
+	@GetMapping("/join")
+	public String joinQueue(Model model, HttpSession session) {
+		
+		
+		
+		return "";
+	}
 	
 	/**
 	 * Non-interactive authentication; user and password must already exist
