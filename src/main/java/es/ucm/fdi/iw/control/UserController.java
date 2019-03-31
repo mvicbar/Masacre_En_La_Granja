@@ -11,6 +11,7 @@ import java.io.OutputStream;
 import java.security.Principal;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
@@ -213,17 +214,17 @@ public class UserController {
 
 		// if the user exists, we check the if the password is correct
 		if (usersWithLogin != 0) {
+			try {
 			User u = entityManager.createNamedQuery("User.CorrectPassword", User.class)
 					.setParameter("userName", userName).setParameter("userPassword", userPassword).getSingleResult();
-			if(u != null) {
-				session.setAttribute("user", u);
-				return "redirect:/user/" + u.getId();	// Devuelve el usuario loggeado
-			}
-			else{
+			
+			session.setAttribute("user", u);
+			return "redirect:/user/" + u.getId();	//Devuelve el usuario loggeado
+			
+			}catch(NoResultException e) {
 				return "redirect:/user/login";
 			}
 		}
-
 
 		return "redirect:/user/register";
 	}
