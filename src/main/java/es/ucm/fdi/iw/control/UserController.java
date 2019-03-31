@@ -196,7 +196,7 @@ public class UserController {
 	public String login(Model model, HttpServletRequest request, Principal principal, @RequestParam String userName,
 						   @RequestParam String userPassword, HttpSession session) {
 
-		Long usersWithLogin = entityManager.createNamedQuery("User.ByName", Long.class)
+		Long usersWithLogin = entityManager.createNamedQuery("User.HasName", Long.class)
 				.setParameter("userName", userName).getSingleResult();
 
 		// if the user exists, we check the if the password is correct
