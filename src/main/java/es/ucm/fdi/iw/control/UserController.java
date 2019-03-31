@@ -207,22 +207,28 @@ public class UserController {
 	@PostMapping("/login")
 	@Transactional
 	public String login(Model model, HttpServletRequest request, Principal principal, @RequestParam String userName,
-						   @RequestParam String userPassword, HttpSession session) {
+						   @RequestParam CharSequence userPassword, HttpSession session) {
 
 		Long usersWithLogin = entityManager.createNamedQuery("User.HasName", Long.class)
 				.setParameter("userName", userName).getSingleResult();
 
 		// if the user exists, we check the if the password is correct
 		if (usersWithLogin != 0) {
-			try {
-			User u = entityManager.createNamedQuery("User.CorrectPassword", User.class)
-					.setParameter("userName", userName).setParameter("userPassword", userPassword).getSingleResult();
+			//	Se saca la constraseña del usuario que se está loggeando
+			String pass = entityManager.createNamedQuery("User.Password", String.class)
+					.setParameter("userName", userName).getSingleResult();
 			
-			session.setAttribute("user", u);
-			return "redirect:/user/" + u.getId();	//Devuelve el usuario loggeado
-			
-			}catch(NoResultException e) {
-				return "redirect:/user/login";
+			//	Se compara la contraseña introducida con la contraseña cifrada de la BD
+			boolean correct = passwordEncoder.matches(userPassword, pass);
+			log.info("The passwords match: {}", correct);
+			if(correct) {
+				User u = entityManager.createNamedQuery("User.ByName", User.class)
+						.setParameter("userName", userName).getSingleResult();
+				
+				session.setAttribute("user", u);
+				return "redirect:/user/" + u.getId();	//Devuelve el usuario loggeado
+			}else {
+				return "redirect:/user/login"; 
 			}
 		}
 
