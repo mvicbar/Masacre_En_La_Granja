@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -46,7 +47,7 @@ import es.ucm.fdi.iw.model.User;
 public class UserController {
 	
 	private static final Logger log = LogManager.getLogger(UserController.class);
-	private static HashSet<String> lobby;
+	private static HashSet<Long> lobby;
 	
 	@Autowired 
 	private PasswordEncoder passwordEncoder;
@@ -206,19 +207,21 @@ public class UserController {
 		return "redirect:/";
 	}
 	
-	@GetMapping("/join")
-	public String joinLobby(Model model, HttpSession session) {
+	@GetMapping("/{id}/lobby")
+	public String getLobby(Model model) {
 		
-		lobby.add(((User) session.getAttribute("user")).getName());
 		
-		if(lobby.contains(((User) session.getAttribute("user")).getName())) {
-			log.info("SE HA AÑADIDO EL USUARIO " + ((User) session.getAttribute("user")).getName() +" AL LOBBY");
-		} else
-		{
-			log.info("OH OH PROBLEMAS");
-		}
 		
-		return "/join";
+		return "lobby";
+	}
+	
+	@PostMapping("/{id}/joinLobby")
+	public String joinLobby(Model model, HttpSession session, @PathVariable String id) {
+		
+		Long idLong = Long.parseLong(id);
+		lobby.add(idLong);
+		
+		return "reglas";
 	}
 	
 	/**
