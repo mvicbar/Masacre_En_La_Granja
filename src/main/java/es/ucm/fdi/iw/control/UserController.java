@@ -218,6 +218,7 @@ public class UserController {
 	public String logout(Model model, HttpSession session) {
 		//	¿Borrar el atributo "user" de sesión? En ese caso, en la función 'register'
 		//	y 'login' habría que añadirlo, no cambiar su valor
+		session.setAttribute("user", null);
 		return "redirect:/user/login";
 	}
 
