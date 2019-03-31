@@ -113,7 +113,7 @@ public class UserController {
 		model.addAttribute("user", target);
 		
 		// check permissions
-		User requester = (User)session.getAttribute("u");
+		User requester = (User)session.getAttribute("user");
 		if (requester.getId() != target.getId() &&
 				! requester.hasRole("ADMIN")) {			
 			return "user";
@@ -133,7 +133,7 @@ public class UserController {
 			}
 			log.info("Successfully uploaded photo for {} into {}!", id, f.getAbsolutePath());
 		}
-		return "user";
+		return "redirect:/user/" + id;
 	}
 	
 	
@@ -155,7 +155,7 @@ public class UserController {
 	@PostMapping("/register")
 	@Transactional
 	public String register(Model model, HttpServletRequest request, Principal principal, @RequestParam String userName,
-			@RequestParam String userPassword, @RequestParam String userPassword2, HttpSession session) {
+			@RequestParam String userPassword, @RequestParam String userPassword2, @RequestParam("userPhoto") MultipartFile userPhoto, HttpSession session) {
 
 		Long usersWithLogin = entityManager.createNamedQuery("User.HasName", Long.class)
 				.setParameter("userName", userName).getSingleResult();
@@ -182,6 +182,18 @@ public class UserController {
 
 		doAutoLogin(userName, userPassword, request);
 		log.info("Created & logged in student {}, with ID {} and password {}", userName, u.getId(), userPass);
+		
+		if (!userPhoto.isEmpty()) {
+			File f = localData.getFile("user", String.valueOf(u.getId()));
+			try (BufferedOutputStream stream =
+						 new BufferedOutputStream(new FileOutputStream(f))) {
+				byte[] bytes = userPhoto.getBytes();
+				stream.write(bytes);
+			} catch (Exception e) {
+				log.info("Error uploading photo for user with ID {}", u.getId());
+			}
+			log.info("Successfully uploaded photo for {} into {}!", u.getId(), f.getAbsolutePath());
+		}
 		
 		session.setAttribute("user", u);
 
