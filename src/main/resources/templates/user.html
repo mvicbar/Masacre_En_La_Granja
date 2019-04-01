@@ -12,8 +12,10 @@
 		Nav goes here
 	</nav>
 
-	<h4>Información del usuario <span th:text="${user.name}">Pepe</span></h4>
-	
+	<div class = titulo>
+	<h2>Información del usuario <span th:text="${user.name}">Pepe</span></h2>
+	</div>
+
 	<div class="userInfo" th:if="(${session.user.id} eq ${user.id}) or ${user.hasRole('ADMIN')}">
 		<!-- puedes cambiar todo -->
 		<img th:src="@{/user/{id}/photo(id=${user.id})}">

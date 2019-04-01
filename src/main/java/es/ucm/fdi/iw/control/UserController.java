@@ -12,6 +12,7 @@ import java.security.Principal;
 import java.util.HashSet;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
@@ -120,7 +121,7 @@ public class UserController {
 		model.addAttribute("user", target);
 		
 		// check permissions
-		User requester = (User)session.getAttribute("u");
+		User requester = (User)session.getAttribute("user");
 		if (requester.getId() != target.getId() &&
 				! requester.hasRole("ADMIN")) {			
 			return "user";
@@ -140,7 +141,7 @@ public class UserController {
 			}
 			log.info("Successfully uploaded photo for {} into {}!", id, f.getAbsolutePath());
 		}
-		return "user";
+		return "redirect:/user/" + id;
 	}
 	
 	
@@ -162,23 +163,20 @@ public class UserController {
 	@PostMapping("/register")
 	@Transactional
 	public String register(Model model, HttpServletRequest request, Principal principal, @RequestParam String userName,
-			@RequestParam String userPassword, @RequestParam String userPassword2, HttpSession session) {
+			@RequestParam String userPassword, @RequestParam String userPassword2, @RequestParam("userPhoto") MultipartFile userPhoto, HttpSession session) {
 
 		Long usersWithLogin = entityManager.createNamedQuery("User.HasName", Long.class)
 				.setParameter("userName", userName).getSingleResult();
 		
-		// if the user exists, we have a problem
-		if (usersWithLogin != 0) {
-			return "user";
-		}
 
+		// if the user exists, or the password doesn't match
 		//	Comprobación de que las dos contraseñas insertadas son iguales
-		if(!userPassword.equals(userPassword2)) {
+		if(usersWithLogin != 0 || !userPassword.equals(userPassword2)) {
 			return "redirect:/user/register";
 		}
 		
 		// Creación de un usuario
-		String userPass = passwordEncoder.encode(userPassword);
+		String userPass = userPassword;
 		User u = new User();
 		u.setName(userName);
 		u.setPassword(passwordEncoder.encode(userPass));
@@ -190,23 +188,64 @@ public class UserController {
 		doAutoLogin(userName, userPassword, request);
 		log.info("Created & logged in student {}, with ID {} and password {}", userName, u.getId(), userPass);
 		
+		if (!userPhoto.isEmpty()) {
+			File f = localData.getFile("user", String.valueOf(u.getId()));
+			try (BufferedOutputStream stream =
+						 new BufferedOutputStream(new FileOutputStream(f))) {
+				byte[] bytes = userPhoto.getBytes();
+				stream.write(bytes);
+			} catch (Exception e) {
+				log.info("Error uploading photo for user with ID {}", u.getId());
+			}
+			log.info("Successfully uploaded photo for {} into {}!", u.getId(), f.getAbsolutePath());
+		}
+		
 		session.setAttribute("user", u);
 
 		return "redirect:/user/" + u.getId();
 	}
-	
+
 	@GetMapping("/login")
-	public String getLogin(Model model) {
-		return "iniciosesion";
+	public String getLogin(Model model) { return "iniciosesion"; }
+
+	@PostMapping("/login")
+	@Transactional
+	public String login(Model model, HttpServletRequest request, Principal principal, @RequestParam String userName,
+						   @RequestParam CharSequence userPassword, HttpSession session) {
+
+		Long usersWithLogin = entityManager.createNamedQuery("User.HasName", Long.class)
+				.setParameter("userName", userName).getSingleResult();
+
+		// if the user exists, we check the if the password is correct
+		if (usersWithLogin != 0) {
+			//	Se saca la constraseña del usuario que se está loggeando
+			String pass = entityManager.createNamedQuery("User.Password", String.class)
+					.setParameter("userName", userName).getSingleResult();
+			
+			//	Se compara la contraseña introducida con la contraseña cifrada de la BD
+			boolean correct = passwordEncoder.matches(userPassword, pass);
+			log.info("The passwords match: {}", correct);
+			if(correct) {
+				User u = entityManager.createNamedQuery("User.ByName", User.class)
+						.setParameter("userName", userName).getSingleResult();
+				
+				session.setAttribute("user", u);
+				return "redirect:/user/" + u.getId();	//Devuelve el usuario loggeado
+			}else {
+				return "redirect:/user/login"; 
+			}
+		}
+
+		return "redirect:/user/register";
 	}
+
 	
 	@GetMapping("/logout")
 	public String logout(Model model, HttpSession session) {
-		//	¿Borrar el atributo "user" de sesión? En ese caso, en la función 'register'
-		//	y 'login' habría que añadirlo, no cambiar su valor
-		return "redirect:/";
+		session.setAttribute("user", null);
+		return "redirect:/user/login";
 	}
-	
+
 	@GetMapping("/{id}/lobby")
 	public String getLobby(Model model) {
 		
@@ -223,7 +262,7 @@ public class UserController {
 		
 		return "reglas";
 	}
-	
+
 	/**
 	 * Non-interactive authentication; user and password must already exist
 	 * @param username
