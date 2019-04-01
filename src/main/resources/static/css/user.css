@@ -26,6 +26,11 @@ nav {
     min-height: 60px;
 }
 
+nav img{
+	width: 60%;
+	height: 60%;
+}
+
 .titulo{
     display: flex;
     color: rgb(165, 165, 165);
@@ -46,7 +51,12 @@ span{
 .logx{
 	display: flex;
     justify-content: space-evenly;
-    width: -webkit-fill-available;
+    width: 100%;
+}
+
+.loggedUser{
+	display:flex;
+	flex-direction: column;
 }
 
 .userInfo{

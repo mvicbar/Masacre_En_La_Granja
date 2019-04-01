@@ -10,11 +10,16 @@
 
 		<span class="logx" th:if="${session.user != null}">
 			<a>Partida</a>
-        	<a th:href="@{/estadisticas}" href="/estadisticas">Estadísticas</a>
+        	<a th:href="@{/estadisticas}" href="/estadisticas">EstadÃ­sticas</a>
         	<a th:href="@{/reglas}" href="/reglas">Reglas</a>
         	<a th:href="@{/faq}" href="/faq">FAQ</a>
-			<a th:href="@{/user/{id}(id=${session.user.id})}" th:text="${session.user.name}">Pepe</a>
-			<a th:href="@{/user/logout}" href="/user/logout">logout</a>
+        	<div class="loggedUser">
+        		<img th:src="@{/user/{id}/photo(id=${session.user.id})}">
+        		<div class="info">
+					<a th:href="@{/user/{id}(id=${session.user.id})}" th:text="${session.user.name}">Pepe</a>
+					<a th:href="@{/user/logout}" href="/user/logout">logout</a>
+				</div>
+			</div>
 		</span>
 		<span class="logx" th:if="${session.user == null}">
 			<a th:href="@{/user/login}" href="/user/login">login</a>

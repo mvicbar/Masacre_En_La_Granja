@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.Principal;
+import java.util.HashSet;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -30,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -46,6 +48,7 @@ import es.ucm.fdi.iw.model.User;
 public class UserController {
 	
 	private static final Logger log = LogManager.getLogger(UserController.class);
+	public static HashSet<Long> lobby;
 	
 	@Autowired 
 	private PasswordEncoder passwordEncoder;
@@ -58,7 +61,11 @@ public class UserController {
 	
 	@Autowired 
 	private AuthenticationManager authenticationManager;
-
+	
+	public UserController() {
+		lobby = new HashSet<>();
+	}
+	
 	@GetMapping("/{id}")
 	public String getUser(@PathVariable long id, Model model, HttpSession session) {
 		User u = entityManager.find(User.class, id);
@@ -237,6 +244,23 @@ public class UserController {
 	public String logout(Model model, HttpSession session) {
 		session.setAttribute("user", null);
 		return "redirect:/user/login";
+	}
+
+	@GetMapping("/{id}/lobby")
+	public String getLobby(@PathVariable String id, Model model, HttpSession session) {
+		
+		
+		
+		return "lobby";
+	}
+	
+	@PostMapping("/{id}/joinLobby")
+	public String joinLobby(@PathVariable String id, Model model, HttpSession session) {
+		
+		Long idLong = Long.parseLong(id);
+		lobby.add(idLong);
+		
+		return "reglas";
 	}
 
 	/**
