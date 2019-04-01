@@ -172,7 +172,7 @@ public class UserController {
 		}
 		
 		// Creación de un usuario
-		String userPass = passwordEncoder.encode(userPassword);
+		String userPass = userPassword;
 		User u = new User();
 		u.setName(userName);
 		u.setPassword(passwordEncoder.encode(userPass));
