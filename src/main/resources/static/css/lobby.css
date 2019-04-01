@@ -8,7 +8,6 @@
 
 body {
     background-color: #5c1414;
-    /*background-color: #252525; */
     font-family: 'Felipa', cursive;
 }
 
@@ -51,6 +50,14 @@ main {
 .miembros {
     display: flex;
     flex-direction: column;
+}
+
+.linea {
+    display: flex;
+}
+
+.nombre {
+    flex-grow: 1;
 }
 
 .acciones {
