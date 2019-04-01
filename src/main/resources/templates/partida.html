@@ -13,8 +13,8 @@
     <div class="contenedor_principal">
         <div class="notas">
             <ul class="cartas_y_jugadores">
-                <li class="player_card 1">
-                    <div class="player 1" id="player1">Player 1</div>
+                <li th:each="user: ${user_list}" th:text="${user.name}" th:class="${user.name}_card" >
+                    <div th:class="${user.name}" th:id="${user.name}">Player 1</div>
                     <textarea> </textarea>
                 </li>
                 <li class="player_card 2" id="jugador2">
