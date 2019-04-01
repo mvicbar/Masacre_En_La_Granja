@@ -11,21 +11,21 @@
 <body>
     <div class="contenedor_principal">
         <div class="notas">
-            <ul class="cartas_y_jugadores">
-                <li th:each="user: ${user_list}" th:text="${user.name}" th:class="${user.name}_card" >
-                    <div th:class="${user.name}" th:id="${user.name}">Player 1</div>
+            <ul th:each="user: ${userStats}" class="cartas_y_jugadores">
+                <li th:each="user: ${userStats}" th:text="${user.name}" th:class="${user.name}_card" >
+                    <div th:class="${user.name}" th:id="${user.name}" th:text="${user.name}"></div>
                     <textarea> </textarea>
                 </li>
                 <li class="player_card 2" id="jugador2">
-                    <div class="player 2" id="player2">Player 2</div>
+                    <div th:class="${user.name}" th:id="${user.name}" th:text="${user.name}"</div>
                     <textarea> </textarea>
                 </li>
                 <li class="player_card 3" id="jugador3">
-                    <div class="player 3" id="player3">Player 3</div>
+                    <div th:class="${user.name}" th:id="${user.name}" th:text="${user.name}"</div>
                     <textarea> </textarea>
                 </li>
                 <li class="player_card 4" id="jugador4">
-                    <div class="player 4" id="player4">Player 4</div>
+                    <div th:class="${user.name}" th:id="${user.name}" th:text="${user.name}"></div>
                     <textarea> </textarea>
                 </li>
                 <li class="player_card 5" id="jugador5">
