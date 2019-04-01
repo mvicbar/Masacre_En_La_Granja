@@ -63,9 +63,4 @@ public class RootController {
 		return "chat";
 	}
 	
-	@GetMapping("/{id}/join")
-	public String join(Model model, @PathVariable String id) {
-		model.addAttribute("lobby", UserController.lobby);
-		return "lobby";
-	}
 }
