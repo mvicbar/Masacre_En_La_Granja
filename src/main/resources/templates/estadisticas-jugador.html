@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="utf-8">
 		<title>Estadísticas Jugador | Masacre en la granja</title>
-		<link rel="stylesheet" type="text/css" media="screen" href="estadisticas.css">
+		<link rel="stylesheet" type="text/css" media="screen" href="../css/estadisticas.css">
 
 		<link href="c3-0.6.12/c3.css" rel="stylesheet">
 		<script src="c3-0.6.12/docs/js/d3-5.4.0.min.js" charset="utf-8"></script>
@@ -11,12 +11,9 @@
 	</head>
 
 	<body>
-		<nav>
-	        <a class="a-nav">Partida</a>
-	        <a class="a-nav" href="./estadisticas-globales.html">Estadísticas</a>
-	        <a class="a-nav">Reglas</a>
-	        <a class="a-nav">FAQ</a>
-	    </nav>
+		<nav th:replace="fragments/nav.html :: nav">
+			Nav goes here
+		</nav>
 		<main>
 			<table>
 				<thead>

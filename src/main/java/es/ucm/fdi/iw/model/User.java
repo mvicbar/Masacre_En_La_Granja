@@ -4,128 +4,95 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 
 /**
- * A user.
  * 
- * Note that, in this particular application, we will automatically be creating
- * users for students. Those users will have the group password as their "password", 
- * but will be generally unable to actually log in without the group password.  
- * 
- * @author mfreire
  */
 @Entity
-@NamedQueries({
-	@NamedQuery(name="User.ByLogin",
-	query="SELECT u FROM User u "
-			+ "WHERE u.login = :userLogin"),
-	@NamedQuery(name="User.HasLogin",
-	query="SELECT COUNT(u) "
-			+ "FROM User u "
-			+ "WHERE u.login = :userLogin")	
-})
+@NamedQueries({ @NamedQuery(name = "User.ByName", query = "SELECT u FROM User u WHERE u.name = :userName"),
+		@NamedQuery(name = "User.HasName", query = "SELECT COUNT(u) FROM User u WHERE u.name = :userName"),
+		@NamedQuery(name = "User.CorrectPassword", query = "SELECT u FROM User u WHERE u.name = :userName AND u.password = :userPassword"),
+		@NamedQuery(name = "User.Password", query = "SELECT password FROM User u WHERE u.name = :userName")})
 public class User {
-	private long id;
-	private String login;
-	private String password;
-	private String roles; // split by ',' to separate roles
-	private byte enabled;
-	
-	public boolean hasRole(String roleName) {
-		String requested = roleName.toLowerCase();
-		return Arrays.stream(roles.split(","))
-				.anyMatch(r -> r.equals(requested));
-	}
-	
-	// application-specific fields
-	private List<Vote> votes = new ArrayList<>(); 
-	private List<Question> questions = new ArrayList<>();
-	private List<CGroup> groups = new ArrayList<>();
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+	private long id;
+
+    @Column(unique = true)
+	private String name;
+ 
+	private String password;
+	private String role;
+
+	@ManyToMany
+	private List<Game> games;
+
+	@OneToMany
+	@JoinColumn(name="user_id")
+	private List<UserStat> userStats = new ArrayList<>();
+
+	public boolean hasRole(String roleName) {
+		return Arrays.stream(role.split(",")).anyMatch(r -> r.equalsIgnoreCase(roleName));
+	}
+
+
 	public long getId() {
 		return id;
 	}
-	
+
 	public void setId(long id) {
 		this.id = id;
-	}	
-
-	@Column(unique=true)
-	public String getLogin() {
-		return login;
+	}
+	
+	public String getName() {
+		return name;
 	}
 
-	public void setLogin(String login) {
-		this.login = login;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public String getPassword() {
 		return password;
 	}
-	
+
 	public void setPassword(String password) {
 		this.password = password;
 	}
 
-	public String getRoles() {
-		return roles;
+	public String getRole() {
+		return role;
 	}
 
-	public void setRoles(String roles) {
-		this.roles = roles;
+	public void setRole(String role) {
+		this.role = role;
 	}
 
-	public byte getEnabled() {
-		return enabled;
-	}
-
-	public void setEnabled(byte enabled) {
-		this.enabled = enabled;
-	}
-	
-	@OneToMany(targetEntity=Vote.class)
-	@JoinColumn(name="author_id")
-	public List<Vote> getVotes() {
-		return votes;
-	}
-
-	public void setVotes(List<Vote> votes) {
-		this.votes = votes;
-	}
-
-	@OneToMany(targetEntity=Question.class)
-	@JoinColumn(name="participant_id")
-	public List<Question> getQuestions() {
-		return questions;
-	}
-
-	public void setQuestions(List<Question> questions) {
-		this.questions = questions;
-	}	
-	
-	@ManyToMany(targetEntity=CGroup.class, mappedBy="participants")
-	public List<CGroup> getGroups() {
-		return groups;
-	}
-	public void setGroups(List<CGroup> groups) {
-		this.groups = groups;
-	}
 
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", login=" + login + ", password=" + password + ", roles=" + roles + ", enabled="
-				+ enabled + "]";
+		return "User [id=" + id + ", login=" + name + ", password=" + password + ", roles=" + role + "]";
 	}
+
+
+	public List<Game> getGames() {
+		return games;
+	}
+
+	public List<UserStat> getUserStats() {
+		return userStats;
+	}
+
+
+	public void setUserStats(List<UserStat> userStats) {
+		this.userStats = userStats;
+	}
+
+
+	public void setGames(List<Game> games) {
+		this.games = games;
+	}
+
 }

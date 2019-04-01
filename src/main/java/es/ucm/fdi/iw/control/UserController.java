@@ -8,8 +8,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.security.Principal;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
 
@@ -26,7 +29,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
 
 import es.ucm.fdi.iw.LocalData;
 import es.ucm.fdi.iw.model.User;
@@ -38,10 +48,16 @@ public class UserController {
 	private static final Logger log = LogManager.getLogger(UserController.class);
 	
 	@Autowired 
+	private PasswordEncoder passwordEncoder;
+	
+	@Autowired 
 	private EntityManager entityManager;
 	
 	@Autowired
 	private LocalData localData;
+	
+	@Autowired 
+	private AuthenticationManager authenticationManager;
 
 	@GetMapping("/{id}")
 	public String getUser(@PathVariable long id, Model model, HttpSession session) {
@@ -69,7 +85,7 @@ public class UserController {
 		if (edited.getPassword() != null && edited.getPassword().equals(pass2)) {
 			target.setPassword(edited.getPassword());
 		}		
-		target.setLogin(edited.getLogin());
+		target.setName(edited.getName());
 		return "user";
 	}	
 	
@@ -98,7 +114,7 @@ public class UserController {
 		model.addAttribute("user", target);
 		
 		// check permissions
-		User requester = (User)session.getAttribute("u");
+		User requester = (User)session.getAttribute("user");
 		if (requester.getId() != target.getId() &&
 				! requester.hasRole("ADMIN")) {			
 			return "user";
@@ -110,7 +126,7 @@ public class UserController {
 			log.info("failed to upload photo: emtpy file?");
 		} else {
 			try (BufferedOutputStream stream =
-					new BufferedOutputStream(new FileOutputStream(f))) {
+						 new BufferedOutputStream(new FileOutputStream(f))) {
 				byte[] bytes = photo.getBytes();
 				stream.write(bytes);
 			} catch (Exception e) {
@@ -118,6 +134,129 @@ public class UserController {
 			}
 			log.info("Successfully uploaded photo for {} into {}!", id, f.getAbsolutePath());
 		}
-		return "user";
+		return "redirect:/user/" + id;
 	}
+	
+	
+	@GetMapping("/register")
+	public String getRegister(Model model) {
+		return "registro";
+	}
+	
+	/**
+	 * Registra a un usuario e inicia sesión automáticamente con el usuario creado.
+	 * @param model
+	 * @param request
+	 * @param principal
+	 * @param userName	Nombre del usuario creado
+	 * @param userPassword	Contraseña introducida por el usuario
+	 * @param session
+	 * @return
+	 */
+	@PostMapping("/register")
+	@Transactional
+	public String register(Model model, HttpServletRequest request, Principal principal, @RequestParam String userName,
+			@RequestParam String userPassword, @RequestParam String userPassword2, @RequestParam("userPhoto") MultipartFile userPhoto, HttpSession session) {
+
+		Long usersWithLogin = entityManager.createNamedQuery("User.HasName", Long.class)
+				.setParameter("userName", userName).getSingleResult();
+		
+
+		// if the user exists, or the password doesn't match
+		//	Comprobación de que las dos contraseñas insertadas son iguales
+		if(usersWithLogin != 0 || !userPassword.equals(userPassword2)) {
+			return "redirect:/user/register";
+		}
+		
+		// Creación de un usuario
+		String userPass = userPassword;
+		User u = new User();
+		u.setName(userName);
+		u.setPassword(passwordEncoder.encode(userPass));
+		u.setRole("USER");
+		entityManager.persist(u);
+		entityManager.flush();
+		log.info("Creating & logging in student {}, with ID {} and password {}", userName, u.getId(), userPass);
+
+		doAutoLogin(userName, userPassword, request);
+		log.info("Created & logged in student {}, with ID {} and password {}", userName, u.getId(), userPass);
+		
+		if (!userPhoto.isEmpty()) {
+			File f = localData.getFile("user", String.valueOf(u.getId()));
+			try (BufferedOutputStream stream =
+						 new BufferedOutputStream(new FileOutputStream(f))) {
+				byte[] bytes = userPhoto.getBytes();
+				stream.write(bytes);
+			} catch (Exception e) {
+				log.info("Error uploading photo for user with ID {}", u.getId());
+			}
+			log.info("Successfully uploaded photo for {} into {}!", u.getId(), f.getAbsolutePath());
+		}
+		
+		session.setAttribute("user", u);
+
+		return "redirect:/user/" + u.getId();
+	}
+
+	@GetMapping("/login")
+	public String getLogin(Model model) { return "iniciosesion"; }
+
+	@PostMapping("/login")
+	@Transactional
+	public String login(Model model, HttpServletRequest request, Principal principal, @RequestParam String userName,
+						   @RequestParam CharSequence userPassword, HttpSession session) {
+
+		Long usersWithLogin = entityManager.createNamedQuery("User.HasName", Long.class)
+				.setParameter("userName", userName).getSingleResult();
+
+		// if the user exists, we check the if the password is correct
+		if (usersWithLogin != 0) {
+			//	Se saca la constraseña del usuario que se está loggeando
+			String pass = entityManager.createNamedQuery("User.Password", String.class)
+					.setParameter("userName", userName).getSingleResult();
+			
+			//	Se compara la contraseña introducida con la contraseña cifrada de la BD
+			boolean correct = passwordEncoder.matches(userPassword, pass);
+			log.info("The passwords match: {}", correct);
+			if(correct) {
+				User u = entityManager.createNamedQuery("User.ByName", User.class)
+						.setParameter("userName", userName).getSingleResult();
+				
+				session.setAttribute("user", u);
+				return "redirect:/user/" + u.getId();	//Devuelve el usuario loggeado
+			}else {
+				return "redirect:/user/login"; 
+			}
+		}
+
+		return "redirect:/user/register";
+	}
+
+	
+	@GetMapping("/logout")
+	public String logout(Model model, HttpSession session) {
+		session.setAttribute("user", null);
+		return "redirect:/user/login";
+	}
+
+	/**
+	 * Non-interactive authentication; user and password must already exist
+	 * @param username
+	 * @param password
+	 * @param request
+	 */
+	private void doAutoLogin(String username, String password, HttpServletRequest request) {
+	    try {
+	        // Must be called from request filtered by Spring Security, otherwise SecurityContextHolder is not updated
+	        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username, password);
+	        token.setDetails(new WebAuthenticationDetails(request));
+	        Authentication authentication = authenticationManager.authenticate(token);
+	        log.debug("Logging in with [{}]", authentication.getPrincipal());
+	        SecurityContextHolder.getContext().setAuthentication(authentication);
+	    } catch (Exception e) {
+	        SecurityContextHolder.getContext().setAuthentication(null);
+	        log.error("Failure in autoLogin", e);
+	    }
+}
+	
 }

@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import es.ucm.fdi.iw.IwUserDetailsService;
-import es.ucm.fdi.iw.model.CGroup;
+import es.ucm.fdi.iw.model.UserStat;
 import es.ucm.fdi.iw.model.User;
 
 @Controller()
@@ -74,17 +74,17 @@ public class VoteController {
 	@Transactional
 	public String enter(Model model, HttpServletRequest request, Principal principal, 
 			@RequestParam String userName, @RequestParam String groupCode) {
-		CGroup g = null;
+		UserStat g = null;
 		try {
-	        g = entityManager.createNamedQuery("CGroup.ByCode", CGroup.class)
+	        g = entityManager.createNamedQuery("CGroup.ByCode", UserStat.class)
 	                            .setParameter("groupCode", groupCode)
 	                            .getSingleResult();
 	        // if no exception here, the group code is valid - yay!
 		} catch (Exception e) {
-			List<CGroup> groups = (List<CGroup>)entityManager
+			List<UserStat> groups = (List<UserStat>)entityManager
 					.createQuery("select g from CGroup g").getResultList();
     		log.info("No such group code: {}; listing {} valid groups", groupCode, groups.size());
-    		for (CGroup i : groups) {
+    		for (UserStat i : groups) {
     			log.info(i.toString());
     		}
     		return "bad";
@@ -101,12 +101,9 @@ public class VoteController {
         // ok, let us create & authenticate a student-user
         String randomPassword = passwordEncoder.encode("foo"); // result is quite random!
         User u = new User();
-        u.setEnabled((byte)1);
-        u.setLogin(userName);
+        u.setName(userName);
         u.setPassword(passwordEncoder.encode(randomPassword));
-        u.setGroups(new ArrayList<CGroup>());
-        u.getGroups().add(g);
-        u.setRoles("STUDENT");
+        u.setRole("USER");
         log.info("Creating & logging in student {}, with ID {} and password {}", userName, u.getId(), randomPassword);
         entityManager.persist(u);
         entityManager.flush();	// <-- flush before querying DB again (as part of autologin)
