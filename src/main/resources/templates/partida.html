@@ -11,12 +11,12 @@
 <body>
     <div class="contenedor_principal">
         <div class="notas">
-            <ul th:each="user: ${userStats}" class="cartas_y_jugadores">
-                <li th:each="user: ${userStats}" th:text="${user.name}" th:class="${user.name}_card" >
-                    <div th:class="${user.name}" th:id="${user.name}" th:text="${user.name}"></div>
+            <ul class="cartas_y_jugadores" th:each="u: ${userStats}">
+                <li  th:class="${u.user.getName()}_card" th:text="${u.user.getName()}">
+                    <div th:class="${u.user.getName()}" th:id="${u.user.getName()}" th:text="${u.user.getName()}"></div>
                     <textarea> </textarea>
                 </li>
-                <li class="player_card 2" id="jugador2">
+               <!-- <li class="player_card 2" id="jugador2">
                     <div th:class="${user.name}" th:id="${user.name}" th:text="${user.name}"</div>
                     <textarea> </textarea>
                 </li>
@@ -43,19 +43,19 @@
                 <li class="player_card 8" id="jugador8">
                     <div class="player 8" id="player8">Player 8</div>
                     <textarea> </textarea>
-                </li>
+                </li>-->
             </ul>
         </div>
         <div class="chat">
             AQUÍ SE IMPLEMENTARÁ EL CHAT
         </div>
         <div class="mesa">
-            <ul class="cartas_y_jugadores">
-                <li class="player_card 1">
-                    <div class="player 1" id="player1">Player 1</div>
-                    <div class="card 1" id="card1">Card 1</div>
+            <ul class="cartas_y_jugadores" th:each="u: ${userStats}">
+                <li th:class="${u.user.getName()}_card">
+                    <div th:class="${u.user.getName()}" th:id="${u.user.getName()}" th:text="${u.user.getName()}"></div>
+                    <div th:class="${u.user.getName()}_card" th:id="${u.user.getName()}_card"></div>
                 </li>
-                <li class="player_card 2" id="jugador2">
+              <!--  <li class="player_card 2" id="jugador2">
                     <div class="player 2" id="player2">Player 2</div>
                     <div class="card 2" id="card2">Card 2</div>
                 </li>
@@ -82,7 +82,7 @@
                 <li class="player_card 8" id="jugador8">
                     <div class="player 8" id="player8">Player 8</div>
                     <div class="card 8" id="card8">Card 8</div>
-                </li>
+                </li>-->
             </ul>
         </div>
 
