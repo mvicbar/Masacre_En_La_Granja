@@ -47,7 +47,7 @@ import es.ucm.fdi.iw.model.User;
 public class UserController {
 	
 	private static final Logger log = LogManager.getLogger(UserController.class);
-	private static HashSet<Long> lobby;
+	public static HashSet<Long> lobby;
 	
 	@Autowired 
 	private PasswordEncoder passwordEncoder;
@@ -208,7 +208,7 @@ public class UserController {
 	}
 	
 	@GetMapping("/{id}/lobby")
-	public String getLobby(Model model) {
+	public String getLobby(@PathVariable String id, Model model, HttpSession session) {
 		
 		
 		
@@ -216,7 +216,7 @@ public class UserController {
 	}
 	
 	@PostMapping("/{id}/joinLobby")
-	public String joinLobby(Model model, HttpSession session, @PathVariable String id) {
+	public String joinLobby(@PathVariable String id, Model model, HttpSession session) {
 		
 		Long idLong = Long.parseLong(id);
 		lobby.add(idLong);

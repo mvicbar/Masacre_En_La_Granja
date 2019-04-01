@@ -1,20 +1,25 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Masacre en la granja</title>
-  <link rel="stylesheet" href="../static/css/inicio.css" type="text/css" media="screen">
+    <meta charset="utf-8">
+    <title>Crear grupo | Masacre en la granja</title>
+    <link rel="stylesheet" type="text/css" media="screen" href="../css/crear_grupo.css">
 </head>
 <body>
-  <main class="wrapper">
-          <div class= "titulo">MASACRE EN LA GRANJA</div>
-          <ul>
-            <a class="button">Buscar Partida</a>
-            <a href="http://localhost:8080/crear_grupo.html" class="button">Crear Grupo</a>
-            <a href="http://localhost:8080/estadisticas-globales.html" class="button">Estadísticas</a>
-            <a href="http://localhost:8080/reglas.html" class="button">Reglas</a>
-            <a href="http://localhost:8080/faq.html" class="button">FAQ</a>
-          </ul>
-  </main>
+<nav th:replace="fragments/nav.html :: nav">
+    Nav goes here
+</nav>
+<main>
+    <div class="codigo">El código es: 7Q29jWz</div>
+    <div class= "miembros">
+        <div class ="nombre">Vlad</div>
+        <div class ="nombre">Erzsébet</div>
+        <div class ="nombre">Caín</div>
+    </div>
+    <div class="acciones">
+        <div class="boton">Disolver</div>
+        <div class="boton">Iniciar</div>
+    </div>
+</main>
 </body>
 </html>
