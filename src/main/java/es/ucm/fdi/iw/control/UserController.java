@@ -161,13 +161,10 @@ public class UserController {
 		Long usersWithLogin = entityManager.createNamedQuery("User.HasName", Long.class)
 				.setParameter("userName", userName).getSingleResult();
 		
-		// if the user exists, we have a problem
-		if (usersWithLogin != 0) {
-			return "user";
-		}
 
+		// if the user exists, or the password doesn't match
 		//	Comprobación de que las dos contraseñas insertadas son iguales
-		if(!userPassword.equals(userPassword2)) {
+		if(usersWithLogin != 0 || !userPassword.equals(userPassword2)) {
 			return "redirect:/user/register";
 		}
 		
