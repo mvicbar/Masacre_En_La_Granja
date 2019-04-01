@@ -53,14 +53,14 @@ public class RootController {
 		
 		return "index";
 	}
-	
+
 	@GetMapping("/chat")
 	public String chat(Model model, HttpServletRequest request) {
-		model.addAttribute("socketUrl", request.getRequestURL().toString()
-				.replaceFirst("[^:]*", "ws")
-				.replace("chat", "ws"));
 		return "chat";
 	}
-	
 
+	@GetMapping("/error")
+	public String error(Model model) {
+		return "error";
+	}
 }

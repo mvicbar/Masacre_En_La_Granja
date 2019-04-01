@@ -21,36 +21,36 @@ import es.ucm.fdi.iw.model.User;
 /**
  * Called when a user is first authenticated (via login).
  * Called from SecurityConfig; see https://stackoverflow.com/a/53353324
- * 
+ *
  * Adds a "u" variable to the session when a user is first authenticated.
- * Important: the user is retrieved from the database, but is not refreshed at each request. 
+ * Important: the user is retrieved from the database, but is not refreshed at each request.
  * You should refresh the user's information if anything important changes; for example, after
  * updating the user's profile.
  */
 @Component
 public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 
-    @Autowired 
-    private HttpSession session;
-    
     @Autowired
-    private EntityManager entityManager;    
-    
+    private HttpSession session;
+
+    @Autowired
+    private EntityManager entityManager;
+
 	private static Logger log = LogManager.getLogger(LoginSuccessHandler.class);
-	
+
     @Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 			Authentication authentication) throws IOException, ServletException {
 	    String login = ((org.springframework.security.core.userdetails.User)
 				authentication.getPrincipal()).getUsername();
-	    
+
 	    // add a 'u' session variable, accessible from thymeleaf via ${session.u}
 	    log.info("Storing user info for {} in session {}", login, session.getId());
 		User u = entityManager.createNamedQuery("User.ByName", User.class)
 		        .setParameter("userLogin", login)
-		        .getSingleResult();			   	
+		        .getSingleResult();
 		session.setAttribute("u", u);
-		
+
 		// redirects to 'admin' or 'user/{id}', depending on the user
 		response.sendRedirect(u.hasRole("ADMIN") ? "admin" : "user/" + u.getId());
 	}
