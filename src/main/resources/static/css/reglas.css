@@ -24,7 +24,7 @@ nav {
 .logx{
 	display: flex;
     justify-content: space-evenly;
-    width: -webkit-fill-available;
+    width: 100%;
 }
 
 div.cuerpo{
