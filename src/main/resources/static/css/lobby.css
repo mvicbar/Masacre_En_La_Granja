@@ -66,13 +66,14 @@ main {
 .boton {
     background-color: rgb(63, 63, 63);
     color: rgb(196, 196, 196);
-    width: 15vw;
-    height: 2.5vw;
     padding: 10px;
     border-radius: 5px;
     display: flex;
     justify-content: center;
     align-items: center;
+    border: solid 4px;
+    border-color: #4d0b0b #711818 #711818 #4d0b0b;
+
 }
 
 .boton:hover{

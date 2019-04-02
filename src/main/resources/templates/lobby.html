@@ -16,8 +16,12 @@
         </div>
     </div>
     <div class="acciones">
-        <div class="boton">Abandonar</div>
-        <div class="boton">Iniciar</div>
+        <form th:action="@{/user/leaveLobby}" method="POST" enctype="multipart/form-data">
+            <button type="submit" class="boton">Abandonar</button>
+        </form>
+        <form th:action="@{/game}" method="POST" enctype="multipart/form-data">
+            <button type="submit" class="boton">Iniciar</button>
+        </form>
     </div>
 </main>
 </body>
