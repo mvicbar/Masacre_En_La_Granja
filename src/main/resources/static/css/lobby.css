@@ -49,18 +49,16 @@ main {
 
 .miembros {
     display: flex;
-    flex-direction: column;
-}
-
-.linea {
-    display: flex;
+    flex-wrap: wrap;
 }
 
 .nombre {
-    flex-grow: 1;
+    text-align: center;
+    width: 33%;
 }
 
 .acciones {
+    margin-top: 10%;
     display: flex;
     justify-content: space-evenly;
 }
