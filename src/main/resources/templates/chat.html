@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+	<title>Masacre en la granja | Chat</title>
+	<script>
+		const km = {
+			socketUrl: '[[${session.ws}?:false]]',
+			csrf: {
+				name: "[[${_csrf.parameterName}]]",
+				value: "[[${_csrf.token}]]"
+			},
+			admin: [[${session.u != null && session.u.hasRole('admin')}?'true':'false']],
+			userId: [[${session.u != null}?${session.u.id}:-1]]
+		};
+		/**
+		 * WebSocket API, which only works once initialized
+		 */
+		const ws = {
+				
+			/**
+			 * WebSocket, or null if none connected
+			 */
+			socket: null,
+			
+			/**
+			 * Sends a string to the server via the websocket.
+			 * @param {string} text to send 
+			 * @returns nothing
+			 */
+			send: (text) => {
+				if (ws.socket != null) {
+					ws.socket.send(text);
+				}
+			},
+
+			/**
+			 * Default action when text is received. 
+			 * @returns
+			 */
+			receive: (text) => {
+				console.log(text);
+			},
+			
+			/**
+			 * Attempts to establish communication with the specified
+			 * web-socket endpoint. If successfull, will call 
+			 * @returns
+			 */
+			initialize: (endpoint) => {
+				try {
+					ws.socket = new WebSocket(endpoint);
+					ws.socket.onmessage = (e) => ws.receive(e.data);
+					console.log("Connected to WS '" + endpoint + "'")
+				} catch (e) {
+					console.log("Error, connection to WS '" + endpoint + "' FAILED: ", e);
+				}
+			}
+		} 
+
+		/**
+		 * Actions to perform once the page is fully loaded
+		 */
+		window.addEventListener('load', () => {
+			if (km.socketUrl !== false) {
+				ws.initialize(km.socketUrl);
+			}
+		});		
+	</script>
+</head>
+<body>
+	<nav th:replace="fragments/nav.html :: nav">
+		Nav goes here
+	</nav>
+	
+	<div class="container">
+	<div class="main">
+	
+		<div class="starter-template">
+			<h1>Chat</h1>
+			<p class="lead">Ejemplo de uso de websockets. Usa <code>@nick texto</code> para enviar 
+			ese texto a ese nick, y <code>@all texto</code> para enviárselo a todos. Ojo: depende del 
+			IwSocketHandler hacer que esto funcione o no; y según se configure, puede que recibas
+			fragmentos de JSON que nada tienen que ver con el chat.</p>		
+			<textarea id="recibido" cols="80" rows="10">
+			</textarea>
+			<form id="escrito">
+			<input id="texto" size="80" placeholder="escribe algo y pulsa enter para enviarlo"/>
+			</form>
+		</div>
+
+	</div>
+	</div>
+	
+	<script>
+	window.addEventListener('load', () => {
+		// envio	
+		const lineInput = document.getElementById("texto");
+		document.getElementById("escrito").onsubmit = (e) => {
+			var text = lineInput.value;
+			ws.send(text);
+			lineInput.value = ""
+			return false;
+		}
+	
+		// recepcion
+		const lineOutput = document.getElementById("recibido");
+		ws.receive = (text) => {
+			lineOutput.value = lineOutput.value + '\n' + text;
+		}
+	});
+	</script>
+</body>
+</html>

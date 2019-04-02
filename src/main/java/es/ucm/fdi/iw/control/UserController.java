@@ -230,6 +230,12 @@ public class UserController {
 						.setParameter("userName", userName).getSingleResult();
 				
 				session.setAttribute("user", u);
+
+				// add a 'ws' session variable
+				session.setAttribute("ws", request.getRequestURL().toString()
+					.replaceFirst("[^:]*", "ws")	// http[s]://... => ws://...
+					.replaceFirst("/user/[^/]*$", "/ws"));	// .../foo		 => .../ws
+				
 				return "redirect:/user/" + u.getId();	//Devuelve el usuario loggeado
 			}else {
 				return "redirect:/user/login"; 
