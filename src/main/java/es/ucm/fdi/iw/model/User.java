@@ -33,11 +33,18 @@ public class User {
 	@JoinColumn(name="user_id")
 	private List<UserStat> userStats = new ArrayList<>();
 
+	public User() {
+	
+	}
+	
+	public User(String _name) {
+		name = _name;
+	}
+	
 	public boolean hasRole(String roleName) {
 		return Arrays.stream(role.split(",")).anyMatch(r -> r.equalsIgnoreCase(roleName));
 	}
-
-
+	
 	public long getId() {
 		return id;
 	}
