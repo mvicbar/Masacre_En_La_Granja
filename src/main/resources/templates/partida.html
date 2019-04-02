@@ -2,6 +2,7 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 
 <head>
+
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title> Partida | Masacre en la granja </title>
@@ -11,7 +12,7 @@
 <body>
     <div class="contenedor_principal">
         <div class="notas">
-            <ul class="cartas_y_jugadores" th:each="u: ${userStats}">
+            <ul th:each="u: ${userStats}" class="cartas_y_jugadores" >
                 <li  th:class="${u.user.getName()}_card" th:text="${u.user.getName()}">
                     <div th:class="${u.user.getName()}" th:id="${u.user.getName()}" th:text="${u.user.getName()}"></div>
                     <textarea> </textarea>
