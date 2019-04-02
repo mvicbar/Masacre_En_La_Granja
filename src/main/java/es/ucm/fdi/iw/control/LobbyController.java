@@ -42,7 +42,7 @@ public class LobbyController {
     
     @PostMapping("/leave")
     public String leaveLobby() {
-        
+        // Prueba
         return "redirect:/user/";
     }
 }
