@@ -1,16 +1,10 @@
 package es.ucm.fdi.iw.control;
 
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.List;
 
-import javax.persistence.EntityManager;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
-import es.ucm.fdi.iw.model.User;
-import es.ucm.fdi.iw.model.UserStat;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,25 +25,9 @@ public class RootController {
 	@Autowired
 	private IwSocketHandler iwSocketHandler;
 
-	@Autowired
-	private EntityManager entityManager;
-
 	@GetMapping("/")
 	public String index(Model model) {
-
-			User u1 = entityManager.find(User.class, 1);
-			User u2 = entityManager.find(User.class, 2);
-			UserStat us1 = new UserStat();
-			UserStat us2 = new UserStat();
-			us1.setUser(u1);
-			us2.setUser(u2);
-			List<UserStat> all = new ArrayList<>();
-			all.add(us1);
-			all.add(us2);
-			model.addAttribute("userStats", all);
-
-
-		return "partida";
+		return "inicio";
 	}
 	
 	@GetMapping("/reglas")
