@@ -13,8 +13,8 @@
     <div class="contenedor_principal">
         <div class="notas">
             <ul th:each="u: ${userStats}" class="cartas_y_jugadores" >
-                <li  th:class="${u.user.getName()}_card" th:text="${u.user.getName()}">
-                    <div th:class="${u.user.getName()}" th:id="${u.user.getName()}" th:text="${u.user.getName()}"></div>
+                <li  th:class="${u.user.name}_card" th:text="${u.user.name}">
+                    <div th:class="${u.user.name}" th:id="${u.user.name}" th:text="${u.user.name}"></div>
                     <textarea> </textarea>
                 </li>
                <!-- <li class="player_card 2" id="jugador2">
@@ -52,9 +52,9 @@
         </div>
         <div class="mesa">
             <ul class="cartas_y_jugadores" th:each="u: ${userStats}">
-                <li th:class="${u.user.getName()}_card">
-                    <div th:class="${u.user.getName()}" th:id="${u.user.getName()}" th:text="${u.user.getName()}"></div>
-                    <div th:class="${u.user.getName()}_card" th:id="${u.user.getName()}_card"></div>
+                <li th:class="${u.user.name}_card">
+                    <div th:class="${u.user.name}" th:id="${u.user.name}" th:text="${u.user.name}"></div>
+                    <div th:class="${u.user.name}_card" th:id="${u.user.name}_card"></div>
                 </li>
               <!--  <li class="player_card 2" id="jugador2">
                     <div class="player 2" id="player2">Player 2</div>
