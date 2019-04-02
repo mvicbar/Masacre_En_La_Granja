@@ -259,5 +259,5 @@ public class UserController {
 	        log.error("Failure in autoLogin", e);
 	    }
 }
-	
+
 }
