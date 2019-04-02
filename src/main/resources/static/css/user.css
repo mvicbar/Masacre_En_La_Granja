@@ -27,8 +27,9 @@ nav {
 }
 
 nav img{
-	width: 60%;
-	height: 60%;
+	width: 5vw;
+	height: 5vw;
+    margin: 1%;
 }
 
 .titulo{
@@ -81,6 +82,10 @@ img{
 	border-radius: 50%;
 	width: 15vw;
     height: 15vw;
+}
+
+form{
+
 }
 
 input{
