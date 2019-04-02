@@ -91,7 +91,7 @@ public class UserController {
 		// ojo: faltaria más validación
 		if (edited.getPassword() != null && edited.getPassword().equals(pass2)) {
 			target.setPassword(edited.getPassword());
-		}		
+		}
 		target.setName(edited.getName());
 		return "user";
 	}	

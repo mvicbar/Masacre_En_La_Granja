@@ -2,13 +2,11 @@ package es.ucm.fdi.iw.model;
 
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import javax.persistence.*;
 
 /**
  */
@@ -19,12 +17,13 @@ public class Game {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	private long id;
 	private Date creationTime;
+	private String password; // null si la partida no es privada
+	
+	@Column(length = 4096)
 	private String status;
 
 	@ManyToMany(mappedBy = "games")
-	private List<User> users = new ArrayList<>();
-
-	
+	private LinkedHashSet<User> users = new LinkedHashSet<>();
 
 	public long getId() {
 		return id;
@@ -50,13 +49,27 @@ public class Game {
 		this.status = status;
 	}
 	
-	public void setUsers(List<User> users) {
+	public void setUsers(LinkedHashSet<User> users) {
 		this.users = users;
 	}
 	
-
-	List<User> getUsers(){
+	public LinkedHashSet<User> getUsers(){
 		return users;
 	}
 	
+	public void addUser(User user) {
+		users.add(user);
+	}
+	
+	public void removeUser(User user) {
+		users.remove(user);
+	}
+	
+	public String getPassword() {
+		return password;
+	}
+	
+	public void setPassword(String password) {
+		this.password = password;
+	}
 }

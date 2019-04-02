@@ -10,17 +10,18 @@
     Nav goes here
 </nav>
 <main>
-    <div class= "miembros">
-        <div class="linea">
-            <div class ="nombre">Vlad</div>
-            <div class ="nombre">Erzsébet</div>
-            <div class ="nombre">Caín</div>
+    <div class="miembros">
+        <div class= "nombre" th:each="jugador : ${jugadores}">
+            <td th:text="${jugador.name}">Nombre de Jugador</td>
         </div>
-
     </div>
     <div class="acciones">
-        <div class="boton">Abandonar</div>
-        <div class="boton">Iniciar</div>
+        <form th:action="@{/lobby/leave}" method="POST" enctype="multipart/form-data">
+            <button type="submit" class="boton">Abandonar</button>
+        </form>
+        <form th:action="@{/game}" method="POST" enctype="multipart/form-data">
+            <button type="submit" class="boton">Iniciar</button>
+        </form>
     </div>
 </main>
 </body>
