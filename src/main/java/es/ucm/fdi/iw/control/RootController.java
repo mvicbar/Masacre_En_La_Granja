@@ -1,10 +1,15 @@
 package es.ucm.fdi.iw.control;
 
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.persistence.EntityManager;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
+import es.ucm.fdi.iw.model.User;
+import es.ucm.fdi.iw.model.UserStat;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +32,7 @@ public class RootController {
 
 	@GetMapping("/")
 	public String index(Model model) {
-		return "inicio";
+		return "/inicio";
 	}
 	
 	@GetMapping("/reglas")
