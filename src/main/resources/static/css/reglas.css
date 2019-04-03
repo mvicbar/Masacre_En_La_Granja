@@ -21,6 +21,21 @@ nav {
     min-height: 60px;
 }
 
+
+span.a{
+	border: none;
+	color: white;
+}
+
+span.a:visited{
+	color: white;
+	text-decoration: none;
+}
+
+span.a:hover{
+	color: #918d8d;
+	text-decoration: none;
+}
 .logx{
 	display: flex;
     justify-content: space-evenly;
