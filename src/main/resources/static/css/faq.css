@@ -30,8 +30,19 @@ nav {
     width: 100%;
 }
 
-a {
-  text-decoration: none;
+a:-webkit-any-link {
+
+    cursor: pointer;
+    text-decoration: none;
+    color: white;
+}
+
+a:-webkit-any-link:hover {
+    color: darkgrey;
+}
+
+a:-webkit-any-link:active {
+    color: darkred;
 }
 
 header {

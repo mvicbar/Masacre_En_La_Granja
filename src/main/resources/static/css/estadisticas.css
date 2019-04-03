@@ -60,19 +60,21 @@ td {
 	border: solid 1px;
 }
 
-.a-nav {
-	border: none;
-}
+a:-webkit-any-link {
 
-.a-nav:visited{
+	cursor: pointer;
+	text-decoration: none;
 	color: white;
-	text-decoration: none;
 }
 
-.a-nav:hover{
-	color: #918d8d;
-	text-decoration: none;
+a:-webkit-any-link:hover {
+	color: darkgrey;
 }
+
+a:-webkit-any-link:active {
+	color: darkred;
+}
+
 
 button{
 	color: #d4d4cb;

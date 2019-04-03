@@ -25,6 +25,22 @@ nav {
     min-height: 60px;
 }
 
+a:-webkit-any-link {
+
+    cursor: pointer;
+    text-decoration: none;
+    color: white;
+}
+
+a:-webkit-any-link:hover {
+    color: darkgrey;
+}
+
+a:-webkit-any-link:active {
+    color: darkred;
+}
+
+
 .logx{
 	display: flex;
     justify-content: space-evenly;
