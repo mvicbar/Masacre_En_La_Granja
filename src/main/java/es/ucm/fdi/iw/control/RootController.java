@@ -26,30 +26,13 @@ public class RootController {
 	
 	@Autowired
 	private Environment env;
-
-	@Autowired
-	private EntityManager entityManager;
 	
 	@Autowired
 	private IwSocketHandler iwSocketHandler;
 
 	@GetMapping("/")
 	public String index(Model model) {
-		User u1 = new User("Usuario 1");
-		User u2 = new User("Usuario 2");
-		u1.setId(1);
-		u2.setId(2);
-		UserStat us1 = new UserStat();
-		UserStat us2 = new UserStat();
-		us1.setUser(u1);
-		us2.setUser(u2);
-		List<UserStat> all = new ArrayList<>();
-		all.add(us1);
-		all.add(us2);
-		model.addAttribute("userStats", all);
-		log.info("user1: " + us1.getUser().getName());
-
-		return "partida";
+		return "/inicio";
 	}
 	
 	@GetMapping("/reglas")
