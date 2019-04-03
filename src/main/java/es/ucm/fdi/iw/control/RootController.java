@@ -35,10 +35,10 @@ public class RootController {
 
 	@GetMapping("/")
 	public String index(Model model) {
-		Integer n1 = 1, n2 = 2;
-
-		User u1 = entityManager.find(User.class, n1.longValue());
-		User u2 = entityManager.find(User.class, n2.longValue());
+		User u1 = new User("Usuario 1");
+		User u2 = new User("Usuario 2");
+		u1.setId(1);
+		u2.setId(2);
 		UserStat us1 = new UserStat();
 		UserStat us2 = new UserStat();
 		us1.setUser(u1);
@@ -46,7 +46,8 @@ public class RootController {
 		List<UserStat> all = new ArrayList<>();
 		all.add(us1);
 		all.add(us2);
-		model.addAttribute("userStats", all);
+		model.addAttribute("patata", all);
+		log.info("user1: " + us1.getUser().getName());
 
 		return "partida";
 	}
