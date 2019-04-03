@@ -46,7 +46,7 @@ public class RootController {
 		List<UserStat> all = new ArrayList<>();
 		all.add(us1);
 		all.add(us2);
-		model.addAttribute("patata", all);
+		model.addAttribute("userStats", all);
 		log.info("user1: " + us1.getUser().getName());
 
 		return "partida";
