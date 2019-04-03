@@ -27,14 +27,25 @@ public class LobbyController {
     @Autowired
     private LocalData localData;
     
-    @GetMapping("/{idGame}")
-    public String getLobby(Model  model, HttpSession session,
-                           @PathVariable String idGame) {
+    @GetMapping("/newgame/{password}")
+    public String newGame(Model model, HttpSession session,
+                          @PathVariable String password) {
+        
+        return "redirect:/{" + idGame + "}";
+    }
+    
+    @GetMapping("/{idGame}/{password}")
+    public String getLobby(Model model, HttpSession session,
+                           @PathVariable String idGame, @PathVariable String password) {
         
         Game game = entityManager.find(Game.class, Long.parseLong(idGame));
         
-        if (game != null) {
-            model.addAttribute("jugadores", game.getUsers());
+        if (game != null) { // Si el juego exite
+            model.addAttribute("allowAccess", game.allowAccess(password));
+
+            if(game.allowAccess(password)) { // Si la contraseña es válida
+                model.addAttribute("jugadores", game.getUsers());
+            }
         }
         
         return "lobby";
@@ -42,7 +53,6 @@ public class LobbyController {
     
     @PostMapping("/leave")
     public String leaveLobby() {
-        
         return "redirect:/user/";
     }
 }

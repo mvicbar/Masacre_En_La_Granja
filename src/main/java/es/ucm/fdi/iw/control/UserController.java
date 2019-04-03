@@ -121,7 +121,6 @@ public class UserController {
 		return "redirect:/user/" + id;
 	}
 	
-	
 	@GetMapping("/register")
 	public String getRegister(Model model) {
 		return "registro";
@@ -215,7 +214,6 @@ public class UserController {
 
 		return "redirect:/user/register";
 	}
-
 	
 	@GetMapping("/logout")
 	public String logout(Model model, HttpSession session) {

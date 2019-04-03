@@ -79,7 +79,14 @@ public class User {
 	
 	@Override
 	public int hashCode() {
-		return (int) id;
+		
+		long hash = id;
+		
+		if (id > Integer.MAX_VALUE) {
+			hash = - (hash - Integer.MAX_VALUE);
+		}
+		
+		return (int) hash;
 	}
 	
 	@Override

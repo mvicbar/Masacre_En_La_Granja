@@ -1,6 +1,7 @@
 package es.ucm.fdi.iw.model;
 
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -25,6 +26,17 @@ public class Game {
 	@ManyToMany(mappedBy = "games")
 	private LinkedHashSet<User> users = new LinkedHashSet<>();
 
+	public Game(){}
+	
+	public Game(String _password) {
+		creationTime = Date.valueOf(LocalDate.now());
+		password = _password;
+	}
+	
+	public boolean allowAccess(String _password) {
+		return password.equals(_password);
+	}
+	
 	public long getId() {
 		return id;
 	}
