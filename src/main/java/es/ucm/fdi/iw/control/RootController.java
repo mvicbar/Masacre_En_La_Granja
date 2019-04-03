@@ -32,7 +32,7 @@ public class RootController {
 
 	@GetMapping("/")
 	public String index(Model model) {
-		return "/inicio";
+		return "iniciosesion";
 	}
 	
 	@GetMapping("/reglas")
