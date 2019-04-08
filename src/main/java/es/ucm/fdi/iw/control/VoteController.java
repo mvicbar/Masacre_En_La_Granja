@@ -44,8 +44,8 @@ public class VoteController {
 	@Autowired
 	private IwSocketHandler iwSocketHandler;
 
-	@Autowired
-	private IwUserDetailsService userDetailsService;
+//	@Autowired
+//	private IwUserDetailsService userDetailsService;
 	
 	@Autowired 
 	private PasswordEncoder passwordEncoder;

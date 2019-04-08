@@ -28,7 +28,7 @@ public class IwUserDetailsService implements UserDetailsService {
 	public UserDetails loadUserByUsername(String userName){
 		try {
 			User u = entityManager.createNamedQuery("User.ByName", User.class)
-					.setParameter("userLogin", userName)
+					.setParameter("userName", userName)
 					.getSingleResult();
 			// build UserDetails object
 			ArrayList<SimpleGrantedAuthority> roles = new ArrayList<>();
