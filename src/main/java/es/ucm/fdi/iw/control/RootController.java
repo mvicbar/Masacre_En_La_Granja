@@ -27,6 +27,7 @@ public class RootController {
 
 	@GetMapping("/")
 	public String index(Model model) {
+		iwSocketHandler.sendText("mac", "nueva carnaza");
 		return "inicio";
 	}
 	
@@ -39,6 +40,9 @@ public class RootController {
 	public String faq(Model model) {
 		return "faq";
 	}
+	
+	@GetMapping("/login")
+	public String getLogin(Model model) { return "iniciosesion"; }
 	
 	@GetMapping("/estadisticas")
 	public String globalStats(Model model) {

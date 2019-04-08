@@ -11,8 +11,8 @@
 				name: "[[${_csrf.parameterName}]]",
 				value: "[[${_csrf.token}]]"
 			},
-			admin: [[${session.u != null && session.u.hasRole('admin')}?'true':'false']],
-			userId: [[${session.u != null}?${session.u.id}:-1]]
+			admin: [[${session.user != null && session.user.hasRole('admin')}?'true':'false']],
+			userId: [[${session.user != null}?${session.user.id}:-1]]
 		};
 		/**
 		 * WebSocket API, which only works once initialized
