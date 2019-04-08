@@ -24,7 +24,7 @@ public class Game {
 	private String status;
 
 	@ManyToMany(mappedBy = "games")
-	private LinkedHashSet<User> users = new LinkedHashSet<>();
+	private List<User> users = new ArrayList<>();
 
 	public Game(){}
 	
@@ -61,11 +61,11 @@ public class Game {
 		this.status = status;
 	}
 	
-	public void setUsers(LinkedHashSet<User> users) {
+	public void setUsers(List<User> users) {
 		this.users = users;
 	}
 	
-	public LinkedHashSet<User> getUsers(){
+	public List<User> getUsers(){
 		return users;
 	}
 	
@@ -84,4 +84,5 @@ public class Game {
 	public void setPassword(String password) {
 		this.password = password;
 	}
+	
 }

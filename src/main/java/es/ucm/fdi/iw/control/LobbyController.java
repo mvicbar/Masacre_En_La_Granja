@@ -14,6 +14,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpSession;
+import javax.transaction.Transactional;
+import java.sql.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Controller
 @RequestMapping("lobby")
@@ -27,11 +31,16 @@ public class LobbyController {
     @Autowired
     private LocalData localData;
     
-    @GetMapping("/newgame/{password}")
-    public String newGame(Model model, HttpSession session,
-                          @PathVariable String password) {
+    @Transactional
+    @GetMapping("/newgame")
+    public String newGame(Model model, HttpSession session) {
         
-        return "redirect:/{" + idGame + "}";
+        Game game1 = new Game();
+        
+        entityManager.persist(game1);
+        entityManager.flush();
+        
+        return "redirect:/" + game1.getId();
     }
     
     @GetMapping("/{idGame}/{password}")
