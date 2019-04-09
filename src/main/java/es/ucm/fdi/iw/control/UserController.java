@@ -1,54 +1,35 @@
 package es.ucm.fdi.iw.control;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.security.Principal;
-import java.util.HashSet;
-
-import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import javax.transaction.Transactional;
-
+import es.ucm.fdi.iw.LocalData;
+import es.ucm.fdi.iw.model.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.util.FileCopyUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.util.FileCopyUtils;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
-import es.ucm.fdi.iw.LocalData;
-import es.ucm.fdi.iw.model.User;
+import javax.persistence.EntityManager;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import javax.transaction.Transactional;
+import java.io.*;
+import java.security.Principal;
 
 @Controller()
 @RequestMapping("user")
 public class UserController {
 	
 	private static final Logger log = LogManager.getLogger(UserController.class);
-	public static HashSet<Long> lobby;
 	
 	@Autowired 
 	private PasswordEncoder passwordEncoder;
@@ -61,10 +42,6 @@ public class UserController {
 	
 	@Autowired 
 	private AuthenticationManager authenticationManager;
-	
-	public UserController() {
-		lobby = new HashSet<>();
-	}
 	
 	@GetMapping("/{id}")
 	public String getUser(@PathVariable long id, Model model, HttpSession session) {
@@ -214,7 +191,8 @@ public class UserController {
 	@GetMapping("/{id}/lobby")
 	public String getLobby(@PathVariable String id, Model model, HttpSession session) {
 		
-		
+		User[] usuarios = {new User("Usuario 1"), new User("Usuario 2"), new User("Usuario 3"), new User("Usuario 4"), new User("Usuario 5")};
+		model.addAttribute("jugadores", usuarios);
 		
 		return "lobby";
 	}
@@ -223,7 +201,6 @@ public class UserController {
 	public String joinLobby(@PathVariable String id, Model model, HttpSession session) {
 		
 		Long idLong = Long.parseLong(id);
-		lobby.add(idLong);
 		
 		return "reglas";
 	}
@@ -247,5 +224,5 @@ public class UserController {
 	        log.error("Failure in autoLogin", e);
 	    }
 }
-	
+
 }

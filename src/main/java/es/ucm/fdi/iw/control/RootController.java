@@ -1,10 +1,15 @@
 package es.ucm.fdi.iw.control;
 
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.persistence.EntityManager;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
+import es.ucm.fdi.iw.model.User;
+import es.ucm.fdi.iw.model.UserStat;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +32,7 @@ public class RootController {
 
 	@GetMapping("/")
 	public String index(Model model) {
-		iwSocketHandler.sendText("mac", "nueva carnaza");
-		return "inicio";
+		return "iniciosesion";
 	}
 	
 	@GetMapping("/reglas")
@@ -58,15 +62,4 @@ public class RootController {
 		
 		return "index";
 	}
-
-	@GetMapping("/chat")
-	public String chat(Model model, HttpServletRequest request) {
-		return "chat";
-	}
-	
-	@GetMapping("/error")
-	public String error(Model model) {
-		return "error";
-	}
-
 }
