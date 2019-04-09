@@ -18,10 +18,11 @@ nav {
 }
 
 a:-webkit-any-link {
-
     cursor: pointer;
     text-decoration: none;
     color: white;
+    display: flex;
+    align-items: center;
 }
 
 a:-webkit-any-link:hover {
@@ -31,10 +32,17 @@ a:-webkit-any-link:hover {
 a:-webkit-any-link:active {
     color: darkred;
 }
-
+/*
 nav img{
     max-width: 5vw;
     max-height:  5vw;
+    border-radius: 50%;
+    margin: 1%;
+}*/
+
+.img-fluid{
+    max-width: 50%;
+    height: auto;
     border-radius: 50%;
     margin: 1%;
 }

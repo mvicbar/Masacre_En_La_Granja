@@ -48,19 +48,20 @@ div.info{
 }
 
 
-.userInfo{
-	display: flex;
-	flex-direction: column;
-	background-image: linear-gradient(to bottom right, #acaba1, #d4d4cb);
-	margin-top: 1%;
-	margin-left: auto;
-	margin-right: auto;
-	width: 38vw;
-    height: 20vw;
-	padding: 15px;
-	border-radius: 8px;
-	color: #161616;
-    font-size: 20px;
+.userInfo {
+    display: flex;
+    flex-direction: column;
+    background-image: linear-gradient(to bottom right, #acaba1, #d4d4cb);
+    margin-top: 1%;
+    margin-left: auto;
+    margin-right: auto;
+    width: 40%;
+    min-width: 300px;
+    height: auto;
+    min-height: 200px;
+    padding: 15px;
+    border-radius: 8px;
+    color: #161616;
 }
 
 img{
@@ -75,8 +76,8 @@ img{
 form{
     display: flex;
     flex-direction: column;
-    width: 80%;
-    height: 80%;
+    width: 100%;
+    height: auto;
 }
 
 input{
@@ -86,5 +87,28 @@ input{
 }
 
 button{
+
+    display: flex;
+    text-align: center;
     align-self: center;
+    justify-content: center;
+    width: 40%;
+    margin: auto;
+    height: auto;
+    line-height: 55px;
+    border: 1px solid #000000;
+    border-color: #555b61;
+    color: rgb(196, 196, 196);
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+    background-color: rgb(63, 63, 63);
+    border-radius: 5px;
+}
+
+
+button:hover {
+    background-color: rgb(49, 49, 49);
+}
+
+button:active {
+    background-color: #272727;
 }
