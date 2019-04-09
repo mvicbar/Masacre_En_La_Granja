@@ -12,7 +12,9 @@
 	<nav th:replace="fragments/nav.html :: nav">
 		Nav goes here
 	</nav>
-
+	<div th:replace="fragments/footer.html :: bootstrap">
+		Nav goes here
+	</div>
 	<div class = titulo>
 	<h2>Información del usuario <span th:text="${user.name}">Pepe</span></h2>
 	</div>
