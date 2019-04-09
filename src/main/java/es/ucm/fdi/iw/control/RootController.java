@@ -32,7 +32,7 @@ public class RootController {
 
 	@GetMapping("/")
 	public String index(Model model) {
-		return "iniciosesion";
+		return "inicio";
 	}
 	
 	@GetMapping("/reglas")
@@ -43,6 +43,11 @@ public class RootController {
 	@GetMapping("/faq")
 	public String faq(Model model) {
 		return "faq";
+	}
+	
+	@GetMapping("/chat")
+	public String chat(Model model) {
+		return "chat";
 	}
 	
 	@GetMapping("/login")
