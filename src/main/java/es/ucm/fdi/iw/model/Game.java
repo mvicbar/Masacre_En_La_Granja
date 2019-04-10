@@ -28,11 +28,6 @@ public class Game {
 
 	public Game(){}
 	
-	public Game(String _password) {
-		creationTime = Date.valueOf(LocalDate.now());
-		password = _password;
-	}
-	
 	public boolean allowAccess(String _password) {
 		return password.equals(_password);
 	}
