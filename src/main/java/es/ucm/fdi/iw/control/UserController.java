@@ -68,7 +68,7 @@ public class UserController {
 		// ojo: faltaria más validación
 		if (edited.getPassword() != null && edited.getPassword().equals(pass2)) {
 			target.setPassword(edited.getPassword());
-		}		
+		}
 		target.setName(edited.getName());
 		return "user";
 	}	
@@ -120,7 +120,6 @@ public class UserController {
 		}
 		return "redirect:/user/" + id;
 	}
-	
 	
 	@GetMapping("/register")
 	public String getRegister(Model model) {
@@ -181,6 +180,40 @@ public class UserController {
 
 		return "redirect:/user/" + u.getId();
 	}
+
+	@GetMapping("/login")
+	public String getLogin(Model model) { return "iniciosesion"; }
+
+	@PostMapping("/login")
+	@Transactional
+	public String login(Model model, HttpServletRequest request, Principal principal, @RequestParam String userName,
+						   @RequestParam CharSequence userPassword, HttpSession session) {
+
+		Long usersWithLogin = entityManager.createNamedQuery("User.HasName", Long.class)
+				.setParameter("userName", userName).getSingleResult();
+
+		// if the user exists, we check the if the password is correct
+		if (usersWithLogin != 0) {
+			//	Se saca la constraseña del usuario que se está loggeando
+			String pass = entityManager.createNamedQuery("User.Password", String.class)
+					.setParameter("userName", userName).getSingleResult();
+			
+			//	Se compara la contraseña introducida con la contraseña cifrada de la BD
+			boolean correct = passwordEncoder.matches(userPassword, pass);
+			log.info("The passwords match: {}", correct);
+			if(correct) {
+				User u = entityManager.createNamedQuery("User.ByName", User.class)
+						.setParameter("userName", userName).getSingleResult();
+				
+				session.setAttribute("user", u);
+				return "redirect:/user/" + u.getId();	//Devuelve el usuario loggeado
+			}else {
+				return "redirect:/user/login"; 
+			}
+		}
+
+		return "redirect:/user/register";
+	}
 	
 	@GetMapping("/logout")
 	public String logout(Model model, HttpSession session) {
@@ -224,5 +257,5 @@ public class UserController {
 	        log.error("Failure in autoLogin", e);
 	    }
 }
-
+	
 }

@@ -22,6 +22,9 @@
           <ul th:class="|ruta_${algo}|">
           	<li th:each="x: ${xs}" th:text="${x}">Esto no se ve</li>
           </ul>
+          <div th:replace="fragments/debug.html :: debug">
+    		debug goes here
+		  </div>
   </main>
 </body>
 </html>

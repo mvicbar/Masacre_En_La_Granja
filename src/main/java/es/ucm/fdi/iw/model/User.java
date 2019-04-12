@@ -27,7 +27,7 @@ public class User {
 	private String role;
 
 	@ManyToMany
-	private List<Game> games;
+	private List<Game> games = new ArrayList<>();
 
 	@OneToMany
 	@JoinColumn(name="user_id")
@@ -76,14 +76,24 @@ public class User {
 	public void setRole(String role) {
 		this.role = role;
 	}
-
-
+	
+	@Override
+	public int hashCode() {
+		
+		long hash = id;
+		
+		if (id > Integer.MAX_VALUE) {
+			hash = - (hash - Integer.MAX_VALUE);
+		}
+		
+		return (int) hash;
+	}
+	
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", login=" + name + ", password=" + password + ", roles=" + role + "]";
 	}
-
-
+	
 	public List<Game> getGames() {
 		return games;
 	}
@@ -91,13 +101,11 @@ public class User {
 	public List<UserStat> getUserStats() {
 		return userStats;
 	}
-
-
+	
 	public void setUserStats(List<UserStat> userStats) {
 		this.userStats = userStats;
 	}
-
-
+	
 	public void setGames(List<Game> games) {
 		this.games = games;
 	}
