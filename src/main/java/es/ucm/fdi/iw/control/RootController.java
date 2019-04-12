@@ -45,6 +45,9 @@ public class RootController {
 		return "faq";
 	}
 	
+	@GetMapping("/login")
+	public String getLogin(Model model) { return "iniciosesion"; }
+	
 	@GetMapping("/estadisticas")
 	public String globalStats(Model model) {
 		return "estadisticas-globales";
