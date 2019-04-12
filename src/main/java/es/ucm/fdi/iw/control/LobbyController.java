@@ -37,25 +37,19 @@ public class LobbyController {
     @Transactional
     @GetMapping("/newgame")
     public String newGame(Model model, HttpSession session) {
-        User user = (User) session.getAttribute("user");
-        String redirect = "redirect:/user/login";
+        User user = (User) session.getAttribute("user");     // <-- este usuario no está conectado a la bd
+        user = entityManager.find(User.class, user.getId()); // <-- obtengo usuario de la BD 
+        Game game = new Game();
+
+        game.addUser(user);
+        log.info("He aquí nuestro usuario ->" + user);
+        game.setCreationTime(Date.valueOf(LocalDate.now()));
+        user.getGames().add(game);
         
-        if(user != null) {
-            Game game = new Game();
-    
-            game.addUser(user);
-            log.info("He aquí nuestro usuario ->" + user);
-            game.setCreationTime(Date.valueOf(LocalDate.now()));
-            user.getGames().add(game);
-            
-            entityManager.persist(game);
-            entityManager.flush();
-            
-            
-            redirect = "redirect:/lobby/" + game.getId();
-        }
-        
-        return redirect;
+        entityManager.persist(game);
+        entityManager.flush();
+               
+        return "redirect:/lobby/"+game.getId();
     }
     
     @GetMapping("/{idGame}")
