@@ -75,27 +75,28 @@ form{
 }
 
 input{
-    margin: 2%;
-    width: 39vw;
-    font-size: 20px;
+    margin: 1%;
+    width: 100%;
+    font-size: 18px;
 }
 
 button{
-
     display: flex;
     text-align: center;
     align-self: center;
     justify-content: center;
     width: 40%;
     margin: auto;
-    height: auto;
-    line-height: 55px;
+    height: 25%;
+    max-height: 50px;
+    min-height: 40px;
     border: 1px solid #000000;
     border-color: #555b61;
     color: rgb(196, 196, 196);
     text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
     background-color: rgb(63, 63, 63);
     border-radius: 5px;
+    margin-top: 2%;
 }
 
 
