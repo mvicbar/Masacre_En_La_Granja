@@ -11,6 +11,8 @@ body {
     color: rgb(165, 165, 165);
     text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
     justify-content: center;
+    max-height: 225px;
+    overflow: hidden;
 }
 
 .cuerpo {
