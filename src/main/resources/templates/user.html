@@ -21,7 +21,7 @@
 
 	<div class="userInfo" th:if="(${session.user.id} eq ${user.id}) or ${user.hasRole('ADMIN')}">
 		<!-- puedes cambiar todo -->
-		<img th:src="@{/user/{id}/photo(id=${user.id})}" class="img-fluid">
+		<img th:src="@{/user/{id}/photo(id=${user.id})}" class="img">
 		<div name="name" th:text="${user.name}">Pepe</div>
 		<div name="roles" th:text="${user.role}">Usuario</div>
 		<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />			
