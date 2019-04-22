@@ -80,4 +80,7 @@ public class Game {
 		this.password = password;
 	}
 	
+	public boolean equals(Object other) {
+		return  other instanceof Game && id == ((Game) other).id;
+	}
 }

@@ -110,4 +110,7 @@ public class User {
 		this.games = games;
 	}
 
+	public boolean equals(Object other) {
+		return other instanceof User && id == ((User) other).id;
+	}
 }

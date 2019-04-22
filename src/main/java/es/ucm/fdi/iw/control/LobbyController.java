@@ -35,28 +35,40 @@ public class LobbyController {
     private LocalData localData;
     
     @Transactional
-    @GetMapping("/newgame")
-    public String newGame(Model model, HttpSession session) {
+    public void addUserToGame(HttpSession session, Game game) {
         User user = (User) session.getAttribute("user");     // <-- este usuario no está conectado a la bd
-        user = entityManager.find(User.class, user.getId()); // <-- obtengo usuario de la BD 
+        user = entityManager.find(User.class, user.getId()); // <-- obtengo usuario de la BD
+  
+        if(!game.getUsers().contains(user)) { // Añadimos al usuario si no está ya dentro
+            game.addUser(user);
+            log.info("He aquí nuestro usuario ->" + user);
+            user.getGames().add(game);
+    
+            entityManager.persist(game);
+            entityManager.flush();
+        }
+    }
+    
+    @Transactional
+    @GetMapping("/newgame")
+    public String newGame(HttpSession session) {
         Game game = new Game();
-
-        game.addUser(user);
-        log.info("He aquí nuestro usuario ->" + user);
         game.setCreationTime(Date.valueOf(LocalDate.now()));
-        user.getGames().add(game);
-        
-        entityManager.persist(game);
-        entityManager.flush();
+        addUserToGame(session, game);
                
-        return "redirect:/lobby/"+game.getId();
+        return "redirect:/lobby/" + game.getId();
     }
     
     @GetMapping("/{idGame}")
     @Transactional
-    public String getLobby(Model model, @PathVariable String idGame) {
-        
+    public String showLobby(Model model, @PathVariable String idGame) {
         Game game = entityManager.find(Game.class, Long.parseLong(idGame));
+        return getLobby(model, game);
+    }
+    
+    @Transactional
+    public String getLobby(Model model, Game game) {
+        model.addAttribute("game", game);
         
         if (game != null) { // Si el juego exite
             log.info("El juego existe");
@@ -65,12 +77,35 @@ public class LobbyController {
         } else {
             log.info("El juego no existe");
         }
-        
+    
         return "lobby";
     }
     
-    @PostMapping("/leave")
-    public String leaveLobby() {
-        return "redirect:/user/";
+    @GetMapping("/{idGame}/join")
+    @Transactional
+    public String joinLobby(Model model, HttpSession session, @PathVariable String idGame) {
+        Game game = entityManager.find(Game.class, Long.parseLong(idGame));
+        addUserToGame(session, game);
+        
+        return getLobby(model, game);
+    }
+    
+    @PostMapping("/{idGame}/leave")
+    @Transactional
+    public String leaveLobby(HttpSession session, @PathVariable String idGame) {
+        User user = (User) session.getAttribute("user");
+        log.info("El usuario " + user.getId() + " solicita abandonar la partida " + idGame);
+        
+        Game game = entityManager.find(Game.class, Long.parseLong(idGame));
+        
+        if(game != null) {
+            user = entityManager.find(User.class, user.getId());
+            
+            game.getUsers().remove(user);
+            entityManager.persist(game);
+            entityManager.flush();
+        }
+        
+        return "redirect:/user/" + user.getId();
     }
 }
