@@ -3,10 +3,14 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Registro | Masacre en la granja</title>
+	<link rel="stylesheet" type="text/css" media="screen" th:href="@{/css/nav.css}">
 	<link rel="stylesheet" type="text/css" media="screen" th:href="@{/css/registro.css}">
 </head>
 
 <body>
+	<div th:replace="fragments/footer.html :: bootstrap">
+		Nav goes here
+	</div>
 	<div class= "titulo">MASACRE EN LA GRANJA</div>
 	<div class="cuerpo">
 		<h2>Registro de usuario</h2>
@@ -22,8 +26,7 @@
 				<div class="dato pass2">
 					Repite la contraseña: <input type="password" required name="userPassword2" placeholder="Confirmación"/>
 				</div>
-				<div class="dato photo">
-					Foto de perfil: <input type="file" name="userPhoto"/>
+				<div class="dato photo"> Foto de perfil: <input type="file" name="userPhoto"/>
 				</div>
 				
 				<button type="submit">Registrarse</button>
