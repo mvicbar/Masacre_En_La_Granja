@@ -42,9 +42,8 @@ public class LobbyController {
   
         if(!game.getUsers().contains(user)) { // Añadimos al usuario si no está ya dentro
             game.addUser(user);
-            log.info("He aquí nuestro usuario ->" + user);
             user.getGames().add(game);
-            
+            entityManager.persist(user);
             entityManager.persist(game);
             entityManager.flush();
         }
@@ -87,7 +86,6 @@ public class LobbyController {
     public String joinLobby(Model model, HttpSession session, @PathVariable String idGame) {
         Game game = entityManager.find(Game.class, Long.parseLong(idGame));
         addUserToGame(session, game);
-        
         return getLobby(model, game);
     }
     
@@ -114,7 +112,6 @@ public class LobbyController {
     @GetMapping("/random")
     @Transactional
     public String randomGame() {
-        
         List<Game> games = entityManager.createNamedQuery("Game.all", Game.class).getResultList();
         Iterator<Game> iterator = games.iterator();
         Game game = null;
