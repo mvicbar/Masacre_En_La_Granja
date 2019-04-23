@@ -218,7 +218,7 @@ public class UserController {
 	@GetMapping("/logout")
 	public String logout(Model model, HttpSession session) {
 		session.setAttribute("user", null);
-		return "redirect:/user/login";
+		return "redirect:/login";
 	}
 	
 	@GetMapping("/searchGame")
