@@ -54,6 +54,14 @@ input{
     height: auto;
 }
 
+input:invalid {
+    border: 2px solid red;
+}
+
+input:valid {
+    border: 2px solid black;
+}
+
 div.dato.photo input{
     width: 70%;
     font-size: 17px;
