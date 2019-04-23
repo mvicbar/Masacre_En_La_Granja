@@ -12,6 +12,9 @@ import javax.persistence.*;
 /**
  */
 @Entity
+@NamedQueries({
+		@NamedQuery(name = "Game.all", query = "SELECT x FROM Game x")
+})
 public class Game {
 
 	@Id
@@ -78,6 +81,14 @@ public class Game {
 	
 	public void setPassword(String password) {
 		this.password = password;
+	}
+	
+	/**
+	 * @return a boolean telling if the game has started
+	 */
+	public boolean started() {
+		// TODO que el método hiciese algo estaría bien
+		return false;
 	}
 	
 	public boolean equals(Object other) {

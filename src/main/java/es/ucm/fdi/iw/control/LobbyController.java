@@ -20,6 +20,7 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 @Controller
@@ -43,7 +44,7 @@ public class LobbyController {
             game.addUser(user);
             log.info("He aquí nuestro usuario ->" + user);
             user.getGames().add(game);
-    
+            
             entityManager.persist(game);
             entityManager.flush();
         }
@@ -102,10 +103,33 @@ public class LobbyController {
             user = entityManager.find(User.class, user.getId());
             
             game.getUsers().remove(user);
+            user.getGames().remove(game);
             entityManager.persist(game);
             entityManager.flush();
         }
         
         return "redirect:/user/" + user.getId();
+    }
+    
+    @GetMapping("/random")
+    @Transactional
+    public String randomGame() {
+        
+        List<Game> games = entityManager.createNamedQuery("Game.all", Game.class).getResultList();
+        Iterator<Game> iterator = games.iterator();
+        Game game = null;
+        
+        if (iterator.hasNext()) {
+            game = iterator.next();
+            while (iterator.hasNext() && game.started()) {
+                game = iterator.next();
+            }
+        }
+        
+        if (game != null) {
+            return "redirect:/lobby/" + game.getId() + "/join";
+        } else {
+            return "a_otra_parte"; // TODO la otra parte
+        }
     }
 }
