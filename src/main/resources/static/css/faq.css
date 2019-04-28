@@ -67,16 +67,19 @@ header h1 {
 }
 
 .faq {
-  width: 90%;
-  max-width: 1024px;
-  position: relative;
-  margin: 4em auto;
-  box-shadow: none;
+    width: 90%;
+    max-width: 100%;
+    position: relative;
+    box-shadow: none;
 }
 
 .faq ul{
   list-style: none;
   margin: 2%;
+}
+
+.faq li{
+    margin: 1%;
 }
 
 .categorias-faq a {
