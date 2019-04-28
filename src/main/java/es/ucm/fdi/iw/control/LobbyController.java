@@ -85,8 +85,13 @@ public class LobbyController {
     @Transactional
     public String joinLobby(Model model, HttpSession session, @PathVariable String idGame) {
         Game game = entityManager.find(Game.class, Long.parseLong(idGame));
-        addUserToGame(session, game);
-        return getLobby(model, game);
+        
+        if (game == null) {
+            return "redirect:/lobby"; //TODO mensaje de error
+        } else {
+            addUserToGame(session, game);
+            return getLobby(model, game);
+        }
     }
     
     @PostMapping("/{idGame}/leave")
@@ -125,8 +130,8 @@ public class LobbyController {
         
         if (game != null) {
             return "redirect:/lobby/" + game.getId() + "/join";
-        } else {
-            return "a_otra_parte"; // TODO la otra parte
+        } else { // Si no hay un juego disponible, entonces lo crea
+            return "redirect:/lobby/newgame";
         }
     }
 }
