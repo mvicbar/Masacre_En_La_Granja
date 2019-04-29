@@ -87,7 +87,7 @@ public class LobbyController {
         Game game = entityManager.find(Game.class, Long.parseLong(idGame));
         
         if (game == null) {
-            return "redirect:/lobby"; //TODO mensaje de error
+            return "redirect:/user/searchGame"; //TODO mensaje de error
         } else {
             addUserToGame(session, game);
             return getLobby(model, game);
