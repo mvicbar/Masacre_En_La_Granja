@@ -22,6 +22,7 @@ import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
+import javax.xml.ws.Response;
 import java.io.*;
 import java.security.Principal;
 
@@ -48,6 +49,15 @@ public class UserController {
 		User u = entityManager.find(User.class, id);
 		model.addAttribute("user", u);
 		return "user";
+	}
+
+	//Función para comprobar que el nombre del user que se va a registrar no existe
+	@PostMapping("/loginOk/{name}")
+	public Boolean existingName(@PathVariable String name){
+		//Mirar en la base de datos mágicamente para ver si está creado
+
+		//si creado
+		return false;
 	}
 
 	@PostMapping("/{id}")
