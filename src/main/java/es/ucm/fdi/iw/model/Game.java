@@ -1,10 +1,7 @@
 package es.ucm.fdi.iw.model;
 
 import java.sql.Date;
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 
 import javax.persistence.*;
@@ -24,7 +21,7 @@ public class Game {
 	private String password; // null si la partida no es privada
 	
 	@Column(length = 4096)
-	private String status;
+	private String status; //JSON que se mapea a clase Status
 
 	@ManyToMany(mappedBy = "games")
 	private List<User> users = new ArrayList<>();
