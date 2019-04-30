@@ -102,7 +102,7 @@ public class LobbyController {
         
         Game game = entityManager.find(Game.class, Long.parseLong(idGame));
         
-        if(game != null) {
+        if(game != null && !game.started()) {
             user = entityManager.find(User.class, user.getId());
             
             game.getUsers().remove(user);
@@ -112,6 +112,11 @@ public class LobbyController {
         }
         
         return "redirect:/user/" + user.getId();
+    }
+    
+    @GetMapping("select")
+    public String selectGame() {
+        return "elegirPartida";
     }
     
     @GetMapping("/random")
