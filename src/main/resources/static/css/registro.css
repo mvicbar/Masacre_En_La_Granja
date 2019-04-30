@@ -51,7 +51,7 @@ width: 100%;
 
 input{
    width: 60%;
-    height: auto;
+    max-height: 28px;
 }
 
 input:invalid {
