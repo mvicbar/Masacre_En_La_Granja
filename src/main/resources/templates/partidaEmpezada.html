@@ -11,11 +11,9 @@
     <link rel="stylesheet" type="text/css" media="screen" th:href="@{/css/partida.css}">
 </head>
 <body>
-
     <h1 th:if="${empezada}">La partida ha empezado</h1>
     <h1 th:unless="${empezada}">Sigue esperando con paciencia</h1>
-
-    <p th:text="${game}">aaaa</p>
+    <p th:text="${game.status}"></p>
 </body>
 
 </html>

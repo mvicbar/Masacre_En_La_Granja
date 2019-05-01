@@ -94,7 +94,7 @@ public class Game {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return haEmpezado;
+		return !haEmpezado;
 	}
 	
 	public boolean equals(Object other) {
