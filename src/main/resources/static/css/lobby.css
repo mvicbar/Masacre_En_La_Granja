@@ -102,3 +102,12 @@ main {
 .boton:active{
     background-color: rgb(43, 42, 42);
 }
+
+.gameID {
+    text-align: center;
+}
+
+.gameID * {
+    font-size: 40px;
+    font-weight: bold;
+}

@@ -1,6 +1,8 @@
 package es.ucm.fdi.iw.model;
 
+
 import java.io.IOException;
+import javax.persistence.*;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;

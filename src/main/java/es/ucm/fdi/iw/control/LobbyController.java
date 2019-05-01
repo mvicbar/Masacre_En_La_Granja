@@ -85,8 +85,13 @@ public class LobbyController {
     @Transactional
     public String joinLobby(Model model, HttpSession session, @PathVariable String idGame) {
         Game game = entityManager.find(Game.class, Long.parseLong(idGame));
-        addUserToGame(session, game);
-        return getLobby(model, game);
+        
+        if (game == null) {
+            return "redirect:/user/searchGame"; //TODO mensaje de error
+        } else {
+            addUserToGame(session, game);
+            return getLobby(model, game);
+        }
     }
     
     @PostMapping("/{idGame}/leave")
@@ -97,7 +102,7 @@ public class LobbyController {
         
         Game game = entityManager.find(Game.class, Long.parseLong(idGame));
         
-        if(game != null) {
+        if(game != null && !game.started()) {
             user = entityManager.find(User.class, user.getId());
             
             game.getUsers().remove(user);
@@ -107,6 +112,11 @@ public class LobbyController {
         }
         
         return "redirect:/user/" + user.getId();
+    }
+    
+    @GetMapping("select")
+    public String selectGame() {
+        return "elegirPartida";
     }
     
     @GetMapping("/random")
@@ -125,8 +135,8 @@ public class LobbyController {
         
         if (game != null) {
             return "redirect:/lobby/" + game.getId() + "/join";
-        } else {
-            return "a_otra_parte"; // TODO la otra parte
+        } else { // Si no hay un juego disponible, entonces lo crea
+            return "redirect:/lobby/newgame";
         }
     }
 }
