@@ -5,6 +5,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import javax.validation.constraints.NotEmpty;
 
 /**
  * 
@@ -22,10 +25,15 @@ public class User {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	private long id;
 
+	@NotNull
+	@NotEmpty
     @Column(unique = true)
 	private String name;
- 
+
+	@NotNull
+	@Size(min=8)
 	private String password;
+
 	private String role;
 
 	@ManyToMany
