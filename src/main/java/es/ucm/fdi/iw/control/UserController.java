@@ -53,7 +53,7 @@ public class UserController {
 	}
 
 	//Función para comprobar que el nombre del user que se va a registrar no existe
-	@PostMapping("/loginOk/{name}")
+	@PostMapping("/existingUser/{name}")
 	public Boolean existingName(@PathVariable String name){
 		//Mirar en la base de datos mágicamente para ver si está creado
 		Long usersWithLogin = entityManager.createNamedQuery("User.HasName", Long.class)
