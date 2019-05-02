@@ -1,6 +1,7 @@
 package es.ucm.fdi.iw.control;
 
 import es.ucm.fdi.iw.LocalData;
+import es.ucm.fdi.iw.model.Game;
 import es.ucm.fdi.iw.model.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,6 +23,7 @@ import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
+import javax.xml.ws.Response;
 import java.io.*;
 import java.security.Principal;
 
@@ -48,6 +50,16 @@ public class UserController {
 		User u = entityManager.find(User.class, id);
 		model.addAttribute("user", u);
 		return "user";
+	}
+
+	//Función para comprobar que el nombre del user que se va a registrar no existe
+	@PostMapping("/loginOk/{name}")
+	public Boolean existingName(@PathVariable String name){
+		//Mirar en la base de datos mágicamente para ver si está creado
+		Long usersWithLogin = entityManager.createNamedQuery("User.HasName", Long.class)
+				.setParameter("userName", name).getSingleResult();
+		//si creado
+		return usersWithLogin == 0;
 	}
 
 	@PostMapping("/{id}")
@@ -245,6 +257,21 @@ public class UserController {
 	        SecurityContextHolder.getContext().setAuthentication(null);
 	        log.error("Failure in autoLogin", e);
 	    }
-}
+	}
+
+	/*
+	ELIMINAR ANTES DE LA ENTREGA
+	*/
+	@GetMapping("/gameStarted")
+	public String probarGameStarted(Model model, HttpSession session) {
+		String json = "{\"momento\": \"inLobby\",\"esDeDia\": 1,\"users\":[4,35,18,26,97,35],\"userIdRol\":{\"4\": \"vampiro\",\"35\": \"granjero\",\"18\": \"vampiro\",\"26\": \"bruja\",\"97\": \"granjero\",\"35\": \"granjero\"},\"userIdAlive\":{\"4\": 1,\"35\": 0,\"18\": 0,\"26\": 0,\"97\": 1,\"35\": 0},\"enamorados\":[18,35],\"acciones\": [{\"rol\": \"vampiro\",\"client\": 18,\"victim\": 97,\"action\": \"\"}]}";
+		Game g = new Game();
+		g.setStatus(json);
+		log.debug(g.getStatus());
+		Boolean empezada = g.started();
+		model.addAttribute("empezada", empezada);
+		model.addAttribute("game", g);
+		return "partidaEmpezada";
+	}
 	
 }
