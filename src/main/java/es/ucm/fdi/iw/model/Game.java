@@ -5,6 +5,7 @@ import java.io.IOException;
 import javax.persistence.*;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.persistence.*;
@@ -115,5 +116,21 @@ public class Game {
     
     public boolean equals(Object other) {
         return  other instanceof Game && id == ((Game) other).id;
+    }
+    
+    public boolean canBegin() {
+        return users.size() >= 8;
+    }
+    
+    public void init() {
+        // TODO faltan cosas para inicializar realmente la partida
+        ObjectMapper mapper = new ObjectMapper();
+        Status st = new Status();
+        st.momento = "playing";
+        try {
+            status = mapper.writeValueAsString(st);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
     }
 }

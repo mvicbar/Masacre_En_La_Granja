@@ -40,6 +40,10 @@ public class LobbyController {
             entityManager.persist(game);
             entityManager.flush();
         }
+        
+        if(game.canBegin()) {
+            game.init();
+        }
     }
     
     @Transactional
@@ -80,6 +84,8 @@ public class LobbyController {
         Game game = entityManager.find(Game.class, Long.parseLong(idGame));
         
         if (game == null) {
+            return "redirect:/user/searchGame"; //TODO mensaje de error
+        } else if (game.started()){
             return "redirect:/user/searchGame"; //TODO mensaje de error
         } else {
             addUserToGame(session, game);
