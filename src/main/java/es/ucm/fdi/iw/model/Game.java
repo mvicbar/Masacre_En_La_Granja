@@ -88,15 +88,17 @@ public class Game {
 	 * @return a boolean telling if the game has started
 	 */
 	public boolean started() {
-		ObjectMapper mapper = new ObjectMapper();
-		Boolean haEmpezado = false;
+		//TODO descomentar cuando el lobby pueda crear json para partidas
+		/*ObjectMapper mapper = new ObjectMapper();
+		boolean haEmpezado = false;
 		try {
 			Status aux = mapper.readValue(this.status, Status.class);
 			haEmpezado = aux.momento.equals("inLobby");
+			return false;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return !haEmpezado;
+		return !haEmpezado;*/ return false;
 	}
 	
 	public boolean equals(Object other) {

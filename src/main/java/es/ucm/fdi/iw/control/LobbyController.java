@@ -8,10 +8,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpSession;
@@ -19,7 +16,6 @@ import javax.transaction.Transactional;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -31,9 +27,6 @@ public class LobbyController {
     
     @Autowired
     private EntityManager entityManager;
-    
-    @Autowired
-    private LocalData localData;
     
     @Transactional
     public void addUserToGame(HttpSession session, Game game) {
@@ -98,25 +91,31 @@ public class LobbyController {
     @Transactional
     public String leaveLobby(HttpSession session, @PathVariable String idGame) {
         User user = (User) session.getAttribute("user");
-        log.info("El usuario " + user.getId() + " solicita abandonar la partida " + idGame);
-        
         Game game = entityManager.find(Game.class, Long.parseLong(idGame));
         
+        log.info("HOLA");
         if(game != null && !game.started()) {
+            log.info("QUE TAL");
             user = entityManager.find(User.class, user.getId());
-            
+            log.info("ADIOS");
             game.getUsers().remove(user);
             user.getGames().remove(game);
+            entityManager.persist(user);
             entityManager.persist(game);
             entityManager.flush();
         }
         
-        return "redirect:/user/" + user.getId();
+        return "redirect:/user/searchGame";
     }
     
     @GetMapping("select")
-    public String selectGame() {
+    public String showSelect() {
         return "elegirPartida";
+    }
+    
+    @PostMapping("select")
+    public String selectGame(@RequestParam String gameID) {
+        return "redirect:/lobby/" + gameID + "/join";
     }
     
     @GetMapping("/random")
