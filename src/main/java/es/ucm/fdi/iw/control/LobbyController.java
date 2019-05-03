@@ -47,8 +47,8 @@ public class LobbyController {
     public String newGame(HttpSession session) {
         Game game = new Game();
         game.setCreationTime(Date.valueOf(LocalDate.now()));
+        game.initLobby();
         addUserToGame(session, game);
-               
         return "redirect:/lobby/" + game.getId();
     }
     
