@@ -12,7 +12,7 @@
 
 			login.onchange = () => {
 				const v = login.value;
-				fetch("/user/existingUser/"+v).then((response) => {
+				fetch("/user/loginOk/"+v).then((response) => {
 					login.setCustomValidity(response.ok ? "" : "¡Este usuario ya existe!");
 				});
 
