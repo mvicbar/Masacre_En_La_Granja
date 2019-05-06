@@ -41,11 +41,9 @@ public class Status {
     inLobby
 
     */
-    public Integer esDeDia; //0 = si; 1 = no // Integer porque para Dani es mas facil que Boolean
-    public List<Long> users; //Lista de Ids de los usuarios de la partida
-    public Map<Long, String> userIdRol; //Map id de usuario con su rol correspondiente
-    public Map<Long, Integer> userIdAlive; //0 = vivo; 1 = muerto //Map id de usuario para ver si esta vivo o muerto
-    public List<Long> enamorados; //Contiene dos elementos que son el Id de los jugadores enamorados
+    public Integer dia; //0 = si; 1 = no
+    public Map<Long, String> players; // Map de id de jugador con su rol (que puede ser MUERTO)
+    //public List<Long> enamorados; //Contiene dos elementos que son el Id de los jugadores enamorados
     public List<Acciones> acciones; //Es un JSON y habria que pensar si crear otra clase para mapearlo
 
 }
