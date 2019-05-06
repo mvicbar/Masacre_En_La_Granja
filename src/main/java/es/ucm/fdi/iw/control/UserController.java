@@ -6,6 +6,8 @@ import es.ucm.fdi.iw.model.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -53,12 +55,13 @@ public class UserController {
 
 	//Función para comprobar que el nombre del user que se va a registrar no existe
 	@PostMapping("/loginOk/{name}")
-	public Boolean existingName(@PathVariable String name){
+	public ResponseEntity existingName(@PathVariable String name){
 		//Mirar en la base de datos mágicamente para ver si está creado
 		Long usersWithLogin = entityManager.createNamedQuery("User.HasName", Long.class)
 				.setParameter("userName", name).getSingleResult();
 		//si creado
-		return usersWithLogin == 0;
+		if(usersWithLogin == 0) return ResponseEntity.status(HttpStatus.OK).build();
+		return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
 	}
 
 	@PostMapping("/{id}")
@@ -270,7 +273,24 @@ public class UserController {
 		Boolean empezada = g.started();
 		model.addAttribute("empezada", empezada);
 		model.addAttribute("game", g);
-		return "partidaEmpezada";
+		return "pruebas/partidaEmpezada";
 	}
+
+		/*
+	DEJARLO DE MOMENTO
+	ELIMINAR ANTES DE LA ENTREGA
+	*/
+	@GetMapping("/pruebaChat")
+	public String pruebaChat(Model model, HttpSession session){
+
+		return "pruebas/pruebaChat";
+	}
+	
+	@PostMapping("chat/enviar")
+    public void enviar(Model model, HttpServletRequest request, Principal principal, @RequestParam String mensaje){
+        //ws.send(text); 
+		log.debug("Mensaje enviado [{}]",mensaje);
+
+    }
 	
 }
