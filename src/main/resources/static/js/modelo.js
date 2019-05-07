@@ -3,12 +3,13 @@ dia=0;//0 noche , 1 dia
 players_= [];
 players_[0] = "VAMPIRE";
 players_[1] = "HUNTER";
-players_[2] = "FARMER";
+players_[2] = "WITCH";
 players_[3] = "FARMER";
 players_[4] = "FARMER";
 players_[5] = "VAMPIRE";
 players_[6] = "FARMER";
 players_[7] = "FARMER";
+cuttentDeaths = [];
 votation = [];
 votes = [];
 
@@ -47,6 +48,10 @@ function recivePlay(playJSON)//Tambien recibirá el estado de la partida
 			popularMove(play, object);
 			return JSON.stringify(object);
 			break;
+        case 'WITCH':
+            return JSON.stringify(object);
+            break;
+            
 	}
 }
 
@@ -66,7 +71,7 @@ function popularMove(play, object)
 		}
 		else
 		{
-			object.deaths.push(i);
+			cuttentDeathsf.push(i);
             object.logs.push("The farmers decided hang Player "+ (play.victim+1));
 			object.id = 'POPULAR_VOTED';
 			startNight(object);
@@ -81,12 +86,12 @@ function popularMove(play, object)
 
 function hunterMove(play, object)
 {
-	object.deaths.push(play.victim);
+	cuttentDeaths.push(play.victim);
 	object.id  = 'HUNTER_SHOT';
 	object.logs.push("Player "+ (play.client+1) +" has shot Player "+ (play.victim+1) +"!")
 	players_[play.client] = "DEAD";
 	//El cazador muere
-	object.deaths.push(play.client);
+	cuttentDeaths.push(play.client);
 	if(dia){//Si le ha matado el pueblo, empieza la noche
 		startNight(object);
 	}
@@ -112,7 +117,7 @@ function vampireMove(play, object)
 		}
 		else
 		{
-			object.deaths.push(i);
+			cuttentDeaths.push(i);
 			object.id = 'VAMPIRES_VOTED';
 			endNight(object);//Termina la noche (provisional, esto lo acabará haciendo la bruja)
 		}

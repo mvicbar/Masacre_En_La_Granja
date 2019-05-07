@@ -1,6 +1,5 @@
 package es.ucm.fdi.iw.control;
 
-import es.ucm.fdi.iw.LocalData;
 import es.ucm.fdi.iw.model.Game;
 import es.ucm.fdi.iw.model.User;
 import org.apache.logging.log4j.LogManager;
@@ -39,10 +38,6 @@ public class LobbyController {
             entityManager.persist(user);
             entityManager.persist(game);
             entityManager.flush();
-        }
-        
-        if(game.canBegin()) {
-            game.init();
         }
     }
     
@@ -89,6 +84,11 @@ public class LobbyController {
             return "redirect:/user/searchGame"; //TODO mensaje de error
         } else {
             addUserToGame(session, game);
+            
+            if(game.canBegin()) {
+                game.init();
+            }
+            
             return getLobby(model, game);
         }
     }

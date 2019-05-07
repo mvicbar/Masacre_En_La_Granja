@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import javax.persistence.*;
 
@@ -123,10 +124,45 @@ public class Game {
         ObjectMapper mapper = new ObjectMapper();
         Status st = new Status();
         st.momento = "playing";
+        st.dia = 0;
+        
+        String[] roles = initialRoles();
+        Random random = new Random();
+        for(User user : users) {
+            int pos;
+            
+            if (users.size() == st.players.size()) {
+                pos = random.nextInt(users.size() - st.players.size());
+            } else {
+                pos = 0;
+            }
+            
+            st.players.put(user.getId(), roles[pos]);
+            roles[pos] = roles[users.size() - st.players.size()];
+        }
+        
         try {
             status = mapper.writeValueAsString(st);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
+    }
+    
+    private String[] initialRoles() {
+        int count = 0;
+        String[] roles = new String[users.size()];
+        
+        for(; count < users.size() / 4; ++count) {
+            roles[count] = "VAMPIRE";
+        }
+        
+        roles[count] = "HUNTER";
+        ++count;
+        
+        for(; count < users.size(); ++count) {
+            roles[count] = "FARMER";
+        }
+        
+        return roles;
     }
 }
