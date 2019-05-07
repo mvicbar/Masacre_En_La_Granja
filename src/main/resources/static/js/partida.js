@@ -10,7 +10,7 @@ for(i=0; i<numPlayers; i++)
 }
 players[0][0] = "VAMPIRE";
 players[1][0] = "HUNTER";
-players[2][0] = "FARMER";
+players[2][0] = "WITCH";
 players[3][0] = "FARMER";
 players[4][0] = "FARMER";
 players[5][0] = "VAMPIRE";
@@ -54,7 +54,7 @@ function witchPlay(objetive)
         noteEntry("Select an action, Witch");
     }
     else{
-        document.getElementById('controls').style.display = 'none';
+        hideOptions();
         players[clientPlayer][1] = 1;
         playJSON = {
         rol: 'WITCH',
@@ -193,6 +193,13 @@ function printLogs(logs)
     }
 }
 
+function hideOptions()
+{
+ document.getElementById("controlA").style.backgroundColor = rgb(120, 33, 18);
+ document.getElementById("controlB").style.backgroundColor = rgb(120, 33, 18);
+ document.getElementById('controls').style.display = 'none';
+}
+
 document.getElementById("card1").addEventListener("click", function() 
 { vote(0);})
 document.getElementById("card2").addEventListener("click", function() 
@@ -211,11 +218,17 @@ document.getElementById("card8").addEventListener("click", function()
 { vote(7);})
 
 document.getElementById("controlA").addEventListener("click", function() 
-{ option = 1;})
+{ option = 1;
+ document.getElementById("controlA").style.backgroundColor = rgb(29, 28, 28);
+ document.getElementById("controlB").style.backgroundColor = rgb(120, 33, 18);
+})
 document.getElementById("controlB").addEventListener("click", function() 
-{ option = 2;})
+{ option = 2;
+ document.getElementById("controlB").style.backgroundColor = rgb(29, 28, 28);
+ document.getElementById("controlB").style.backgroundColor = rgb(120, 33, 18);
+})
 document.getElementById("controlC").addEventListener("click", function() 
-{ option = 0; vote(-1);)}
+{ option = 0; vote(-1);})
 
 //FOR DEBUG
 document.getElementById("player1").addEventListener("click", function() 
@@ -245,7 +258,7 @@ function changePlayer(player)
     if(clientRol == "WITCH" && actualRol == clientRol){
           document.getElementById('controls').style.display = 'flex';  
     }else{
-         document.getElementById('controls').style.display = 'none';
+         hideOptions();
     }
 
 }
