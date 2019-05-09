@@ -21,26 +21,36 @@ import java.util.List;
 @Controller
 @RequestMapping("lobby")
 public class LobbyController {
-    
+
     private static final Logger log = LogManager.getLogger(LobbyController.class);
-    
+
     @Autowired
     private EntityManager entityManager;
-    
+
+    @Autowired
+    private IwSocketHandler iwSocketHandler;
+
     @Transactional
     public void addUserToGame(HttpSession session, Game game) {
-        User user = (User) session.getAttribute("user");     // <-- este usuario no está conectado a la bd
+        User user = (User) session.getAttribute("user"); // <-- este usuario no está conectado a la bd
         user = entityManager.find(User.class, user.getId()); // <-- obtengo usuario de la BD
-  
-        if(!game.getUsers().contains(user)) { // Añadimos al usuario si no está ya dentro
+
+        if (!game.getUsers().contains(user)) { // Añadimos al usuario si no está ya dentro
             game.addUser(user);
             user.getGames().add(game);
             entityManager.persist(user);
             entityManager.persist(game);
             entityManager.flush();
+            List<User> users = new ArrayList<>(game.getUsers());
+            String message = "{\"newPlayer\": \" " + user.getName() + " \" }";
+            for (User u : users) {
+                if (u == user)
+                    continue;
+                iwSocketHandler.addNewUserLobby(u.getName(), message);
+            }
         }
     }
-    
+
     @Transactional
     @GetMapping("/newgame")
     public String newGame(HttpSession session) {
@@ -50,18 +60,18 @@ public class LobbyController {
         addUserToGame(session, game);
         return "redirect:/lobby/" + game.getId();
     }
-    
+
     @GetMapping("/{idGame}")
     @Transactional
     public String showLobby(Model model, @PathVariable String idGame) {
         Game game = entityManager.find(Game.class, Long.parseLong(idGame));
         return getLobby(model, game);
     }
-    
+
     @Transactional
     public String getLobby(Model model, Game game) {
         model.addAttribute("game", game);
-        
+
         if (game != null) { // Si el juego exite
             log.info("El juego existe");
             List<User> users = new ArrayList<>(game.getUsers());
@@ -69,38 +79,38 @@ public class LobbyController {
         } else {
             log.info("El juego no existe");
         }
-    
+
         return "lobby";
     }
-    
+
     @GetMapping("/{idGame}/join")
     @Transactional
     public String joinLobby(Model model, HttpSession session, @PathVariable String idGame) {
         Game game = entityManager.find(Game.class, Long.parseLong(idGame));
-        
+
         if (game == null) {
-            return "redirect:/user/searchGame"; //TODO mensaje de error
-        } else if (game.started()){
-            return "redirect:/user/searchGame"; //TODO mensaje de error
+            return "redirect:/user/searchGame"; // TODO mensaje de error
+        } else if (game.started()) {
+            return "redirect:/user/searchGame"; // TODO mensaje de error
         } else {
             addUserToGame(session, game);
-            
-            if(game.canBegin()) {
+
+            if (game.canBegin()) {
                 game.init();
             }
-            
+
             return getLobby(model, game);
         }
     }
-    
+
     @PostMapping("/{idGame}/leave")
     @Transactional
     public String leaveLobby(HttpSession session, @PathVariable String idGame) {
         User user = (User) session.getAttribute("user");
         Game game = entityManager.find(Game.class, Long.parseLong(idGame));
-        
+
         log.info("HOLA");
-        if(game != null && !game.started()) {
+        if (game != null && !game.started()) {
             log.info("QUE TAL");
             user = entityManager.find(User.class, user.getId());
             log.info("ADIOS");
@@ -110,34 +120,34 @@ public class LobbyController {
             entityManager.persist(game);
             entityManager.flush();
         }
-        
+
         return "redirect:/user/searchGame";
     }
-    
+
     @GetMapping("select")
     public String showSelect() {
         return "elegirPartida";
     }
-    
+
     @PostMapping("select")
     public String selectGame(@RequestParam String gameID) {
         return "redirect:/lobby/" + gameID + "/join";
     }
-    
+
     @GetMapping("/random")
     @Transactional
     public String randomGame() {
         List<Game> games = entityManager.createNamedQuery("Game.all", Game.class).getResultList();
         Iterator<Game> iterator = games.iterator();
         Game game = null;
-        
+
         if (iterator.hasNext()) {
             game = iterator.next();
             while (iterator.hasNext() && game.started()) {
                 game = iterator.next();
             }
         }
-        
+
         if (game != null) {
             return "redirect:/lobby/" + game.getId() + "/join";
         } else { // Si no hay un juego disponible, entonces lo crea

@@ -110,6 +110,18 @@ public class Game {
 		}
 		return !haEmpezado;
 	}
+
+	public Boolean finished(){
+		ObjectMapper mapper = new ObjectMapper();
+		Boolean haTerminado = false;
+		try {
+			Status aux = mapper.readValue(this.status, Status.class);
+			haTerminado = aux.momento.equals("finished");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return haTerminado;
+	}
 	
 	public boolean equals(Object other) {
 		return  other instanceof Game && id == ((Game) other).id;
