@@ -29,6 +29,7 @@ import javax.transaction.Transactional;
 import java.io.*;
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Controller()
@@ -285,40 +286,69 @@ public class UserController {
 	 * DEJARLO DE MOMENTO ELIMINAR ANTES DE LA ENTREGA
 	 */
 	@GetMapping("/pruebaChat")
+	@Transactional
 	public String pruebaChat(Model model, HttpSession session) {
+		Game g = new Game();
+		List<User> users = new ArrayList<User>();
+		User tor = entityManager.createNamedQuery("User.ByName", User.class).setParameter("userName", "tor")
+				.getSingleResult();
+		User mac = entityManager.createNamedQuery("User.ByName", User.class).setParameter("userName", "mac")
+				.getSingleResult();
+		users.add(tor); 
+		users.add(mac); 
+		g.setUsers(users);
+		
+		Status s = new Status();
+		s.dia = 0;
+		s.momento = "ingame";
+		s.players = new HashMap<Long, String>();
+		s.players.put((long) 1, "VAMPIRE");
+		s.players.put((long) 2, "VAMPIRE");
+
+		g.setStatus(g.getStatusStringFromObj(s));
+		tor.setGames(new ArrayList<Game>());
+		tor.getGames().add(g);
+		mac.setGames(new ArrayList<Game>());
+		mac.getGames().add(g);
+		entityManager.persist(g);
+		entityManager.persist(tor);
+		entityManager.persist(mac);
+		entityManager.flush();
+
+		model.addAttribute("game", g);
+		session.setAttribute("game", g);
 
 		return "pruebas/pruebaChat";
 	}
 
 	@PostMapping("chat/enviar")
-	public void enviar(Model model, HttpServletRequest request, HttpSession session, Principal principal,
-			@RequestParam String mensaje) {
+	public ResponseEntity enviar(Model model, HttpServletRequest request, HttpSession session, Principal principal) {
+		String mensaje = (String) request.getAttribute("body");
 		User user = (User) session.getAttribute("user"); // <-- este usuario no está conectado a la bd
 		user = entityManager.find(User.class, user.getId()); // <-- obtengo usuario de la BD
 
 		Game g = user.getActiveGame();
 
 		List<User> users = new ArrayList<>(g.getUsers());
-		String message = "{\"chatMessage\": \" {\"propietario\": " + user.getName() + ", \"mensaje\": " + mensaje + "\" }";
+		String message = "{\"chatMessage\": \" {\"propietario\": " + user.getName() + ", \"mensaje\": " + mensaje
+				+ "\" }";
 		Status s = g.getStatusObj();
 		String rolPropietario = s.players.get(user.getId());
 		for (User u : users) {
-			if(rolPropietario.equals("MUERTO") && s.players.get(u.getId()).equals("MUERTO")){
+			if (rolPropietario.equals("MUERTO") && s.players.get(u.getId()).equals("MUERTO")) {
 				iwSocketHandler.sendText(u.getName(), message);
-			}
-			else if(s.dia == 0){
-				if(!rolPropietario.equals("MUERTO") && !s.players.get(u.getId()).equals("MUERTO")){
+			} else if (s.dia == 0) {
+				if (!rolPropietario.equals("MUERTO") && !s.players.get(u.getId()).equals("MUERTO")) {
 					iwSocketHandler.sendText(u.getName(), message);
 				}
-			}
-			else if(s.dia == 1){
-				if(rolPropietario.equals("VAMPIRE") && s.players.get(u.getId()).equals("VAMPIRE")){
+			} else if (s.dia == 1) {
+				if (rolPropietario.equals("VAMPIRE") && s.players.get(u.getId()).equals("VAMPIRE")) {
 					iwSocketHandler.sendText(u.getName(), message);
 				}
 			}
 		}
 		log.debug("Mensaje enviado [{}]", mensaje);
-
+		return ResponseEntity.status(HttpStatus.OK).build();
 	}
 
 }
