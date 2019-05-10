@@ -296,14 +296,26 @@ public class UserController {
 		User user = (User) session.getAttribute("user"); // <-- este usuario no está conectado a la bd
 		user = entityManager.find(User.class, user.getId()); // <-- obtengo usuario de la BD
 
-		Game g = user.activeGame();
+		Game g = user.getActiveGame();
 
 		List<User> users = new ArrayList<>(g.getUsers());
 		String message = "{\"chatMessage\": \" {\"propietario\": " + user.getName() + ", \"mensaje\": " + mensaje + "\" }";
 		Status s = g.getStatusObj();
+		String rolPropietario = s.players.get(user.getId());
 		for (User u : users) {
-			if(s.players.get(user.getId()).equals("MUERTO"))
-			iwSocketHandler.sendText(u.getName(), message);
+			if(rolPropietario.equals("MUERTO") && s.players.get(u.getId()).equals("MUERTO")){
+				iwSocketHandler.sendText(u.getName(), message);
+			}
+			else if(s.dia == 0){
+				if(!rolPropietario.equals("MUERTO") && !s.players.get(u.getId()).equals("MUERTO")){
+					iwSocketHandler.sendText(u.getName(), message);
+				}
+			}
+			else if(s.dia == 1){
+				if(rolPropietario.equals("VAMPIRE") && s.players.get(u.getId()).equals("VAMPIRE")){
+					iwSocketHandler.sendText(u.getName(), message);
+				}
+			}
 		}
 		log.debug("Mensaje enviado [{}]", mensaje);
 
