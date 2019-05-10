@@ -41,12 +41,6 @@
 
 					return false;
 				}
-
-				// recepcion
-				const lineOutput = document.getElementById("recibido");
-				ws.receive = (text) => {
-					lineOutput.value = lineOutput.value + '\n' + text;
-				}
 			});
 		</script>
 	</th:block>
