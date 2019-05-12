@@ -84,14 +84,16 @@ public class LobbyController {
         Game game = entityManager.find(Game.class, Long.parseLong(idGame));
         log.info(game);
 
-        //TODO Mensaje de error si la partida todavía no puede empezar y se clicka en iniciar
+
         if (game == null) {
             model.addAttribute("errorMessage", "¡Esa partida no existe!");
             return "elegirPartida";
         } else if (game.started()){
             model.addAttribute("errorMessage", "¡La partida ya ha empezado!");
             return "elegirPartida";
-        } else {
+        } else if(!game.canBegin()){
+            model.addAttribute("errorMessage", "¡Todavía no hay suficientes jugadores!");
+        }  else {
             addUserToGame(session, game);
             return getLobby(model, game);
         }
