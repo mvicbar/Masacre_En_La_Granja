@@ -66,15 +66,15 @@ public class LobbyController {
     @Transactional
     public String getLobby(Model model, Game game) {
         model.addAttribute("game", game);
-        
+
         if (game != null) { // Si el juego exite
             log.info("El juego existe");
             List<User> users = new ArrayList<>(game.getUsers());
             model.addAttribute("jugadores", users);
-        } else {
+        }
+        else {
             log.info("El juego no existe");
         }
-    
         return "lobby";
     }
     
@@ -91,9 +91,7 @@ public class LobbyController {
         } else if (game.started()){
             model.addAttribute("errorMessage", "¡La partida ya ha empezado!");
             return "elegirPartida";
-        } else if(!game.canBegin()){
-            model.addAttribute("errorMessage", "¡Todavía no hay suficientes jugadores!");
-        }  else {
+        } else {
             addUserToGame(session, game);
             return getLobby(model, game);
         }
@@ -116,6 +114,19 @@ public class LobbyController {
         }
         
         return "redirect:/user/searchGame";
+    }
+
+    @PostMapping("/{idGame}/init")
+    @Transactional
+    public String initGame(Model model, HttpSession session, @PathVariable String idGame) {
+       // User user = (User) session.getAttribute("user");
+        //TODO Añadir la opción de iniciar la partida en caso de que se pueda
+        Game game = entityManager.find(Game.class, Long.parseLong(idGame));
+        log.info(game.canBegin());
+        if(!game.canBegin())
+            model.addAttribute("errorMessage", "¡Todavía no hay suficientes jugadores!");
+
+        return idGame+"/join";
     }
     
     @GetMapping("select")
