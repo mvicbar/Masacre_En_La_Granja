@@ -5,6 +5,10 @@
     <title>Crear grupo | Masacre en la granja</title>
     <link rel="stylesheet" type="text/css" media="screen" th:href="@{/css/nav.css}">
     <link rel="stylesheet" type="text/css" media="screen" th:href="@{/css/lobby.css}">
+    <script th:href="@{/js/jquery-3.4.1.js}"></script>
+    <!--<script href="../static/js/jquery-3.4.1.js"></script>-->
+    <script th:href="@{/js/notify.js}"></script>
+    <!--<script href="../static/js/notify.js"></script>-->
 </head>
 <body>
 <nav th:replace="fragments/nav.html :: nav">
@@ -26,10 +30,20 @@
         <form th:action="@{/lobby/{idGame}/leave(idGame=${game.id})}" method="POST" enctype="multipart/form-data">
             <button type="submit" class="boton">Abandonar</button>
         </form>
-        <form th:action="@{/game}" method="POST" enctype="multipart/form-data">
-            <button type="submit" class="boton">Iniciar</button>
+       <!-- <form th:action="@{/game}" method="POST" enctype="multipart/form-data"> -->
+        <form th:action="@{/lobby/{idGame}/init(idGame=${game.id})}" method="POST" enctype="multipart/form-data">
+            <button type="submit" id="iniciar" class="boton">Iniciar</button>
         </form>
     </div>
+
+    <script>
+        //$(function(){
+        if("[[${errorMessage}]]".length > 0){
+            $(".iniciar").notify("[[${errorMessage}]]",
+                {position: "right"});
+        }
+        //});
+    </script>
 </main>
 </body>
 </html>
