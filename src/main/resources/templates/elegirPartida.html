@@ -5,6 +5,10 @@
     <title>Masacre en la granja</title>
     <link rel="stylesheet" type="text/css" media="screen" th:href="@{/css/nav.css}">
     <link rel="stylesheet" type="text/css" media="screen" th:href="@{/css/elegirPartida.css}">
+    <script th:href="@{/js/jquery-3.4.1.js}"></script>
+    <!--href="../static/js/jquery-3.4.1.js"-->
+    <script th:href="@{/js/notify.js}"></script>
+    <!--<script href="../static/js/notify.js"></script>-->
 </head>
 <body>
     <nav th:replace="fragments/nav.html :: nav">
@@ -15,10 +19,20 @@
         <div class= "titulo">MASACRE EN LA GRANJA</div>
         <div class="contenedor">
             <form method="post" th:action="@{/lobby/select}">
-                <input required name="gameID" placeholder="ID de Partida">
+                <input required id="gameID" name="gameID" placeholder="ID de Partida">
                 <button type="submit" class="boton">Unirse</button>
             </form>
         </div>
     </main>
+    <script>
+
+       //$(function(){
+           if("[[${errorMessage}]]".length > 0){
+               $(".gameID").notify("[[${errorMessage}]]",
+                   {position: "right"});
+           }
+       //});
+
+    </script>
 </body>
 </html>

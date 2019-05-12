@@ -82,11 +82,15 @@ public class LobbyController {
     @Transactional
     public String joinLobby(Model model, HttpSession session, @PathVariable String idGame) {
         Game game = entityManager.find(Game.class, Long.parseLong(idGame));
-        
+        log.info(game);
+
+        //TODO Mensaje de error si la partida todavía no puede empezar y se clicka en iniciar
         if (game == null) {
-            return "redirect:/user/searchGame"; //TODO mensaje de error
+            model.addAttribute("errorMessage", "¡Esa partida no existe!");
+            return "elegirPartida";
         } else if (game.started()){
-            return "redirect:/user/searchGame"; //TODO mensaje de error
+            model.addAttribute("errorMessage", "¡La partida ya ha empezado!");
+            return "elegirPartida";
         } else {
             addUserToGame(session, game);
             return getLobby(model, game);
@@ -99,11 +103,9 @@ public class LobbyController {
         User user = (User) session.getAttribute("user");
         Game game = entityManager.find(Game.class, Long.parseLong(idGame));
         
-        log.info("HOLA");
+
         if(game != null && !game.started()) {
-            log.info("QUE TAL");
             user = entityManager.find(User.class, user.getId());
-            log.info("ADIOS");
             game.getUsers().remove(user);
             user.getGames().remove(game);
             entityManager.persist(user);
