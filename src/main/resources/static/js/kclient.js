@@ -5,7 +5,7 @@ function addNewPlayerToLobby(name) {
 
 function receiveChatMessage(message) {
 	const lineOutput = document.getElementById("recibido");
-	lineOutput.value = lineOutput.value + '\n' + message;
+	lineOutput.value = lineOutput.value + '\n' + message.propietario + ": " + message.mensaje;
 }
 
 const handleNewPlayer = (name) => {

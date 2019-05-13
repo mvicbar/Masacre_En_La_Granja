@@ -57,6 +57,7 @@ public class UserController {
 	public String getUser(@PathVariable long id, Model model, HttpSession session) {
 		User u = entityManager.find(User.class, id);
 		model.addAttribute("user", u);
+		//log.info("Games of user: " + u.getGames());
 		return "user";
 	}
 
@@ -306,10 +307,9 @@ public class UserController {
 		s.players.put((long) 2, "VAMPIRE");
 
 		g.setStatus(g.getStatusStringFromObj(s));
-		tor.setGames(new ArrayList<Game>());
-		tor.getGames().add(g);
-		mac.setGames(new ArrayList<Game>());
-		mac.getGames().add(g);
+		List<Game> lg = new ArrayList<Game>(); lg.add(g);
+		tor.setGames(lg);
+		mac.setGames(lg);
 		entityManager.persist(g);
 		entityManager.persist(tor);
 		entityManager.persist(mac);
@@ -320,35 +320,4 @@ public class UserController {
 
 		return "pruebas/pruebaChat";
 	}
-
-	@PostMapping("chat/enviar")
-	public ResponseEntity enviar(Model model, HttpServletRequest request, HttpSession session, Principal principal) {
-		String mensaje = (String) request.getAttribute("body");
-		User user = (User) session.getAttribute("user"); // <-- este usuario no está conectado a la bd
-		user = entityManager.find(User.class, user.getId()); // <-- obtengo usuario de la BD
-
-		Game g = user.getActiveGame();
-
-		List<User> users = new ArrayList<>(g.getUsers());
-		String message = "{\"chatMessage\": \" {\"propietario\": " + user.getName() + ", \"mensaje\": " + mensaje
-				+ "\" }";
-		Status s = g.getStatusObj();
-		String rolPropietario = s.players.get(user.getId());
-		for (User u : users) {
-			if (rolPropietario.equals("MUERTO") && s.players.get(u.getId()).equals("MUERTO")) {
-				iwSocketHandler.sendText(u.getName(), message);
-			} else if (s.dia == 0) {
-				if (!rolPropietario.equals("MUERTO") && !s.players.get(u.getId()).equals("MUERTO")) {
-					iwSocketHandler.sendText(u.getName(), message);
-				}
-			} else if (s.dia == 1) {
-				if (rolPropietario.equals("VAMPIRE") && s.players.get(u.getId()).equals("VAMPIRE")) {
-					iwSocketHandler.sendText(u.getName(), message);
-				}
-			}
-		}
-		log.debug("Mensaje enviado [{}]", mensaje);
-		return ResponseEntity.status(HttpStatus.OK).build();
-	}
-
 }

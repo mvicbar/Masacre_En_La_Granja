@@ -194,6 +194,7 @@ div.chat{
     height: 40%;
     border-radius: 3px;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-content: center;
     background-color: white;
@@ -203,4 +204,8 @@ div.chat{
     margin-right: 3vw;
     margin-left: 3vw;
     margin-top: 1vw;
+}
+
+div.chat input{
+	width: 100%;
 }

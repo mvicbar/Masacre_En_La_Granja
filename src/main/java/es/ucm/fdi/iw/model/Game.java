@@ -100,7 +100,7 @@ public class Game {
 		String st = "";
 		ObjectMapper mapper = new ObjectMapper();
 		try {
-            st = mapper.writeValueAsString(st);
+            st = mapper.writeValueAsString(s);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
 		}

@@ -28,10 +28,10 @@
 					const params = {
 						method: 'POST',
 						headers: headers,
-						body: JSON.stringify(text)
+						body: text
 					}
 					console.log
-					fetch("chat/enviar",params).then((response) => {
+					fetch("/api/chat/enviar",params).then((response) => {
 						if (response.status == 200) lineInput.value = "";
 					});
 
