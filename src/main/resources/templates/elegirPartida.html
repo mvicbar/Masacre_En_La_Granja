@@ -5,9 +5,9 @@
     <title>Masacre en la granja</title>
     <link rel="stylesheet" type="text/css" media="screen" th:href="@{/css/nav.css}">
     <link rel="stylesheet" type="text/css" media="screen" th:href="@{/css/elegirPartida.css}">
-    <script th:href="@{/js/jquery-3.4.1.js}"></script>
+    <script th:src="@{/js/jquery-3.4.1.js}"></script>
     <!--<script href="../static/js/jquery-3.4.1.js"></script>-->
-    <script th:href="@{/js/notify.js}"></script>
+    <script th:src="@{/js/notify.js}"></script>
     <!--<script href="../static/js/notify.js"></script>-->
 </head>
 <body>
@@ -26,12 +26,9 @@
     </main>
     <script>
 
-       //$(function(){
            if("[[${errorMessage}]]".length > 0){
-               $(".gameID").notify("[[${errorMessage}]]",
-                   {position: "right"});
+               $.notify("[[${errorMessage}]]", {globalPosition: "right middle"});
            }
-       //});
 
     </script>
 </body>
