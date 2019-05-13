@@ -9,7 +9,10 @@ players_[4] = "FARMER";
 players_[5] = "VAMPIRE";
 players_[6] = "FARMER";
 players_[7] = "FARMER";
-cuttentDeaths = [];
+rolOrder = [];
+rolOrder[0] = "VAMPIRE";
+rolOrder[1] = "WITCH";
+currentDeaths = [];
 votation = [];
 votes = [];
 
@@ -38,21 +41,41 @@ function recivePlay(playJSON)//Tambien recibirá el estado de la partida
 	{
 		case 'VAMPIRE':
 			vampireMove(play, object); //Se le envía el nuevo estado al servidor
+            object.deaths = currentDeaths;
 			return JSON.stringify(object);
 			break;
 		case 'HUNTER':
 			hunterMove(play, object);
+            object.deaths = currentDeaths;
 			return JSON.stringify(object);
 			break;
 		case 'POPULAR_VOTE':
 			popularMove(play, object);
+            object.deaths = currentDeaths;
 			return JSON.stringify(object);
 			break;
         case 'WITCH':
+            witchMove(play, object);
+            object.deaths = currentDeaths;
             return JSON.stringify(object);
             break;
             
 	}
+}
+
+function witchMove(play, object)
+{
+    if(play.action!= 0){
+        if(play.action == 1){//Bruja mata
+            currentDeaths.push(play.victim);
+            object.logs.push("The witch slayed Player "+ (play.victim+1) + " tonight!");
+        }else if(play.action == 2){//Bruja revive
+            currentDeaths = [];
+            object.logs.push("The witch revived Player "+ (play.victim+1) + " tonight!");
+        }
+    }
+    object.id = 'WITCH_PLAYED';
+    endNight(object); //La bruja acaba la noche    
 }
 
 function popularMove(play, object)
@@ -71,7 +94,7 @@ function popularMove(play, object)
 		}
 		else
 		{
-			cuttentDeathsf.push(i);
+			currentDeaths.push(i);
             object.logs.push("The farmers decided hang Player "+ (play.victim+1));
 			object.id = 'POPULAR_VOTED';
 			startNight(object);
@@ -86,12 +109,12 @@ function popularMove(play, object)
 
 function hunterMove(play, object)
 {
-	cuttentDeaths.push(play.victim);
+	currentDeaths.push(play.victim);
 	object.id  = 'HUNTER_SHOT';
 	object.logs.push("Player "+ (play.client+1) +" has shot Player "+ (play.victim+1) +"!")
 	players_[play.client] = "DEAD";
 	//El cazador muere
-	cuttentDeaths.push(play.client);
+	currentDeaths.push(play.client);
 	if(dia){//Si le ha matado el pueblo, empieza la noche
 		startNight(object);
 	}
@@ -113,14 +136,13 @@ function vampireMove(play, object)
 			//Repite Votacion
 			object.logs.push("Vampires couldn't decide who to kill!");
 			object.id = 'VAMPIRES_VOTED';
-            endNight(object);
 		}
 		else
 		{
-			cuttentDeaths.push(i);
+			currentDeaths.push(i);
 			object.id = 'VAMPIRES_VOTED';
-			endNight(object);//Termina la noche (provisional, esto lo acabará haciendo la bruja)
 		}
+        object.newRol = nextRol("VAMPIRE", object);
 		votation = [];
 	}
 	else {object.id = 'CONTINUE_VOTATION'}
@@ -155,6 +177,33 @@ function evenRepeatVotationCount()
     return greatest;//Mayoría
 }
 
+function nextRol(rol, object)
+{
+    j=0;
+    while(j<rolOrder.length)
+    {
+        if(rol == rolOrder[j]){
+            break;
+        }
+        j++;
+    }
+    if(j >= rolOrder.length-1){
+        return endNight(object);
+    }
+    else{
+        j++;
+        while(j<rolOrder.length)
+        {
+            if(countRol(rolOrder[j])>0)
+            {
+                return rolOrder[j];
+            }
+            j++;
+        }
+        return endNight(object);
+    }
+    
+}
 
 function endNight(object)
 {
@@ -164,6 +213,7 @@ function endNight(object)
         object.newRol = "POPULAR_VOTATION";
         object.logs.push("The farmers wake up");
     }
+    return "POPULAR_VOTATION";
 	
 	
 
@@ -175,23 +225,23 @@ function startNight(object)
     if(object.newRol != "HUNTER"){
         dia = 0;
         object.logs.push("The farmers go to bed...");
-        object.newRol = "VAMPIRE";//Provisional, será el estrcito primer rol
+        object.newRol = rolOrder[0];
     }
 }
 
 function processDeaths(object)
 {
-	for(i=0; i < object.deaths.length; i++){
+	for(i=0; i < currentDeaths.length; i++){
 		//Se recorren los jugadores que han muerto esa noche
-		if(players_[object.deaths[i]] == "HUNTER" ){//Si el cazador muere, será su turno
-			object.logs.push("Player " +(object.deaths[i]+1) + " was the Hunter, and wants retribution!");
+		if(players_[currentDeaths[i]] == "HUNTER" ){//Si el cazador muere, será su turno
+			object.logs.push("Player " +(currentDeaths[i]+1) + " was the Hunter, and wants retribution!");
 			object.newRol = "HUNTER";
-			object.deaths.splice(i,1);
+			currentDeaths.splice(i,1);
 		}
 		else{
-			object.logs.push("Player "+ (object.deaths[i]+1) +" has died!");
+			object.logs.push("Player "+ (currentDeaths[i]+1) +" has died!");
 			//El jugador muere
-			players_[object.deaths[i]] = "DEAD";
+			players_[currentDeaths[i]] = "DEAD";
 		}
 	}
     checkWin(object);
@@ -235,7 +285,16 @@ function countMaxVotes()
 	}
 	return people;
 }
-
+function countRol(rol)
+{
+	people =0;
+	for(i=0; i<players_.length; i++){
+		if(players_[i] == rol){
+			people++;
+		}
+	}
+	return people;
+}
 function countVampires()
 {
 	vampires =0;
