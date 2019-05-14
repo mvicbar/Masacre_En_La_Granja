@@ -30,7 +30,6 @@
 						headers: headers,
 						body: text
 					}
-					console.log
 					fetch("/api/chat/enviar",params).then((response) => {
 						if (response.status == 200) lineInput.value = "";
 					});

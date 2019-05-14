@@ -42,8 +42,9 @@ public class Status {
 
     */
     public Integer dia; //0 = si; 1 = no
-    public Map<Long, String> players; // Map de id de jugador con su rol (que puede ser MUERTO)
+    public Map<String, String> players; // Map de nombre de jugador con su rol (que puede ser MUERTO)
     //public List<Long> enamorados; //Contiene dos elementos que son el Id de los jugadores enamorados
     public List<Acciones> acciones; //Es un JSON y habria que pensar si crear otra clase para mapearlo
+    public List<String> currentDeaths; //Esto es para modelo.js // lista de nombres de los que estan muriendo
 
 }

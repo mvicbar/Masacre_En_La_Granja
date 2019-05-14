@@ -257,21 +257,6 @@ public class UserController {
 	}
 
 	/*
-	 * ELIMINAR ANTES DE LA ENTREGA
-	 */
-	@GetMapping("/gameStarted")
-	public String probarGameStarted(Model model, HttpSession session) {
-		String json = "{\"momento\": \"inLobby\",\"esDeDia\": 1,\"users\":[4,35,18,26,97,35],\"userIdRol\":{\"4\": \"vampiro\",\"35\": \"granjero\",\"18\": \"vampiro\",\"26\": \"bruja\",\"97\": \"granjero\",\"35\": \"granjero\"},\"userIdAlive\":{\"4\": 1,\"35\": 0,\"18\": 0,\"26\": 0,\"97\": 1,\"35\": 0},\"enamorados\":[18,35],\"acciones\": [{\"rol\": \"vampiro\",\"client\": 18,\"victim\": 97,\"action\": \"\"}]}";
-		Game g = new Game();
-		g.setStatus(json);
-		log.debug(g.getStatus());
-		Boolean empezada = g.started();
-		model.addAttribute("empezada", empezada);
-		model.addAttribute("game", g);
-		return "pruebas/partidaEmpezada";
-	}
-
-	/*
 	 * DEJARLO DE MOMENTO ELIMINAR ANTES DE LA ENTREGA
 	 */
 	@GetMapping("/pruebaChat")
@@ -290,9 +275,10 @@ public class UserController {
 		Status s = new Status();
 		s.dia = 0;
 		s.momento = "ingame";
-		s.players = new HashMap<Long, String>();
-		s.players.put((long) 1, "VAMPIRE");
-		s.players.put((long) 2, "VAMPIRE");
+		s.players = new HashMap<String, String>();
+		s.players.put("tor", "VAMPIRE");
+		s.players.put("mac", "VAMPIRE");
+		s.currentDeaths = new ArrayList<String>();
 
 		g.setStatus(g.getStatusStringFromObj(s));
 		List<Game> lg = new ArrayList<Game>(); lg.add(g);

@@ -48,25 +48,6 @@ public class IwSocketHandler extends TextWebSocketHandler {
 		}
 	}
 
-	@Override
-	public void handleTextMessage(WebSocketSession session, TextMessage message) {
-		String userName = session.getPrincipal().getName();
-		log.info("received message: " + message.getPayload() + " from " + userName);
-
-		// do something with message; for example, re-send it
-		String payload = message.getPayload();
-		if (payload.startsWith("@")) {
-			String dest = payload.substring(1, payload.indexOf(' '));
-			if (users.containsKey(dest)) {
-				sendText(dest, userName + ": " + payload.substring(payload.indexOf(' ') + 1));
-			} else if (dest.equals("all")) {
-				for (String u : users.keySet()) {
-					sendText(u, userName + " shouts: " + payload.substring(payload.indexOf(' ') + 1));
-				}
-			}
-		}
-	}
-
 	/**
 	 * Attempts to send text to a user.
 	 *
