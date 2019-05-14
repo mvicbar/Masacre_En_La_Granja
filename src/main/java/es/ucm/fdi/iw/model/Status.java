@@ -46,5 +46,7 @@ public class Status {
     //public List<Long> enamorados; //Contiene dos elementos que son el Id de los jugadores enamorados
     public List<Acciones> acciones; //Es un JSON y habria que pensar si crear otra clase para mapearlo
     public List<String> currentDeaths; //Esto es para modelo.js // lista de nombres de los que estan muriendo
+    public Map<String, Integer> votes; //Esto es para modelo.js // lista de nombres votados con recuento de votos
+
 
 }

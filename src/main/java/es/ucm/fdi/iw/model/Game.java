@@ -96,6 +96,18 @@ public class Game {
 		}
 		return s;
 	}
+
+	public Status getStatusObjFromString(String str){
+		ObjectMapper mapper = new ObjectMapper();
+		Status s = null;
+		try {
+			s = mapper.readValue(str, Status.class);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return s;
+	}
+
 	public String getStatusStringFromObj(Status s){
 		String st = "";
 		ObjectMapper mapper = new ObjectMapper();

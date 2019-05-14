@@ -1,14 +1,14 @@
 //Informacion de la partida
 dia = 0;//0 noche , 1 dia
 players = [];
-players[0] = "VAMPIRE";
+/*players[0] = "VAMPIRE";
 players[1] = "HUNTER";
 players[2] = "WITCH";
 players[3] = "FARMER";
 players[4] = "FARMER";
 players[5] = "VAMPIRE";
 players[6] = "FARMER";
-players[7] = "FARMER";
+players[7] = "FARMER";*/
 rolOrder = [];
 rolOrder[0] = "VAMPIRE";
 rolOrder[1] = "WITCH";
@@ -37,6 +37,7 @@ function recivePlay(oldStateJSON, playJSON)//Tambien recibirá el estado de la p
 	currentDeaths = oldState.currentDeaths;
 	dia = oldState.dia;
 	players = oldState.players;
+	votation = oldState.votes;
 	console.log(players);
 	//Get the player, rol, and action of the play and process it
 	var play = JSON.parse(playJSON);
@@ -56,7 +57,19 @@ function recivePlay(oldStateJSON, playJSON)//Tambien recibirá el estado de la p
 			break;
 	}
 	object.deaths = currentDeaths;
-	return JSON.stringify(object);
+	acciones = oldState.acciones;
+	acciones.push(jugada);
+	
+	var newStatus = {
+		momento: object.id,
+		dia: dia,
+		players: players,
+		acciones: acciones,
+		currentDeaths: currentDeaths,
+		votes: votation
+	};
+
+	return [JSON.stringify(object), JSON.stringify(newStatus)];
 }
 
 function witchMove(play, object) {
@@ -114,12 +127,20 @@ function hunterMove(play, object) {
 
 }
 
+function votationLength() {
+	var voteCont = 0;
+	for (i in votation) {
+		voteCont += votation[i];
+	}
+	return voteCont;
+}
+
 function vampireMove(play, object) {
 	votation.push(play.victim);
-	if (votation.length == countVampires()) {
+	if (votationLength() == countRol("VAMPIRE")) {
 		resetVotes();
 		i = evenRepeatVotationCount();
-		if (i < 0) {
+		if (i == "") {
 			//Repite Votacion
 			object.logs.push("Vampires couldn't decide who to kill!");
 			object.id = 'VAMPIRES_VOTED';
@@ -131,28 +152,26 @@ function vampireMove(play, object) {
 		object.newRol = nextRol("VAMPIRE", object);
 		votation = [];
 	}
-	else { object.id = 'CONTINUE_VOTATION' }
+	else { 
+		object.id = 'CONTINUE_VOTATION';
+	}
 }
 
 function evenRepeatVotationCount() {
-	greatest = -1;
+	greatest = "";
 	greatestVotes = -1;
 	greatestEven = -1;
-	for (i = 0; i < votation.length; i++) {
-		votes[votation[i]] += 1;
-	}
-	for (i = 0; i < votes.length; i++) {
-		if (votes[i] > greatestVotes) {
+
+	for(i in votation){
+		if(votation[i] > greatestVotes){
 			greatest = i;
-			greatestVotes = votes[i];
-		}
-		else if (votes[i] == greatestVotes) {
+			greatestVotes = votation[i];
+		}else if(votation[i] == greatestVotes){
 			greatestEven = greatestVotes;
 		}
 	}
-	votes = [];
 	if (greatestVotes == greatestEven) {
-		return -1;//Empate al mejor, se repite votacion
+		return "";//Empate al mejor, se repite votacion
 	}
 	return greatest;//Mayoría
 }
@@ -204,8 +223,7 @@ function startNight(object) {
 }
 
 function processDeaths(object) {
-	for (i = 0; i < currentDeaths.length; i++) {
-		//Se recorren los jugadores que han muerto esa noche
+	for(i in currentDeaths){
 		if (players[currentDeaths[i]] == "HUNTER") {//Si el cazador muere, será su turno
 			object.logs.push("Player " + (currentDeaths[i] + 1) + " was the Hunter, and wants retribution!");
 			object.newRol = "HUNTER";
@@ -247,7 +265,7 @@ function countVotes() {
 
 function countMaxVotes() {
 	people = 0;
-	for (i = 0; i < players.length; i++) {
+	for (i in players) {
 		if (players[i] != "DEAD") {
 			people++;
 		}
@@ -256,21 +274,12 @@ function countMaxVotes() {
 }
 function countRol(rol) {
 	people = 0;
-	for (i = 0; i < players.length; i++) {
+	for (i in players) {
 		if (players[i] == rol) {
 			people++;
 		}
 	}
 	return people;
-}
-function countVampires() {
-	vampires = 0;
-	for (i = 0; i < players.length; i++) {
-		if (players[i] == "VAMPIRE") {
-			vampires++;
-		}
-	}
-	return vampires;
 }
 
 function resetVotes() {
