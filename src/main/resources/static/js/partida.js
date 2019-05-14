@@ -1,7 +1,6 @@
 actualRol= "VAMPIRE";
 endGame=0;
-numPlayers = 8;
-players= [[]];
+/*players= [[]];
 option = -1;
 for(i=0; i<numPlayers; i++)
 {
@@ -15,10 +14,11 @@ players[3][0] = "FARMER";
 players[4][0] = "FARMER";
 players[5][0] = "VAMPIRE";
 players[6][0] = "FARMER";
-players[7][0] = "FARMER";
+players[7][0] = "FARMER";*/
 
-clientPlayer = 0;
-clientRol = players[clientPlayer];
+clientPlayer = userName;
+clientRol = userRol;
+played = 0;
 currentDeaths = [];
 //nextRound();
 
@@ -26,7 +26,7 @@ currentDeaths = [];
 function vote(player)
 {
 
-    if((actualRol == players[clientPlayer][0] || actualRol == "POPULAR_VOTATION") && players[clientPlayer][0] != "DEAD" && players[clientPlayer][1]==0){
+    if((actualRol == userRol || actualRol == "POPULAR_VOTATION") && userRol != "DEAD" && played==0){
         if((player != clientPlayer)||
           (actualRol == "WITCH" && option == 2)){
 
@@ -60,17 +60,33 @@ function witchPlay(objetive)
         if(option == 0 || (option == 1 && currentDeaths[0]!=objetive)||
            option == 2 && currentDeaths[0]==objetive){
             hideOptions();
-            players[clientPlayer][1] = 1;
+            played = 1;
             playJSON = {
-            rol: 'WITCH',
-            client: clientPlayer,
-            victim: objetive,
-            action: option,
+                rol: 'WITCH',
+                client: clientPlayer,
+                victim: objetive,
+                action: option,
             }
         }else{
             noteEntry("You can't do that, Witch");
         }
-    reciveStatus(recivePlay(JSON.stringify(playJSON)));//provisional
+
+        var text = JSON.stringify(playJSON);
+        const headers = {
+            "Content-Type": "application/json",				
+            "X-CSRF-TOKEN": config.csrf.value
+        };
+        const params = {
+            method: 'POST',
+            headers: headers,
+            body: text
+        }
+        fetch("/api/game/recivePlay", params).then((response) => {
+            if (response.status == 200) console.log("JUGADA ENVIADA");
+            else{
+                console.log("MIERDA!! ALGO HA SALIDO MAL");
+            }
+        });
     }
 }
 
@@ -229,22 +245,11 @@ function hideOptions()
  document.getElementById('controls').style.display = 'none';
 }
 
-document.getElementById("card1").addEventListener("click", function() 
-{ vote(0);})
-document.getElementById("card2").addEventListener("click", function() 
-{ vote(1);})
-document.getElementById("card3").addEventListener("click", function() 
-{ vote(2);})
-document.getElementById("card4").addEventListener("click", function() 
-{ vote(3);})
-document.getElementById("card5").addEventListener("click", function() 
-{ vote(4);})
-document.getElementById("card6").addEventListener("click", function() 
-{ vote(5);})
-document.getElementById("card7").addEventListener("click", function() 
-{ vote(6);})
-document.getElementById("card8").addEventListener("click", function() 
-{ vote(7);})
+for(p in players){
+    document.getElementById(p+"Card").addEventListener("click", function() 
+    { vote(p);})
+}
+
 
 document.getElementById("controlA").addEventListener("click", function() 
 { option = 1;

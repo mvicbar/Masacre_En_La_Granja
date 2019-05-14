@@ -157,7 +157,7 @@ public class Game {
                 pos = 0;
             }
             
-            st.players.put(user.getId(), roles[pos]);
+            st.players.put(user.getName(), roles[pos]);
             roles[pos] = roles[users.size() - st.players.size()];
         }
         
