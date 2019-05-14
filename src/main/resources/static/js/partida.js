@@ -92,28 +92,36 @@ function witchPlay(objetive)
 
 function popularPlay(victim_)
 {
-    players[clientPlayer][1] = 1;
+    played = 1;
     //Envía jugada al servidor vía Ajax
-    noteEntry("Your vote is for Player "+ (victim_+1));
+    noteEntry("Your vote is for " + victim_);
     playJSON = {
         rol: 'POPULAR_VOTE',
         client: clientPlayer,
         victim: victim_,
     }
-    reciveStatus(recivePlay(JSON.stringify(playJSON)));//provisional
+    fetch("/api/game/recivePlay", params).then((response) => {
+            if (response.status == 200) console.log("JUGADA ENVIADA");
+            else{
+                console.log("MIERDA!! ALGO HA SALIDO MAL");
+            }
 }
 
 function vampirePlay(victim_)
 {
-    players[clientPlayer][1] = 1;
-    noteEntry("Your victim is Player "+ (victim_+1));
+    played = 1;
+    noteEntry("Your victim is " +victim_;
     //Envía jugada al servidor vía Ajax
     playJSON = {
         rol: 'VAMPIRE',
         client: clientPlayer,
         victim: victim_,
     }
-    reciveStatus(recivePlay(JSON.stringify(playJSON)));//provisional
+    fetch("/api/game/recivePlay", params).then((response) => {
+            if (response.status == 200) console.log("JUGADA ENVIADA");
+            else{
+                console.log("MIERDA!! ALGO HA SALIDO MAL");
+            }
 
 }
 
@@ -127,7 +135,11 @@ function hunterPlay(victim_)
         client: clientPlayer,
         victim: victim_,
     }
-    reciveStatus(recivePlay(JSON.stringify(playJSON)));//provisional
+   fetch("/api/game/recivePlay", params).then((response) => {
+            if (response.status == 200) console.log("JUGADA ENVIADA");
+            else{
+                console.log("MIERDA!! ALGO HA SALIDO MAL");
+            }
 
 }
 
@@ -188,33 +200,27 @@ function witchInfo()
         logEntry("Nobody is gonna die tonight");
         noteEntry("Nobody is gonna die tonight");
     }else{
-        logEntry("Player " + (currentDeaths[0]+1)+ " is gonna die tonight...");
-        logEntry("Player " + (currentDeaths[0]+1)+ " is gonna die tonight...");
+        logEntry(currentDeaths[0]+ " is gonna die tonight...");
+        noteEntry(currentDeaths[0]+ " is gonna die tonight...");
     }
     document.getElementById('controls').style.display = 'flex';  
 }
-function repeatPlay(rol)
-{
-    for (var i = 0; i < players.length; i++) {
-        if(players[i][0] == rol){
-            players[i][1] = 0;
-        }
-    }
-}
-
 function resetPlay()
 {
-    for (var i = 0; i < players.length; i++) {
-        players[i][1] = 0;
-    }
+    played =0;
 }
 
 function updateDeaths(deaths)
 {
     for(i=0; i < deaths.length; i++){
-        players[deaths[i]][0] = "DEAD";
-        noteEntry("Player "+ (deaths[i]+1) +" has died!");
-        document.getElementById('player'+(deaths[i]+1)+'card').innerHTML = "DEAD";
+        if(deaths[i] == clientRol){//El cliente ha muerto
+            clientRol = "DEAD"
+            noteEntry("YOU DIED");
+        }
+        else{
+            noteEntry(deaths[i] +" has died!");
+            document.getElementById(p+"Player").innerHTML = "DEAD";
+        }
     }
     currentDeaths=[];
 }

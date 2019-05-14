@@ -225,12 +225,12 @@ function startNight(object) {
 function processDeaths(object) {
 	for(i in currentDeaths){
 		if (players[currentDeaths[i]] == "HUNTER") {//Si el cazador muere, será su turno
-			object.logs.push("Player " + (currentDeaths[i] + 1) + " was the Hunter, and wants retribution!");
+			object.logs.push(currentDeaths[i] + " was the Hunter, and wants retribution!");
 			object.newRol = "HUNTER";
 			currentDeaths.splice(i, 1);
 		}
 		else {
-			object.logs.push("Player " + (currentDeaths[i] + 1) + " has died!");
+			object.logs.push((currentDeaths[i] + " has died!");
 			//El jugador muere
 			players[currentDeaths[i]] = "DEAD";
 		}
@@ -242,25 +242,12 @@ function checkWin(object)//Comprueba si un bando ha ganado
 {
 	vampiresLeft = 0;
 	farmersLeft = 0;
-	for (i = 0; i < players.length; i++) {
+	for (i in players) {
 		if (players[i] == "VAMPIRE") { vampiresLeft++; }
 		else if (players[i] != "DEAD") { farmersLeft++; }
 	}
 	if (vampiresLeft == 0) { object.id = "FARMERS_WON"; }
 	else if (farmersLeft == 0) { object.id = "VAMPIRES_WON"; }
-}
-
-function countVotes() {
-	greatest = 0;
-	greatestVotes = 0;
-	for (i = 0; i < votes.length; i++) {
-		if (votes[i] > greatestVotes) {
-			greatest = i;
-			greatestVotes = votes[i];
-		}
-	}
-	votes = [];
-	return greatest;
 }
 
 function countMaxVotes() {
