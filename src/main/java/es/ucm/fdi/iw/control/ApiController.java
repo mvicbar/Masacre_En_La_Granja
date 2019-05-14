@@ -1,6 +1,5 @@
 package es.ucm.fdi.iw.control;
 
-import es.ucm.fdi.iw.LocalData;
 import es.ucm.fdi.iw.model.Game;
 import es.ucm.fdi.iw.model.Status;
 import es.ucm.fdi.iw.model.User;
@@ -9,7 +8,6 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,20 +24,14 @@ public class ApiController {
 	private static final Logger log = LogManager.getLogger(ApiController.class);
 
 	@Autowired
-	private PasswordEncoder passwordEncoder;
-
-	@Autowired
 	private EntityManager entityManager;
 
 	@Autowired
 	private IwSocketHandler iwSocketHandler;
 
-	@Autowired
-	private LocalData localData;
-
 	@PostMapping("chat/enviar")
 	@Transactional
-	public ResponseEntity enviar(Model model, HttpSession session, 
+	public ResponseEntity<?> enviar(Model model, HttpSession session, 
 			@RequestBody String mensaje) {
 		User user = (User) session.getAttribute("user"); // <-- este usuario no está conectado a la bd
 		user = entityManager.find(User.class, user.getId()); // <-- obtengo usuario de la BD
@@ -80,7 +72,7 @@ public class ApiController {
 
 	// Función para comprobar que el nombre del user que se va a registrar no existe
 	@PostMapping("user/loginOk/{name}")
-	public ResponseEntity existingName(@PathVariable String name) {
+	public ResponseEntity<?> existingName(@PathVariable String name) {
 		// Mirar en la base de datos mágicamente para ver si está creado
 		Long usersWithLogin = entityManager.createNamedQuery("User.HasName", Long.class).setParameter("userName", name)
 				.getSingleResult();
