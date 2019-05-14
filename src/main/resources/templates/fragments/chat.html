@@ -7,12 +7,6 @@
 </head>
 
 <body>
-	<nav th:replace="fragments/nav.html :: nav">
-		Nav goes here
-	</nav>
-	<div th:replace="fragments/footer.html :: bootstrap">
-		Nav goes here
-	</div>
 	<!-- <div th:replace="fragments/chat.html :: chat"> -->
 	<th:block th:fragment="chat">
 		<textarea id="recibido" cols="80" rows="10">
@@ -32,20 +26,16 @@
 						"X-CSRF-TOKEN": config.csrf.value
 					};
 					const params = {
-						method: 'POST', headers: headers, body: JSON.stringify(text)
+						method: 'POST',
+						headers: headers,
+						body: text
 					}
 					console.log
-					fetch("chat/enviar",params).then((response) => {
-						if (response.ok) lineInput.value = "";
+					fetch("/api/chat/enviar",params).then((response) => {
+						if (response.status == 200) lineInput.value = "";
 					});
 
 					return false;
-				}
-
-				// recepcion
-				const lineOutput = document.getElementById("recibido");
-				ws.receive = (text) => {
-					lineOutput.value = lineOutput.value + '\n' + text;
 				}
 			});
 		</script>
