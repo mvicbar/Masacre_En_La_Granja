@@ -1,14 +1,14 @@
 //Informacion de la partida
 dia=0;//0 noche , 1 dia
-players_= [];
-players_[0] = "VAMPIRE";
-players_[1] = "HUNTER";
-players_[2] = "WITCH";
-players_[3] = "FARMER";
-players_[4] = "FARMER";
-players_[5] = "VAMPIRE";
-players_[6] = "FARMER";
-players_[7] = "FARMER";
+players= [];
+players[0] = "VAMPIRE";
+players[1] = "HUNTER";
+players[2] = "WITCH";
+players[3] = "FARMER";
+players[4] = "FARMER";
+players[5] = "VAMPIRE";
+players[6] = "FARMER";
+players[7] = "FARMER";
 rolOrder = [];
 rolOrder[0] = "VAMPIRE";
 rolOrder[1] = "WITCH";
@@ -30,10 +30,13 @@ playJSON = {
 }
 */
 
-function recivePlay(playJSON)//Tambien recibirá el estado de la partida
+function recivePlay(oldStateJSON, playJSON)//Tambien recibirá el estado de la partida
 {
 	//Se hactualiza la infromación de la partida desde la BD
-
+	var oldState = JSON.parse(oldStateJSON);
+	currentDeaths = oldState.currentDeaths;
+	dia = oldState.dia;
+	players = oldState.players
 	//Get the player, rol, and action of the play and process it
 	var play = JSON.parse(playJSON);
 	object = new statusUpdate();
@@ -41,26 +44,19 @@ function recivePlay(playJSON)//Tambien recibirá el estado de la partida
 	{
 		case 'VAMPIRE':
 			vampireMove(play, object); //Se le envía el nuevo estado al servidor
-            object.deaths = currentDeaths;
-			return JSON.stringify(object);
 			break;
 		case 'HUNTER':
 			hunterMove(play, object);
-            object.deaths = currentDeaths;
-			return JSON.stringify(object);
 			break;
 		case 'POPULAR_VOTE':
 			popularMove(play, object);
-            object.deaths = currentDeaths;
-			return JSON.stringify(object);
 			break;
         case 'WITCH':
             witchMove(play, object);
-            object.deaths = currentDeaths;
-            return JSON.stringify(object);
             break;
-            
 	}
+	object.deaths = currentDeaths; 
+    return JSON.stringify(object);
 }
 
 function witchMove(play, object)
@@ -112,7 +108,7 @@ function hunterMove(play, object)
 	currentDeaths.push(play.victim);
 	object.id  = 'HUNTER_SHOT';
 	object.logs.push("Player "+ (play.client+1) +" has shot Player "+ (play.victim+1) +"!")
-	players_[play.client] = "DEAD";
+	players[play.client] = "DEAD";
 	//El cazador muere
 	currentDeaths.push(play.client);
 	if(dia){//Si le ha matado el pueblo, empieza la noche
@@ -233,7 +229,7 @@ function processDeaths(object)
 {
 	for(i=0; i < currentDeaths.length; i++){
 		//Se recorren los jugadores que han muerto esa noche
-		if(players_[currentDeaths[i]] == "HUNTER" ){//Si el cazador muere, será su turno
+		if(players[currentDeaths[i]] == "HUNTER" ){//Si el cazador muere, será su turno
 			object.logs.push("Player " +(currentDeaths[i]+1) + " was the Hunter, and wants retribution!");
 			object.newRol = "HUNTER";
 			currentDeaths.splice(i,1);
@@ -241,7 +237,7 @@ function processDeaths(object)
 		else{
 			object.logs.push("Player "+ (currentDeaths[i]+1) +" has died!");
 			//El jugador muere
-			players_[currentDeaths[i]] = "DEAD";
+			players[currentDeaths[i]] = "DEAD";
 		}
 	}
     checkWin(object);
@@ -251,9 +247,9 @@ function checkWin(object)//Comprueba si un bando ha ganado
 {
 	vampiresLeft = 0;
 	farmersLeft = 0;
-	for(i=0; i<players_.length; i++){
-		if(players_[i] == "VAMPIRE"){vampiresLeft++;}
-		else if(players_[i] != "DEAD"){farmersLeft++;}
+	for(i=0; i<players.length; i++){
+		if(players[i] == "VAMPIRE"){vampiresLeft++;}
+		else if(players[i] != "DEAD"){farmersLeft++;}
 	}
 	if(vampiresLeft == 0){object.id = "FARMERS_WON";}
 	else if(farmersLeft == 0){object.id = "VAMPIRES_WON";}
@@ -278,8 +274,8 @@ function countVotes()
 function countMaxVotes()
 {
 	people =0;
-	for(i=0; i<players_.length; i++){
-		if(players_[i] != "DEAD"){
+	for(i=0; i<players.length; i++){
+		if(players[i] != "DEAD"){
 			people++;
 		}
 	}
@@ -288,8 +284,8 @@ function countMaxVotes()
 function countRol(rol)
 {
 	people =0;
-	for(i=0; i<players_.length; i++){
-		if(players_[i] == rol){
+	for(i=0; i<players.length; i++){
+		if(players[i] == rol){
 			people++;
 		}
 	}
@@ -298,8 +294,8 @@ function countRol(rol)
 function countVampires()
 {
 	vampires =0;
-	for(i=0; i<players_.length; i++){
-		if(players_[i] == "VAMPIRE"){
+	for(i=0; i<players.length; i++){
+		if(players[i] == "VAMPIRE"){
 			vampires++;
 		}
 	}

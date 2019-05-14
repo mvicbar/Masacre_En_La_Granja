@@ -12,8 +12,14 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityManager;
+import javax.script.Invocable;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
+
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +37,7 @@ public class ApiController {
 
 	@PostMapping("chat/enviar")
 	@Transactional
-	public ResponseEntity<?> enviar(Model model, HttpSession session, 
+	public ResponseEntity<?> enviar(HttpSession session, 
 			@RequestBody String mensaje) {
 		User user = (User) session.getAttribute("user"); // <-- este usuario no está conectado a la bd
 		user = entityManager.find(User.class, user.getId()); // <-- obtengo usuario de la BD
@@ -51,16 +57,16 @@ public class ApiController {
 					+ "\"mensaje\":\"" 
 					+ mensaje + "\"}}";
 		Status s = g.getStatusObj();
-		String rolPropietario = s.players.get(user.getId());
+		String rolPropietario = s.players.get(user.getName());
 		for (User u : users) {
-			if (rolPropietario.equals("MUERTO") && s.players.get(u.getId()).equals("MUERTO")) {
+			if (rolPropietario.equals("MUERTO") && s.players.get(u.getName()).equals("MUERTO")) {
 				iwSocketHandler.sendText(u.getName(), message);
 			} else if (s.dia == 0) {
-				if (!rolPropietario.equals("MUERTO") && !s.players.get(u.getId()).equals("MUERTO")) {
+				if (!rolPropietario.equals("MUERTO") && !s.players.get(u.getName()).equals("MUERTO")) {
 					iwSocketHandler.sendText(u.getName(), message);
 				}
 			} else if (s.dia == 1) {
-				if (rolPropietario.equals("VAMPIRE") && s.players.get(u.getId()).equals("VAMPIRE")) {
+				if (rolPropietario.equals("VAMPIRE") && s.players.get(u.getName()).equals("VAMPIRE")) {
 					iwSocketHandler.sendText(u.getName(), message);
 				}
 			}
@@ -80,5 +86,59 @@ public class ApiController {
 		if (usersWithLogin == 0)
 			return ResponseEntity.status(HttpStatus.OK).build();
 		return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
+	}
+
+
+	@PostMapping("/game/recivePlay")
+	public ResponseEntity<?> recivePlay(HttpSession session,
+			@RequestBody String jugada) {
+
+		User user = (User) session.getAttribute("user"); // <-- este usuario no está conectado a la bd
+		user = entityManager.find(User.class, user.getId()); // <-- obtengo usuario de la BD
+
+		for(Game game : user.getGames())
+		{
+			log.info(game.toString());
+		}
+		
+		Game g = user.getActiveGame();
+
+		List<User> users = new ArrayList<>(g.getUsers());
+
+		String nuevoEstado = procesarJugada(jugada, g.getStatus());
+
+		String message = "{"
+				+ "\"nuevoEstado\":\"" 
+					+ nuevoEstado + "\"}";
+
+		for (User u : users) {
+			iwSocketHandler.sendText(u.getName(), message);
+		}
+		log.debug("Jugada enviada: [{}]", jugada);
+		return ResponseEntity.status(HttpStatus.OK).build();
+	}
+
+	private String procesarJugada(String jugada, String state){
+
+		ScriptEngineManager manager = new ScriptEngineManager();
+		ScriptEngine engine = manager.getEngineByName("JavaScript");
+		// read script file
+		try {
+			engine.eval(new InputStreamReader(getClass().getResourceAsStream(
+					"/static/js/modelo.js"))); // relativo a src/main/resources
+		} catch (ScriptException e) {
+			log.warn("Error loading script",  e);
+		}
+
+		Invocable inv = (Invocable) engine;
+		String result = null;
+		// call function from script file
+		try {
+			result = (String) inv.invokeFunction("recivePlay", state, jugada);
+		} catch (NoSuchMethodException | ScriptException e) {
+			log.warn("Error running script",  e);
+		}
+		log.warn(result);
+		return null;
 	}
 }
