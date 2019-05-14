@@ -179,8 +179,8 @@ function reciveStatus(newStateJSON)//Actualiza el estado del cliente via websock
             break;
 
     }
-    if(actualRol == "WITCH" && players[clientPlayer] =="WITCH")witchInfo();
-    if(!endGame)printLogs(newState.logs);
+    if(actualRol == "WITCH" && clientRol =="WITCH") witchInfo();
+    if(!endGame) printLogs(newState.logs);
 }
 function witchInfo()
 {

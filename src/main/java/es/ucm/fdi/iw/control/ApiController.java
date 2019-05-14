@@ -36,7 +36,6 @@ public class ApiController {
 	private IwSocketHandler iwSocketHandler;
 
 	@PostMapping("chat/enviar")
-	@Transactional
 	public ResponseEntity<?> enviar(HttpSession session, 
 			@RequestBody String mensaje) {
 		User user = (User) session.getAttribute("user"); // <-- este usuario no está conectado a la bd
@@ -90,6 +89,7 @@ public class ApiController {
 
 
 	@PostMapping("/game/recivePlay")
+	@Transactional
 	public ResponseEntity<?> recivePlay(HttpSession session,
 			@RequestBody String jugada) {
 
@@ -105,11 +105,17 @@ public class ApiController {
 
 		List<User> users = new ArrayList<>(g.getUsers());
 
-		String nuevoEstado = procesarJugada(jugada, g.getStatus());
+		List<String> result = procesarJugada(jugada, g.getStatus());
+		String nuevoEstado = result.get(1);
+		g.setStatus(nuevoEstado);
+		entityManager.persist(g);
+		entityManager.flush();
+
+		String object = result.get(0);
 
 		String message = "{"
 				+ "\"nuevoEstado\":\"" 
-					+ nuevoEstado + "\"}";
+					+ object + "\"}";
 
 		for (User u : users) {
 			iwSocketHandler.sendText(u.getName(), message);
@@ -118,7 +124,7 @@ public class ApiController {
 		return ResponseEntity.status(HttpStatus.OK).build();
 	}
 
-	private String procesarJugada(String jugada, String state){
+	private List<String> procesarJugada(String jugada, String state){
 
 		ScriptEngineManager manager = new ScriptEngineManager();
 		ScriptEngine engine = manager.getEngineByName("JavaScript");

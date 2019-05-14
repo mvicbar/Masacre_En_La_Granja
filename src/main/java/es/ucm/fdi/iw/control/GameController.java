@@ -78,6 +78,7 @@ public class GameController {
 		s.players.put("tor", "VAMPIRE");
         s.players.put("mac", "VAMPIRE");
         s.currentDeaths = new ArrayList<String>();
+        s.votes = new HashMap<String, Integer>();
 
 		g.setStatus(g.getStatusStringFromObj(s));
 		List<Game> lg = new ArrayList<Game>(); lg.add(g);
