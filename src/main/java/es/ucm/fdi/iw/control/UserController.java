@@ -61,18 +61,6 @@ public class UserController {
 		return "user";
 	}
 
-	// Función para comprobar que el nombre del user que se va a registrar no existe
-	@PostMapping("/loginOk/{name}")
-	public ResponseEntity existingName(@PathVariable String name) {
-		// Mirar en la base de datos mágicamente para ver si está creado
-		Long usersWithLogin = entityManager.createNamedQuery("User.HasName", Long.class).setParameter("userName", name)
-				.getSingleResult();
-		// si creado
-		if (usersWithLogin == 0)
-			return ResponseEntity.status(HttpStatus.OK).build();
-		return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
-	}
-
 	@PostMapping("/{id}")
 	@Transactional
 	public String postUser(@PathVariable long id, @ModelAttribute User edited,
