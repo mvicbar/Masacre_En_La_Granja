@@ -19,14 +19,16 @@ players[7][0] = "FARMER";
 
 clientPlayer = 0;
 clientRol = players[clientPlayer];
+currentDeaths = [];
 //nextRound();
 
 
 function vote(player)
 {
 
-    if((actualRol == players[clientPlayer][0] || actualRol == "POPULAR_VOTATION") && players[clientPlayer][0] != "DEAD"){
-        if(players[clientPlayer][1] == 0 && player != clientPlayer){
+    if((actualRol == players[clientPlayer][0] || actualRol == "POPULAR_VOTATION") && players[clientPlayer][0] != "DEAD" && players[clientPlayer][1]==0){
+        if((player != clientPlayer)||
+          (actualRol == "WITCH" && option == 2)){
 
             switch(actualRol)
             {
@@ -45,6 +47,7 @@ function vote(player)
                     
             }
         }
+        else noteEntry("THAT'S YOU, FOOL!!")
     }
 }
 
@@ -53,15 +56,20 @@ function witchPlay(objetive)
     if(option < 0){
         noteEntry("Select an action, Witch");
     }
-    else{
-        hideOptions();
-        players[clientPlayer][1] = 1;
-        playJSON = {
-        rol: 'WITCH',
-        client: clientPlayer,
-        victim: objetive,
-        action: option,
-    }
+    else{        
+        if(option == 0 || (option == 1 && currentDeaths[0]!=objetive)||
+           option == 2 && currentDeaths[0]==objetive){
+            hideOptions();
+            players[clientPlayer][1] = 1;
+            playJSON = {
+            rol: 'WITCH',
+            client: clientPlayer,
+            victim: objetive,
+            action: option,
+            }
+        }else{
+            noteEntry("You can't do that, Witch");
+        }
     reciveStatus(recivePlay(JSON.stringify(playJSON)));//provisional
     }
 }
@@ -118,19 +126,29 @@ function hunterPlay(victim_)
 function reciveStatus(newStateJSON)//Actualiza el estado del cliente via websocket
 {
     var newState = JSON.parse(newStateJSON);
+    currentDeaths = newState.deaths;
     switch(newState.id)
     {
         case "VAMPIRES_VOTED":
             actualRol = newState.newRol;
+            logEntry("Vampires choosed their prey...");
+            if(newState.newRol == "POPULAR_VOTATION"){ updateDeaths(newState.deaths);}
             resetPlay();
             
             break;
+        case "WITCH_PLAYED":
+            actualRol = newState.newRol;
+            updateDeaths(newState.deaths);
+            resetPlay();
+            break;
         case "POPULAR_VOTED":
             actualRol = newState.newRol;
+            updateDeaths(newState.deaths);
             resetPlay();
             break;
         case "HUNTER_SHOT":
             actualRol = newState.newRol;
+            updateDeaths(newState.deaths);
             resetPlay();
             break;
         case "FARMERS_WON":
@@ -145,10 +163,20 @@ function reciveStatus(newStateJSON)//Actualiza el estado del cliente via websock
             break;
 
     }
-    if(newState.deaths.length >0) updateDeaths(newState.deaths);
+    if(actualRol == "WITCH" && players[clientPlayer] =="WITCH")witchInfo();
     if(!endGame)printLogs(newState.logs);
 }
-
+function witchInfo()
+{
+    if(currentDeaths[0] == null){
+        logEntry("Nobody is gonna die tonight");
+        noteEntry("Nobody is gonna die tonight");
+    }else{
+        logEntry("Player " + (currentDeaths[0]+1)+ " is gonna die tonight...");
+        logEntry("Player " + (currentDeaths[0]+1)+ " is gonna die tonight...");
+    }
+    document.getElementById('controls').style.display = 'flex';  
+}
 function repeatPlay(rol)
 {
     for (var i = 0; i < players.length; i++) {
@@ -172,15 +200,16 @@ function updateDeaths(deaths)
         noteEntry("Player "+ (deaths[i]+1) +" has died!");
         document.getElementById('player'+(deaths[i]+1)+'card').innerHTML = "DEAD";
     }
+    currentDeaths=[];
 }
 
 function logEntry(message)
 {
     date= new Date();
     document.getElementById('log').innerHTML += "\n"+ date.getHours()+":"
-                                                    + date.getMinutes()+":"
-                                                    + date.getSeconds()+"  "
-                                                    +message;
+    + date.getMinutes()+":"
+    + date.getSeconds()+"  "
+    +message;
 }
 function noteEntry(message)
 {
@@ -195,8 +224,8 @@ function printLogs(logs)
 
 function hideOptions()
 {
- document.getElementById("controlA").style.backgroundColor = rgb(120, 33, 18);
- document.getElementById("controlB").style.backgroundColor = rgb(120, 33, 18);
+ document.getElementById("controlA").style.backgroundColor = '#782112';
+ document.getElementById("controlB").style.backgroundColor = '#782112';
  document.getElementById('controls').style.display = 'none';
 }
 
@@ -219,13 +248,13 @@ document.getElementById("card8").addEventListener("click", function()
 
 document.getElementById("controlA").addEventListener("click", function() 
 { option = 1;
- document.getElementById("controlA").style.backgroundColor = rgb(29, 28, 28);
- document.getElementById("controlB").style.backgroundColor = rgb(120, 33, 18);
+ document.getElementById("controlA").style.backgroundColor = '#1D1C1C';
+ document.getElementById("controlB").style.backgroundColor = '#782112';
 })
 document.getElementById("controlB").addEventListener("click", function() 
 { option = 2;
- document.getElementById("controlB").style.backgroundColor = rgb(29, 28, 28);
- document.getElementById("controlB").style.backgroundColor = rgb(120, 33, 18);
+ document.getElementById("controlB").style.backgroundColor = '#1D1C1C';
+ document.getElementById("controlA").style.backgroundColor = '#782112';
 })
 document.getElementById("controlC").addEventListener("click", function() 
 { option = 0; vote(-1);})
@@ -256,7 +285,7 @@ function changePlayer(player)
     document.getElementById('plaNo').innerHTML = "You are Player " +(player+1);
     document.getElementById('plaRol').innerHTML = clientRol;
     if(clientRol == "WITCH" && actualRol == clientRol){
-          document.getElementById('controls').style.display = 'flex';  
+          witchInfo();
     }else{
          hideOptions();
     }

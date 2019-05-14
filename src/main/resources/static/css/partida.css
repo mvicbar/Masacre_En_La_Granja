@@ -167,8 +167,8 @@ div.playerRol
     height: 15%;
     background-color: rgb(80, 80, 80);
     font-size: 2vw;
-    display: flex;
-    top: 40%;
+    display: none;
+    top: 60%;
     left: 30%;
 }
 
