@@ -36,7 +36,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 	    http
 	        .authorizeRequests()
-	            .antMatchers("/css/**", "/js/**", "/img/**", "/user/register").permitAll()
+	            .antMatchers("/css/**", "/js/**", "/img/**", "/user/register", "/api/user/loginOk/**").permitAll()
 	            //.antMatchers("/vote/enter").permitAll() 		// <-- only when logging in to vote 
 	            .antMatchers("/admin/**").hasRole("ADMIN")
 	            .anyRequest().authenticated()
