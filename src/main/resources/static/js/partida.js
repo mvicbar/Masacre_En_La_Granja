@@ -19,7 +19,6 @@ players[7][0] = "FARMER";*/
 played = 0;
 currentDeaths = [];
 //nextRound();
-console.log(clientPlayer);
 
 function vote(player) {
 
@@ -239,6 +238,8 @@ function hideOptions() {
 }
 
 for (p in players) {
+    console.log(p);
+    console.log(players[p]);
     console.log(players);
     document.getElementById(players[p] + "Card").addEventListener("click", function () { vote(p); })
 }

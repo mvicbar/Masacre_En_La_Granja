@@ -46,8 +46,8 @@
         <div class="mesa">
             <ul class="cartas_y_jugadores">
                 <li class="player_card" th:each="player : ${players}">
-                    <div class="player" th:id="${player}" +"Player" th:text="${player}">Player 1</div>
-                    <div class="card" th:id="${player}" +"Card">Card 1</div>
+                    <div class="player" th:id="${player}+Player" th:text="${player}">Player 1</div>
+                    <div class="card" th:id="${player}+Card">Card 1</div>
                 </li>
             </ul>
         </div>
