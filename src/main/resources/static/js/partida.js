@@ -1,5 +1,5 @@
-actualRol= "VAMPIRE";
-endGame=0;
+actualRol = "VAMPIRE";
+endGame = 0;
 /*players= [[]];
 option = -1;
 for(i=0; i<numPlayers; i++)
@@ -16,22 +16,18 @@ players[5][0] = "VAMPIRE";
 players[6][0] = "FARMER";
 players[7][0] = "FARMER";*/
 
-clientPlayer = userName;
-clientRol = userRol;
 played = 0;
 currentDeaths = [];
 //nextRound();
+console.log(clientPlayer);
 
+function vote(player) {
 
-function vote(player)
-{
+    if ((actualRol == userRol || actualRol == "POPULAR_VOTATION") && userRol != "DEAD" && played == 0) {
+        if ((player != clientPlayer) ||
+            (actualRol == "WITCH" && option == 2)) {
 
-    if((actualRol == userRol || actualRol == "POPULAR_VOTATION") && userRol != "DEAD" && played==0){
-        if((player != clientPlayer)||
-          (actualRol == "WITCH" && option == 2)){
-
-            switch(actualRol)
-            {
+            switch (actualRol) {
                 case "VAMPIRE":
                     vampirePlay(player);
                     break;
@@ -44,21 +40,20 @@ function vote(player)
                 case "WITCH":
                     witchPlay(player);
                     break;
-                    
+
             }
         }
         else noteEntry("THAT'S YOU, FOOL!!")
     }
 }
 
-function witchPlay(objetive)
-{
-    if(option < 0){
+function witchPlay(objetive) {
+    if (option < 0) {
         noteEntry("Select an action, Witch");
     }
-    else{        
-        if(option == 0 || (option == 1 && currentDeaths[0]!=objetive)||
-           option == 2 && currentDeaths[0]==objetive){
+    else {
+        if (option == 0 || (option == 1 && currentDeaths[0] != objetive) ||
+            option == 2 && currentDeaths[0] == objetive) {
             hideOptions();
             played = 1;
             playJSON = {
@@ -67,50 +62,49 @@ function witchPlay(objetive)
                 victim: objetive,
                 action: option,
             }
-        }else{
+        } else {
             noteEntry("You can't do that, Witch");
         }
 
         var text = JSON.stringify(playJSON);
         const headers = {
-            "Content-Type": "application/json",				
+            "Content-Type": "application/json",
             "X-CSRF-TOKEN": config.csrf.value
         };
         const params = {
             method: 'POST',
             headers: headers,
             body: text
-        }
+        };
         fetch("/api/game/recivePlay", params).then((response) => {
             if (response.status == 200) console.log("JUGADA ENVIADA");
-            else{
+            else {
                 console.log("MIERDA!! ALGO HA SALIDO MAL");
             }
         });
     }
 }
 
-function popularPlay(victim_)
-{
+function popularPlay(victim_) {
     played = 1;
     //Envía jugada al servidor vía Ajax
     noteEntry("Your vote is for " + victim_);
     playJSON = {
         rol: 'POPULAR_VOTE',
         client: clientPlayer,
-        victim: victim_,
-    }
+        victim: victim_
+    };
     fetch("/api/game/recivePlay", params).then((response) => {
-            if (response.status == 200) console.log("JUGADA ENVIADA");
-            else{
-                console.log("MIERDA!! ALGO HA SALIDO MAL");
-            }
+        if (response.status == 200) console.log("JUGADA ENVIADA");
+        else {
+            console.log("MIERDA!! ALGO HA SALIDO MAL");
+        }
+    })
 }
 
-function vampirePlay(victim_)
-{
+function vampirePlay(victim_) {
     played = 1;
-    noteEntry("Your victim is " +victim_;
+    noteEntry("Your victim is " + victim_);
     //Envía jugada al servidor vía Ajax
     playJSON = {
         rol: 'VAMPIRE',
@@ -118,29 +112,30 @@ function vampirePlay(victim_)
         victim: victim_,
     }
     fetch("/api/game/recivePlay", params).then((response) => {
-            if (response.status == 200) console.log("JUGADA ENVIADA");
-            else{
-                console.log("MIERDA!! ALGO HA SALIDO MAL");
-            }
+        if (response.status == 200) console.log("JUGADA ENVIADA");
+        else {
+            console.log("MIERDA!! ALGO HA SALIDO MAL");
+        }
+    })
 
 }
 
-function hunterPlay(victim_)
-{
+function hunterPlay(victim_) {
     players[clientPlayer][1] = 1;
     //Envía jugada al servidor vía Ajax
-    noteEntry("You shot Player "+ (victim_+1));
+    noteEntry("You shot Player " + (victim_ + 1));
     playJSON = {
         rol: 'HUNTER',
         client: clientPlayer,
         victim: victim_,
     }
-   fetch("/api/game/recivePlay", params).then((response) => {
-            if (response.status == 200) console.log("JUGADA ENVIADA");
-            else{
-                console.log("MIERDA!! ALGO HA SALIDO MAL");
-            }
+    fetch("/api/game/recivePlay", params).then((response) => {
+        if (response.status == 200) console.log("JUGADA ENVIADA");
+        else {
+            console.log("MIERDA!! ALGO HA SALIDO MAL");
+        }
 
+    })
 }
 
 
@@ -155,14 +150,13 @@ function reciveStatus(newStateJSON)//Actualiza el estado del cliente via websock
 {
     var newState = JSON.parse(newStateJSON);
     currentDeaths = newState.deaths;
-    switch(newState.id)
-    {
+    switch (newState.id) {
         case "VAMPIRES_VOTED":
             actualRol = newState.newRol;
             logEntry("Vampires choosed their prey...");
-            if(newState.newRol == "POPULAR_VOTATION"){ updateDeaths(newState.deaths);}
+            if (newState.newRol == "POPULAR_VOTATION") { updateDeaths(newState.deaths); }
             resetPlay();
-            
+
             break;
         case "WITCH_PLAYED":
             actualRol = newState.newRol;
@@ -180,125 +174,108 @@ function reciveStatus(newStateJSON)//Actualiza el estado del cliente via websock
             resetPlay();
             break;
         case "FARMERS_WON":
-            actualRol="";
+            actualRol = "";
             noteEntry("The vampires have been eliminated. FARMERS WIN!");
-            endGame =1;
+            endGame = 1;
             break;
         case "VAMPIRES_WON":
-            actualRol="";
+            actualRol = "";
             noteEntry("The weak farmers have fallen. VAMPIRES WIN!");
-            endGame=1;
+            endGame = 1;
             break;
 
     }
-    if(actualRol == "WITCH" && clientRol =="WITCH") witchInfo();
-    if(!endGame) printLogs(newState.logs);
+    if (actualRol == "WITCH" && clientRol == "WITCH") witchInfo();
+    if (!endGame) printLogs(newState.logs);
 }
-function witchInfo()
-{
-    if(currentDeaths[0] == null){
+function witchInfo() {
+    if (currentDeaths[0] == null) {
         logEntry("Nobody is gonna die tonight");
         noteEntry("Nobody is gonna die tonight");
-    }else{
-        logEntry(currentDeaths[0]+ " is gonna die tonight...");
-        noteEntry(currentDeaths[0]+ " is gonna die tonight...");
+    } else {
+        logEntry(currentDeaths[0] + " is gonna die tonight...");
+        noteEntry(currentDeaths[0] + " is gonna die tonight...");
     }
-    document.getElementById('controls').style.display = 'flex';  
+    document.getElementById('controls').style.display = 'flex';
 }
-function resetPlay()
-{
-    played =0;
+function resetPlay() {
+    played = 0;
 }
 
-function updateDeaths(deaths)
-{
-    for(i=0; i < deaths.length; i++){
-        if(deaths[i] == clientRol){//El cliente ha muerto
+function updateDeaths(deaths) {
+    for (i = 0; i < deaths.length; i++) {
+        if (deaths[i] == clientRol) {//El cliente ha muerto
             clientRol = "DEAD"
             noteEntry("YOU DIED");
         }
-        else{
-            noteEntry(deaths[i] +" has died!");
-            document.getElementById(p+"Player").innerHTML = "DEAD";
+        else {
+            noteEntry(deaths[i] + " has died!");
+            document.getElementById(p + "Player").innerHTML = "DEAD";
         }
     }
-    currentDeaths=[];
+    currentDeaths = [];
 }
 
-function logEntry(message)
-{
-    date= new Date();
-    document.getElementById('log').innerHTML += "\n"+ date.getHours()+":"
-    + date.getMinutes()+":"
-    + date.getSeconds()+"  "
-    +message;
+function logEntry(message) {
+    date = new Date();
+    document.getElementById('log').innerHTML += "\n" + date.getHours() + ":"
+        + date.getMinutes() + ":"
+        + date.getSeconds() + "  "
+        + message;
 }
-function noteEntry(message)
-{
+function noteEntry(message) {
     document.getElementById('note').innerHTML = message;
 }
-function printLogs(logs)
-{
-    for(i =0; i< logs.length; i++){
+function printLogs(logs) {
+    for (i = 0; i < logs.length; i++) {
         logEntry(logs[i]);
     }
 }
 
-function hideOptions()
-{
- document.getElementById("controlA").style.backgroundColor = '#782112';
- document.getElementById("controlB").style.backgroundColor = '#782112';
- document.getElementById('controls').style.display = 'none';
+function hideOptions() {
+    document.getElementById("controlA").style.backgroundColor = '#782112';
+    document.getElementById("controlB").style.backgroundColor = '#782112';
+    document.getElementById('controls').style.display = 'none';
 }
 
-for(p in players){
-    document.getElementById(p+"Card").addEventListener("click", function() 
-    { vote(p);})
+for (p in players) {
+    console.log(players);
+    document.getElementById(players[p] + "Card").addEventListener("click", function () { vote(p); })
 }
 
 
-document.getElementById("controlA").addEventListener("click", function() 
-{ option = 1;
- document.getElementById("controlA").style.backgroundColor = '#1D1C1C';
- document.getElementById("controlB").style.backgroundColor = '#782112';
+document.getElementById("controlA").addEventListener("click", function () {
+    option = 1;
+    document.getElementById("controlA").style.backgroundColor = '#1D1C1C';
+    document.getElementById("controlB").style.backgroundColor = '#782112';
 })
-document.getElementById("controlB").addEventListener("click", function() 
-{ option = 2;
- document.getElementById("controlB").style.backgroundColor = '#1D1C1C';
- document.getElementById("controlA").style.backgroundColor = '#782112';
+document.getElementById("controlB").addEventListener("click", function () {
+    option = 2;
+    document.getElementById("controlB").style.backgroundColor = '#1D1C1C';
+    document.getElementById("controlA").style.backgroundColor = '#782112';
 })
-document.getElementById("controlC").addEventListener("click", function() 
-{ option = 0; vote(-1);})
+document.getElementById("controlC").addEventListener("click", function () { option = 0; vote(-1); })
 
 //FOR DEBUG
-document.getElementById("player1").addEventListener("click", function() 
-{ changePlayer(0);})
-document.getElementById("player2").addEventListener("click", function() 
-{ changePlayer(1);})
-document.getElementById("player3").addEventListener("click", function() 
-{ changePlayer(2);})
-document.getElementById("player4").addEventListener("click", function() 
-{ changePlayer(3);})
-document.getElementById("player5").addEventListener("click", function() 
-{ changePlayer(4);})
-document.getElementById("player6").addEventListener("click", function() 
-{ changePlayer(5);})
-document.getElementById("player7").addEventListener("click", function() 
-{ changePlayer(6);})
-document.getElementById("player8").addEventListener("click", function() 
-{ changePlayer(7);})
+document.getElementById("player1").addEventListener("click", function () { changePlayer(0); })
+document.getElementById("player2").addEventListener("click", function () { changePlayer(1); })
+document.getElementById("player3").addEventListener("click", function () { changePlayer(2); })
+document.getElementById("player4").addEventListener("click", function () { changePlayer(3); })
+document.getElementById("player5").addEventListener("click", function () { changePlayer(4); })
+document.getElementById("player6").addEventListener("click", function () { changePlayer(5); })
+document.getElementById("player7").addEventListener("click", function () { changePlayer(6); })
+document.getElementById("player8").addEventListener("click", function () { changePlayer(7); })
 
 
-function changePlayer(player)
-{
+function changePlayer(player) {
     clientPlayer = player;
     clientRol = players[clientPlayer][0];
-    document.getElementById('plaNo').innerHTML = "You are Player " +(player+1);
+    document.getElementById('plaNo').innerHTML = "You are Player " + (player + 1);
     document.getElementById('plaRol').innerHTML = clientRol;
-    if(clientRol == "WITCH" && actualRol == clientRol){
-          witchInfo();
-    }else{
-         hideOptions();
+    if (clientRol == "WITCH" && actualRol == clientRol) {
+        witchInfo();
+    } else {
+        hideOptions();
     }
 
 }

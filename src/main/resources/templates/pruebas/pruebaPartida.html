@@ -8,6 +8,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" media="screen" th:href="@{/css/partida.css}">
     <th:block th:replace="fragments/head.html :: header"></th:block>
+    <script>
+        clientPlayer = "[[${userName}]]";
+        clientRol = '[[${userRol}]]';
+        players = '[[${players}]]';
+    </script>
 </head>
 
 <body>
@@ -20,35 +25,35 @@
                 </li>
             </ul>
         </div>
-    <div class = center>
-        <div class="playerNo" id="plaNo" th:text="${userName}">You are Player 1</div>
-        <div class="playerRol" id="plaRol" th:text="${userRol}">VAMPIRE</div> 
-        <div>
-            <textarea rows="7" cols="50" class= "textLog" id="log" readonly></textarea>
-        </div> 
-        <div class="notes" id="note">
+        <div class=center>
+            <div class="playerNo" id="plaNo" th:text="${userName}">You are Player 1</div>
+            <div class="playerRol" id="plaRol" th:text="${userRol}">VAMPIRE</div>
+            <div>
+                <textarea rows="7" cols="50" class="textLog" id="log" readonly></textarea>
+            </div>
+            <div class="notes" id="note">
+            </div>
+            <div class="chat">
+                <th:block th:replace="fragments/chat.html :: chat"></th:block>
+            </div>
+            <div id="controls">
+                <div class="control" , id="controlA">Kill</div>
+                <div class="control" , id="controlB">Revive</div>
+                <div class="control" , id="controlC">Pass</div>
+            </div>
+
         </div>
-        <div class="chat">
-            <th:block th:replace="fragments/chat.html :: chat"></th:block>
-        </div>
-        <div id = "controls">
-            <div class = "control", id = "controlA">Kill</div>
-            <div class = "control", id = "controlB">Revive</div>
-            <div class = "control", id = "controlC">Pass</div>
-        </div>
-        
-    </div>
         <div class="mesa">
             <ul class="cartas_y_jugadores">
                 <li class="player_card" th:each="player : ${players}">
-                    <div class="player" th:id="${player}"+"Player" th:text="${player}">Player 1</div>
-                    <div class="card" th:id="${player}"+"Card">Card 1</div>
+                    <div class="player" th:id="${player}" +"Player" th:text="${player}">Player 1</div>
+                    <div class="card" th:id="${player}" +"Card">Card 1</div>
                 </li>
             </ul>
         </div>
-        <script th:src= "@{/js/partida.js}" type="text/javascript"></script>
+        <script th:src="@{/js/partida.js}" type="text/javascript"></script>
     </div>
 </body>
-    
+
 
 </html>
