@@ -11,11 +11,20 @@
     <script>
         clientPlayer = "[[${userName}]]";
         clientRol = '[[${userRol}]]';
-        players = '[[${players}]]';
+        players = [];
     </script>
 </head>
 
 <body>
+    <select hidden id="myvar">
+        <option hidden th:each="player : ${players}" th:value="${player}"></option>
+    </select>
+    <script>
+        opts = document.getElementById("myvar");
+        for(i = 0; i < opts.options.length; i++){
+            players.push(opts.options[i].value);
+        }
+    </script>
     <div class="contenedor_principal">
         <div class="notas">
             <ul class="cartas_y_jugadores">

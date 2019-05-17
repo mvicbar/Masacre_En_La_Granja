@@ -238,9 +238,6 @@ function hideOptions() {
 }
 
 for (p in players) {
-    console.log(p);
-    console.log(players[p]);
-    console.log(players);
     document.getElementById(players[p] + "Card").addEventListener("click", function () { vote(p); })
 }
 
@@ -255,29 +252,4 @@ document.getElementById("controlB").addEventListener("click", function () {
     document.getElementById("controlB").style.backgroundColor = '#1D1C1C';
     document.getElementById("controlA").style.backgroundColor = '#782112';
 })
-document.getElementById("controlC").addEventListener("click", function () { option = 0; vote(-1); })
-
-//FOR DEBUG
-document.getElementById("player1").addEventListener("click", function () { changePlayer(0); })
-document.getElementById("player2").addEventListener("click", function () { changePlayer(1); })
-document.getElementById("player3").addEventListener("click", function () { changePlayer(2); })
-document.getElementById("player4").addEventListener("click", function () { changePlayer(3); })
-document.getElementById("player5").addEventListener("click", function () { changePlayer(4); })
-document.getElementById("player6").addEventListener("click", function () { changePlayer(5); })
-document.getElementById("player7").addEventListener("click", function () { changePlayer(6); })
-document.getElementById("player8").addEventListener("click", function () { changePlayer(7); })
-
-
-function changePlayer(player) {
-    clientPlayer = player;
-    clientRol = players[clientPlayer][0];
-    document.getElementById('plaNo').innerHTML = "You are Player " + (player + 1);
-    document.getElementById('plaRol').innerHTML = clientRol;
-    if (clientRol == "WITCH" && actualRol == clientRol) {
-        witchInfo();
-    } else {
-        hideOptions();
-    }
-
-}
-
+document.getElementById("controlC").addEventListener("click", function () { option = 0; vote(-1); });
