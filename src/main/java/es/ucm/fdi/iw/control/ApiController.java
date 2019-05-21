@@ -41,10 +41,6 @@ public class ApiController {
 		User user = (User) session.getAttribute("user"); // <-- este usuario no está conectado a la bd
 		user = entityManager.find(User.class, user.getId()); // <-- obtengo usuario de la BD
 
-		for (Game game : user.getGames()) {
-			log.info(game.toString());
-		}
-
 		Game g = user.getActiveGame();
 
 		List<User> users = new ArrayList<>(g.getUsers());
@@ -53,13 +49,13 @@ public class ApiController {
 		Status s = g.getStatusObj();
 		String rolPropietario = s.players.get(user.getName());
 		for (User u : users) {
-			if (rolPropietario.equals("MUERTO") && s.players.get(u.getName()).equals("MUERTO")) {
+			if (rolPropietario.equals("DEAD") && s.players.get(u.getName()).equals("DEAD")) {
 				iwSocketHandler.sendText(u.getName(), message);
-			} else if (s.dia == 0) {
-				if (!rolPropietario.equals("MUERTO") && !s.players.get(u.getName()).equals("MUERTO")) {
+			} else if (s.dia == 1) {
+				if (!rolPropietario.equals("DEAD") && !s.players.get(u.getName()).equals("DEAD")) {
 					iwSocketHandler.sendText(u.getName(), message);
 				}
-			} else if (s.dia == 1) {
+			} else if (s.dia == 0) {
 				if (rolPropietario.equals("VAMPIRE") && s.players.get(u.getName()).equals("VAMPIRE")) {
 					iwSocketHandler.sendText(u.getName(), message);
 				}
@@ -85,10 +81,6 @@ public class ApiController {
 	@Transactional
 	public ResponseEntity<?> recivePlay(HttpSession session, @RequestBody String jugada) {
 
-		log.info("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-		log.info("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-		log.info("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-		log.info(jugada);
 		User user = (User) session.getAttribute("user"); // <-- este usuario no está conectado a la bd
 		user = entityManager.find(User.class, user.getId()); // <-- obtengo usuario de la BD
 
