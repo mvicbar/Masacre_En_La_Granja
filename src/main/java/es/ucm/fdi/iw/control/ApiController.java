@@ -36,25 +36,20 @@ public class ApiController {
 	private IwSocketHandler iwSocketHandler;
 
 	@PostMapping("chat/enviar")
-	public ResponseEntity<?> enviar(HttpSession session, 
-			@RequestBody String mensaje) {
+	@Transactional
+	public ResponseEntity<?> enviar(HttpSession session, @RequestBody String mensaje) {
 		User user = (User) session.getAttribute("user"); // <-- este usuario no está conectado a la bd
 		user = entityManager.find(User.class, user.getId()); // <-- obtengo usuario de la BD
-		
-		for(Game game : user.getGames())
-		{
+
+		for (Game game : user.getGames()) {
 			log.info(game.toString());
 		}
-		
+
 		Game g = user.getActiveGame();
 
 		List<User> users = new ArrayList<>(g.getUsers());
-		String message = "{"
-				+ "\"chatMessage\": {"
-					+ "\"propietario\":\"" 
-					+ user.getName() + "\","
-					+ "\"mensaje\":\"" 
-					+ mensaje + "\"}}";
+		String message = "{" + "\"chatMessage\": {" + "\"propietario\":\"" + user.getName() + "\"," + "\"mensaje\":\""
+				+ mensaje + "\"}}";
 		Status s = g.getStatusObj();
 		String rolPropietario = s.players.get(user.getName());
 		for (User u : users) {
@@ -74,7 +69,6 @@ public class ApiController {
 		return ResponseEntity.status(HttpStatus.OK).build();
 	}
 
-
 	// Función para comprobar que el nombre del user que se va a registrar no existe
 	@PostMapping("user/loginOk/{name}")
 	public ResponseEntity<?> existingName(@PathVariable String name) {
@@ -87,35 +81,30 @@ public class ApiController {
 		return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
 	}
 
-
 	@PostMapping("/game/recivePlay")
 	@Transactional
-	public ResponseEntity<?> recivePlay(HttpSession session,
-			@RequestBody String jugada) {
+	public ResponseEntity<?> recivePlay(HttpSession session, @RequestBody String jugada) {
 
+		log.info("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+		log.info("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+		log.info("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+		log.info(jugada);
 		User user = (User) session.getAttribute("user"); // <-- este usuario no está conectado a la bd
 		user = entityManager.find(User.class, user.getId()); // <-- obtengo usuario de la BD
 
-		for(Game game : user.getGames())
-		{
-			log.info(game.toString());
-		}
-		
 		Game g = user.getActiveGame();
 
 		List<User> users = new ArrayList<>(g.getUsers());
 
-		List<String> result = procesarJugada(jugada, g.getStatus());
-		String nuevoEstado = result.get(1);
+		String[] result = procesarJugada(jugada, g.getStatus());
+		String nuevoEstado = result[1];
 		g.setStatus(nuevoEstado);
 		entityManager.persist(g);
 		entityManager.flush();
 
-		String object = result.get(0);
+		String object = result[0];
 
-		String message = "{"
-				+ "\"nuevoEstado\":\"" 
-					+ object + "\"}";
+		String message = "{" + "\"nuevoEstado\":\"" + object + "\"}";
 
 		for (User u : users) {
 			iwSocketHandler.sendText(u.getName(), message);
@@ -124,27 +113,27 @@ public class ApiController {
 		return ResponseEntity.status(HttpStatus.OK).build();
 	}
 
-	private List<String> procesarJugada(String jugada, String state){
+	private String[] procesarJugada(String jugada, String state) {
 
 		ScriptEngineManager manager = new ScriptEngineManager();
 		ScriptEngine engine = manager.getEngineByName("JavaScript");
 		// read script file
 		try {
-			engine.eval(new InputStreamReader(getClass().getResourceAsStream(
-					"/static/js/modelo.js"))); // relativo a src/main/resources
+			engine.eval(new InputStreamReader(getClass().getResourceAsStream("/static/js/modelo.js"))); // relativo a
+																										// src/main/resources
 		} catch (ScriptException e) {
-			log.warn("Error loading script",  e);
+			log.warn("Error loading script", e);
 		}
 
 		Invocable inv = (Invocable) engine;
-		String result = null;
+		String[] result = null;
 		// call function from script file
 		try {
-			result = (String) inv.invokeFunction("recivePlay", state, jugada);
+			result = (String[]) inv.invokeFunction("recivePlay", state, jugada);
 		} catch (NoSuchMethodException | ScriptException e) {
-			log.warn("Error running script",  e);
+			log.warn("Error running script", e);
 		}
 		log.warn(result);
-		return null;
+		return result;
 	}
 }

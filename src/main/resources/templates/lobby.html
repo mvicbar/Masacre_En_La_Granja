@@ -27,7 +27,7 @@
         <form th:action="@{/lobby/{idGame}/leave(idGame=${game.id})}" method="POST" enctype="multipart/form-data">
             <button type="submit" class="boton">Abandonar</button>
         </form>
-        <form th:action="@{/game}" method="POST" enctype="multipart/form-data">
+        <form th:action="@{/game/}" method="POST" enctype="multipart/form-data">
             <button type="submit" class="boton">Iniciar</button>
         </form>
     </div>

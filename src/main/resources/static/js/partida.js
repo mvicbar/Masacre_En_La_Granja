@@ -20,12 +20,34 @@ played = 0;
 currentDeaths = [];
 //nextRound();
 
+
+for (p in players) {
+    if (players[p] == clientPlayer) continue;
+    document.getElementById(players[p] + "Card")
+        .addEventListener("click", function () {
+            vote(players[p]);
+        });
+}
+
+
+document.getElementById("controlA").addEventListener("click", function () {
+    option = 1;
+    document.getElementById("controlA").style.backgroundColor = '#1D1C1C';
+    document.getElementById("controlB").style.backgroundColor = '#782112';
+})
+document.getElementById("controlB").addEventListener("click", function () {
+    option = 2;
+    document.getElementById("controlB").style.backgroundColor = '#1D1C1C';
+    document.getElementById("controlA").style.backgroundColor = '#782112';
+})
+document.getElementById("controlC").addEventListener("click", function () { option = 0; vote(-1); });
+
+
+
 function vote(player) {
 
-    if ((actualRol == userRol || actualRol == "POPULAR_VOTATION") && userRol != "DEAD" && played == 0) {
-        if ((player != clientPlayer) ||
-            (actualRol == "WITCH" && option == 2)) {
-
+    if (clientRol != "DEAD" && played == 0) {
+        if (actualRol == clientRol) {
             switch (actualRol) {
                 case "VAMPIRE":
                     vampirePlay(player);
@@ -33,16 +55,14 @@ function vote(player) {
                 case "HUNTER":
                     hunterPlay(player);
                     break;
-                case "POPULAR_VOTATION":
-                    popularPlay(player);
-                    break;
                 case "WITCH":
                     witchPlay(player);
                     break;
-
             }
         }
-        else noteEntry("THAT'S YOU, FOOL!!")
+        else if (actualRol == "POPULAR_VOTATION") {
+            popularPlay(player);
+        }
     }
 }
 
@@ -59,7 +79,7 @@ function witchPlay(objetive) {
                 rol: 'WITCH',
                 client: clientPlayer,
                 victim: objetive,
-                action: option,
+                option: ""+option
             }
         } else {
             noteEntry("You can't do that, Witch");
@@ -91,7 +111,8 @@ function popularPlay(victim_) {
     playJSON = {
         rol: 'POPULAR_VOTE',
         client: clientPlayer,
-        victim: victim_
+        victim: victim_,
+        option: ""
     };
     fetch("/api/game/recivePlay", params).then((response) => {
         if (response.status == 200) console.log("JUGADA ENVIADA");
@@ -109,13 +130,24 @@ function vampirePlay(victim_) {
         rol: 'VAMPIRE',
         client: clientPlayer,
         victim: victim_,
-    }
+        option: ""
+    };
+    var text = JSON.stringify(playJSON);
+    const headers = {
+        "Content-Type": "application/json",
+        "X-CSRF-TOKEN": config.csrf.value
+    };
+    const params = {
+        method: 'POST',
+        headers: headers,
+        body: text
+    };
     fetch("/api/game/recivePlay", params).then((response) => {
         if (response.status == 200) console.log("JUGADA ENVIADA");
         else {
             console.log("MIERDA!! ALGO HA SALIDO MAL");
         }
-    })
+    });
 
 }
 
@@ -127,6 +159,7 @@ function hunterPlay(victim_) {
         rol: 'HUNTER',
         client: clientPlayer,
         victim: victim_,
+        option: ""
     }
     fetch("/api/game/recivePlay", params).then((response) => {
         if (response.status == 200) console.log("JUGADA ENVIADA");
@@ -236,20 +269,3 @@ function hideOptions() {
     document.getElementById("controlB").style.backgroundColor = '#782112';
     document.getElementById('controls').style.display = 'none';
 }
-
-for (p in players) {
-    document.getElementById(players[p] + "Card").addEventListener("click", function () { vote(p); })
-}
-
-
-document.getElementById("controlA").addEventListener("click", function () {
-    option = 1;
-    document.getElementById("controlA").style.backgroundColor = '#1D1C1C';
-    document.getElementById("controlB").style.backgroundColor = '#782112';
-})
-document.getElementById("controlB").addEventListener("click", function () {
-    option = 2;
-    document.getElementById("controlB").style.backgroundColor = '#1D1C1C';
-    document.getElementById("controlA").style.backgroundColor = '#782112';
-})
-document.getElementById("controlC").addEventListener("click", function () { option = 0; vote(-1); });
