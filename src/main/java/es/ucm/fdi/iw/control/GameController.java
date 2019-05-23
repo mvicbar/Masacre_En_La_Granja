@@ -45,6 +45,8 @@ public class GameController {
         Game g = user.getActiveGame();
         if (g == null) return null;
 
+        //g.init();
+        //DESCOMENTAR Y COMENTAR/BORRAR DESDE AQUI
         Status s = new Status();
         s.dia = 0;
         s.momento = "ingame";
@@ -60,21 +62,26 @@ public class GameController {
         entityManager.persist(g);
         entityManager.flush();
 
+        //HASTA AQUI
+        //mas o menos... sacar el status
+
         model.addAttribute("players", s.players.keySet());
         model.addAttribute("userName", user.getName());
         model.addAttribute("userRol", s.players.get(user.getName()));
-        return "pruebas/pruebaPartida";
+        return "partida";
     }
 
     @PostMapping("/")
-    public String canPlay(Model model, HttpSession session, @RequestParam String idGame) {
+    @Transactional
+    public String canPlay(Model model, HttpSession session) {
 
         User user = (User) session.getAttribute("user");
         user = entityManager.find(User.class, user.getId());
 
-        Game game = entityManager.find(Game.class, Long.parseLong(idGame));
+        Game game = user.getActiveGame();
+        if(game == null) return null;
 
-        String text = "{" + "\"comienzaLaPartida\": {" + "\"idGame\":\"" + idGame + "\"}}";
+        String text = "{" + "\"comienzaLaPartida\": {" + "\"idGame\":\"" + game.getId() + "\"}}";
 
         for (User u : game.getUsers()) {
             iwSocketHandler.sendText(u.getName(), text);

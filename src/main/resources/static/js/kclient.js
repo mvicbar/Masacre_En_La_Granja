@@ -21,7 +21,8 @@ const handleNuevoEstado = (newState) => {
 }
 
 const handleComenzarPartida = (idGame) => {
-	window.location.href = "/game";
+	console.log(idGame);
+	window.location.href = "/game/";
 }
 
 const handleMessage = (o) => {
