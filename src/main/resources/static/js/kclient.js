@@ -20,11 +20,17 @@ const handleNuevoEstado = (newState) => {
 	reciveStatus(newState);
 }
 
+const handleComenzarPartida = (idGame) => {
+	console.log(idGame);
+	window.location.href = "/game/";
+}
+
 const handleMessage = (o) => {
 	console.log(o);
 	if (o.newPlayer) handleNewPlayer(o.newPlayer);
 	if (o.chatMessage) handleChatMessage(o.chatMessage);
 	if (o.nuevoEstado) handleNuevoEstado(o.nuevoEstado);
+	if (o.comienzaLaPartida) handleComenzarPartida(o.comienzaLaPartida);
 }
 
 window.addEventListener('load', () => {
