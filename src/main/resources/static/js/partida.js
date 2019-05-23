@@ -1,5 +1,5 @@
 actualRol = "";
-endGame = 0;
+endGame = 1;
 played = 0;
 currentDeaths = [];
 
@@ -31,11 +31,12 @@ function cargarPartida() {
     fetch("/api/game/getStatus", params).then((response) => {
         if (response.status == 200) {
             response.text().then(function (text){
-                console.log(text);
                 status = JSON.parse(text);
                 endGame = (status.momento == "FINISHED") ? 1 : 0;
-                currentDeaths = status.currentDeaths
+                currentDeaths = status.currentDeaths;
                 played = status.played[clientPlayer];
+                console.log(status.played);
+                actualRol = status.momento;
             });
         }
         else {

@@ -16,6 +16,6 @@ public class Status {
     public List<Acciones> acciones; //Es un JSON y habria que pensar si crear otra clase para mapearlo
     public List<String> currentDeaths; //Esto es para modelo.js // lista de nombres de los que estan muriendo
     public Map<String, Integer> votes; //Esto es para modelo.js // lista de nombres votados con recuento de votos
-    public Map<String, Integer> played; // contiene los jugadores que han jugado ya su turno. Se mantiene a 1 (jugado). Se pone a 0 cuando se inicia un turno solo a los que pueden jugar.
+    public Map<String, Integer> played; // contiene todos los jugadores. Se mantiene a 0 (jugado). Se pone a 1 cuando se inicia un turno solo a los que pueden jugar.
 
 }

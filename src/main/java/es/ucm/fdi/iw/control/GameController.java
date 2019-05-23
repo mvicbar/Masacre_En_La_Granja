@@ -58,7 +58,7 @@ public class GameController {
         s.acciones = new ArrayList<Acciones>();
         s.played = new HashMap<String, Integer>();
         s.played.put("tor", 1);
-        s.played.put("mac", 1);
+        s.played.put("mac", 0);
 
         g.setStatus(g.getStatusStringFromObj(s));
 
