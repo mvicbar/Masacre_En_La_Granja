@@ -33,7 +33,9 @@ function cargarPartida() {
             response.text().then(function (text){
                 console.log(text);
                 status = JSON.parse(text);
-                
+                endGame = (status.momento == "FINISHED") ? 1 : 0;
+                currentDeaths = status.currentDeaths
+                played = status.played[clientPlayer];
             });
         }
         else {
