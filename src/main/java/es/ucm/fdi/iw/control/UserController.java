@@ -256,43 +256,4 @@ public class UserController {
 		}
 	}
 
-	/*
-	 * DEJARLO DE MOMENTO ELIMINAR ANTES DE LA ENTREGA
-	 */
-	@GetMapping("/pruebaChat")
-	@Transactional
-	public String pruebaChat(Model model, HttpSession session) {
-		Game g = new Game();
-		List<User> users = new ArrayList<User>();
-		User tor = entityManager.createNamedQuery("User.ByName", User.class).setParameter("userName", "tor")
-				.getSingleResult();
-		User mac = entityManager.createNamedQuery("User.ByName", User.class).setParameter("userName", "mac")
-				.getSingleResult();
-		users.add(tor); 
-		users.add(mac); 
-		g.setUsers(users);
-		
-		Status s = new Status();
-		s.dia = 0;
-		s.momento = "ingame";
-		s.players = new HashMap<String, String>();
-		s.players.put("tor", "VAMPIRE");
-		s.players.put("mac", "VAMPIRE");
-		s.currentDeaths = new ArrayList<String>();
-		s.votes = new HashMap<String, Integer>();
-
-		g.setStatus(g.getStatusStringFromObj(s));
-		List<Game> lg = new ArrayList<Game>(); lg.add(g);
-		tor.setGames(lg);
-		mac.setGames(lg);
-		entityManager.persist(g);
-		entityManager.persist(tor);
-		entityManager.persist(mac);
-		entityManager.flush();
-
-		model.addAttribute("game", g);
-		session.setAttribute("game", g);
-
-		return "pruebas/pruebaChat";
-	}
 }

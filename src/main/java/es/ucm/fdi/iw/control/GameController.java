@@ -17,6 +17,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import es.ucm.fdi.iw.model.Acciones;
 import es.ucm.fdi.iw.model.Game;
@@ -26,18 +27,15 @@ import es.ucm.fdi.iw.model.User;
 @Controller
 @RequestMapping("game")
 public class GameController {
-    
+
     private static final Logger log = LogManager.getLogger(RootController.class);
-    
-    @Autowired
-    private Environment env;
-    
+
     @Autowired
     private IwSocketHandler iwSocketHandler;
 
     @Autowired
     private EntityManager entityManager;
-    
+
     @GetMapping("/")
     @Transactional
     public String play(Model model, HttpSession session) {
@@ -45,12 +43,13 @@ public class GameController {
 
         user = entityManager.find(User.class, user.getId()); // <-- obtengo usuario de la BD
         Game g = user.getActiveGame();
+        if (g == null) return null;
 
         Status s = new Status();
-		s.dia = 0;
-		s.momento = "ingame";
-		s.players = new HashMap<String, String>();
-		s.players.put("tor", "VAMPIRE");
+        s.dia = 0;
+        s.momento = "ingame";
+        s.players = new HashMap<String, String>();
+        s.players.put("tor", "VAMPIRE");
         s.players.put("mac", "FARMER");
         s.currentDeaths = new ArrayList<String>();
         s.votes = new HashMap<String, Integer>();
@@ -68,81 +67,19 @@ public class GameController {
     }
 
     @PostMapping("/")
-    public String canPlay() {
+    public String canPlay(Model model, HttpSession session, @RequestParam String idGame) {
+
+        User user = (User) session.getAttribute("user");
+        user = entityManager.find(User.class, user.getId());
+
+        Game game = entityManager.find(Game.class, Long.parseLong(idGame));
+
+        String text = "{" + "\"comienzaLaPartida\": {" + "\"idGame\":\"" + idGame + "\"}}";
+
+        for (User u : game.getUsers()) {
+            iwSocketHandler.sendText(u.getName(), text);
+        }
         return "redirect:/game/";
     }
 
-    @GetMapping("/pruebaPartida")
-    @Transactional
-    public String pruebaPartida(Model model, HttpSession session){
-        /*User user = (User) session.getAttribute("user"); // <-- este usuario no está conectado a la bd
-        user = entityManager.find(User.class, user.getId()); // <-- obtengo usuario de la BD
-
-        Game g = user.getActiveGame();
-
-        Status s = g.getStatusObj();
-
-        model.addAttribute("players", s.players.keySet());
-        model.addAttribute("userName", user.getName());
-        model.addAttribute("userRol", s.players.get(user.getName()));*/
-
-        Game g = new Game();
-		List<User> users = new ArrayList<User>();
-		User tor = entityManager.createNamedQuery("User.ByName", User.class).setParameter("userName", "tor")
-				.getSingleResult();
-		User mac = entityManager.createNamedQuery("User.ByName", User.class).setParameter("userName", "mac")
-                .getSingleResult();
-        User sir = entityManager.createNamedQuery("User.ByName", User.class).setParameter("userName", "sir")
-				.getSingleResult();
-		User bet = entityManager.createNamedQuery("User.ByName", User.class).setParameter("userName", "bet")
-				.getSingleResult();
-		users.add(tor); 
-        users.add(mac); 
-        users.add(sir); 
-		users.add(bet); 
-		g.setUsers(users);
-		
-		Status s = new Status();
-		s.dia = 0;
-		s.momento = "ingame";
-		s.players = new HashMap<String, String>();
-		s.players.put("tor", "VAMPIRE");
-        s.players.put("mac", "VAMPIRE");
-        s.players.put("sir", "FARMER");
-        s.players.put("bet", "FARMER");
-        s.currentDeaths = new ArrayList<String>();
-        s.votes = new HashMap<String, Integer>();
-
-		g.setStatus(g.getStatusStringFromObj(s));
-		List<Game> lg = new ArrayList<Game>(); lg.add(g);
-		tor.setGames(lg);
-        mac.setGames(lg);
-        sir.setGames(lg);
-		bet.setGames(lg);
-		entityManager.persist(g);
-		entityManager.persist(tor);
-        entityManager.persist(mac);
-        entityManager.persist(sir);
-		entityManager.persist(bet);
-        entityManager.flush();
-        
-        List<String> keyUsers = new ArrayList<>();
-        keyUsers.add("tor");
-        keyUsers.add("mac");
-        keyUsers.add("sir");
-        keyUsers.add("bet");
-
-		model.addAttribute("game", g);
-        session.setAttribute("game", g);
-
-        User user = (User) session.getAttribute("user"); // <-- este usuario no está conectado a la bd
-        user = entityManager.find(User.class, user.getId()); // <-- obtengo usuario de la BD
-
-        model.addAttribute("players", keyUsers);
-        model.addAttribute("userName", user.getName());
-        model.addAttribute("userRol", s.players.get(user.getName()));
-        
-        return "pruebas/pruebaPartida";
-    }
-    
 }
