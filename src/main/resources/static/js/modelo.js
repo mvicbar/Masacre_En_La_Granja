@@ -130,18 +130,18 @@ function hunterMove(play, object) {
 
 function vampireMove(play, object) {
 	object.votation[play.victim]++;
-	if (object.votation.length == countRol("VAMPIRE",object)) {
+	if (countNumVotes(object) == countRol("VAMPIRE",object)) {
 		resetVotes(object);
 		i = evenRepeatVotationCount(object);
 		if (i == "") {
-			//Repite Votacion
 			object.logs.push("Vampires couldn't decide who to kill!");
-			object.id = 'VAMPIRES_VOTED';
+			//object.id = 'REPEAT_NIGTH';???
 		}
 		else {
 			object.currentDeaths.push(i);
-			object.id = 'VAMPIRES_VOTED';
+			//object.id = 'VAMPIRES_VOTED';
 		}
+		object.id = 'VAMPIRES_VOTED';
 		object.newRol = nextRol("VAMPIRE", object);
 		object.votation = [];
 	}
@@ -241,6 +241,14 @@ function checkWin(object)//Comprueba si un bando ha ganado
 	}
 	if (vampiresLeft == 0) { object.id = "FARMERS_WON"; }
 	else if (farmersLeft == 0) { object.id = "VAMPIRES_WON"; }
+}
+
+function countNumVotes(object){
+	num = 0;
+	for(i in object.votation){
+		num += object.votation[i];
+	}
+	return num;
 }
 
 function countMaxVotes(object) {
