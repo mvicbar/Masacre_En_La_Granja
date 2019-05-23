@@ -85,6 +85,7 @@ public class ApiController {
 		user = entityManager.find(User.class, user.getId()); // <-- obtengo usuario de la BD
 
 		Game g = user.getActiveGame();
+		if(g == null) return null;
 
 		List<User> users = new ArrayList<>(g.getUsers());
 
@@ -127,5 +128,17 @@ public class ApiController {
 		}
 		log.warn(result);
 		return result;
+	}
+
+	@PostMapping("/game/getStatus")
+	@Transactional
+	public ResponseEntity<String> getGameStatus(HttpSession session){
+
+		User user = (User) session.getAttribute("user"); // <-- este usuario no está conectado a la bd
+		user = entityManager.find(User.class, user.getId()); // <-- obtengo usuario de la BD
+
+		Game g = user.getActiveGame();
+		if(g == null) return null;
+		return ResponseEntity.ok(g.getStatus());
 	}
 }

@@ -1,48 +1,54 @@
-actualRol = "VAMPIRE";
+actualRol = "";
 endGame = 0;
-/*players= [[]];
-option = -1;
-for(i=0; i<numPlayers; i++)
-{
-    players[i]=[];//player rol
-    players[i][1]=0;//the player has played flag FOR DEBUG
-}
-players[0][0] = "VAMPIRE";
-players[1][0] = "HUNTER";
-players[2][0] = "WITCH";
-players[3][0] = "FARMER";
-players[4][0] = "FARMER";
-players[5][0] = "VAMPIRE";
-players[6][0] = "FARMER";
-players[7][0] = "FARMER";*/
-
 played = 0;
 currentDeaths = [];
-//nextRound();
 
+function cargarPartida() {
+    document.getElementById("controlA").addEventListener("click", function () {
+        option = 1;
+        document.getElementById("controlA").style.backgroundColor = '#1D1C1C';
+        document.getElementById("controlB").style.backgroundColor = '#782112';
+    });
+    document.getElementById("controlB").addEventListener("click", function () {
+        option = 2;
+        document.getElementById("controlB").style.backgroundColor = '#1D1C1C';
+        document.getElementById("controlA").style.backgroundColor = '#782112';
+    });
+    document.getElementById("controlC").addEventListener("click", function () {
+        option = 0; vote(-1);
+    });
+    hideOptions();
 
-for (p in players) {
-    if (players[p] == clientPlayer) continue;
-    document.getElementById(players[p] + "Card")
-        .addEventListener("click", function () {
-            vote(players[p]);
-        });
+    const headers = {
+        "Content-Type": "application/json",
+        "X-CSRF-TOKEN": config.csrf.value
+    };
+    const params = {
+        method: 'POST',
+        headers: headers
+    };
+
+    fetch("/api/game/getStatus", params).then((response) => {
+        if (response.status == 200) {
+            response.text().then(function (text){
+                console.log(text);
+                status = JSON.parse(text);
+                
+            });
+        }
+        else {
+            console.log("NO HA SIDO POSIBLE CARGAR LA PARTIDA");
+        }
+    });
+
+    for (p in players) {
+        if (players[p] == clientPlayer) continue;
+        document.getElementById(players[p] + "Card")
+            .addEventListener("click", function () {
+                vote(players[p]);
+            });
+    }
 }
-
-
-document.getElementById("controlA").addEventListener("click", function () {
-    option = 1;
-    document.getElementById("controlA").style.backgroundColor = '#1D1C1C';
-    document.getElementById("controlB").style.backgroundColor = '#782112';
-})
-document.getElementById("controlB").addEventListener("click", function () {
-    option = 2;
-    document.getElementById("controlB").style.backgroundColor = '#1D1C1C';
-    document.getElementById("controlA").style.backgroundColor = '#782112';
-})
-document.getElementById("controlC").addEventListener("click", function () { option = 0; vote(-1); });
-
-
 
 function vote(player) {
 
@@ -79,7 +85,7 @@ function witchPlay(objetive) {
                 rol: 'WITCH',
                 client: clientPlayer,
                 victim: objetive,
-                option: ""+option
+                option: "" + option
             }
         } else {
             noteEntry("You can't do that, Witch");
@@ -243,7 +249,7 @@ function updateDeaths(deaths) {
         else {
             noteEntry(deaths[i] + " has died!");
             document.getElementById(p + "Player").innerHTML = "DEAD";
-        }
+        }players
     }
     currentDeaths = [];
 }
@@ -269,3 +275,8 @@ function hideOptions() {
     document.getElementById("controlB").style.backgroundColor = '#782112';
     document.getElementById('controls').style.display = 'none';
 }
+function showOpritons(){
+    document.getElementById('controls').style.display = 'flex';
+}
+
+cargarPartida();

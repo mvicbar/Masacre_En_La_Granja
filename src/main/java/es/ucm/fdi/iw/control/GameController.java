@@ -84,6 +84,7 @@ public class GameController {
         String text = "{" + "\"comienzaLaPartida\": {" + "\"idGame\":\"" + game.getId() + "\"}}";
 
         for (User u : game.getUsers()) {
+            if(u.getId()==user.getId()) continue;
             iwSocketHandler.sendText(u.getName(), text);
         }
         return "redirect:/game/";

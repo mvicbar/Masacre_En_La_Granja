@@ -141,7 +141,7 @@ public class Game {
 
 	public Boolean finished(){
 		Status s = this.getStatusObj();
-		return s.momento.equals("finished");
+		return s.momento.equals("FINISHED");
 	}
 	
 	public boolean equals(Object other) {
