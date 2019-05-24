@@ -23,7 +23,7 @@
                     method: 'POST', headers: headers
                 };
 
-                fetch(config.gameStartURL/*"/lobby/startGameOk/"*/ + gid, params).then((response) => {
+                fetch(config.gameStartURL + gid, params).then((response) => {
                     btninit.setCustomValidity(response.status == 200 ? "" : "¡No hay suficientes jugadores para una partida!");
                 });
 
