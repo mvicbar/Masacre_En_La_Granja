@@ -6,12 +6,12 @@
     <link rel="stylesheet" type="text/css" media="screen" th:href="@{/css/nav.css}">
     <link rel="stylesheet" type="text/css" media="screen" th:href="@{/css/lobby.css}">
     <script th:href="@{/js/jquery-3.4.1.js}"></script>
-    <!--<script href="../static/js/jquery-3.4.1.js"></script>-->
     <script th:href="@{/js/notify.js}"></script>
-    <!--<script href="../static/js/notify.js"></script>-->
+    <th:block th:replace="fragments/head :: header" />
     <script>
         window.onload = () => {
             var btninit = document.getElementById("iniciar");
+            btninit.setCustomValidity("No sé si está libre");
             btninit.onclick = () => {
                 var gid = document.getElementById("gameid").textContent;
 
@@ -23,8 +23,8 @@
                     method: 'POST', headers: headers
                 };
 
-                fetch(/*config.gameStartURL*/"/lobby/startGameOk/" + gid, params).then((response) => {
-                    btninit.setCustomValidity(response.status == 200 ? "" : "¡No hay suficientes jugadores!");
+                fetch(config.gameStartURL/*"/lobby/startGameOk/"*/ + gid, params).then((response) => {
+                    btninit.setCustomValidity(response.status == 200 ? "" : "¡No hay suficientes jugadores para una partida!");
                 });
 
             };
