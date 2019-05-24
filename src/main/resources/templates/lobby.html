@@ -7,7 +7,7 @@
     <link rel="stylesheet" type="text/css" media="screen" th:href="@{/css/lobby.css}">
     <script th:href="@{/js/jquery-3.4.1.js}"></script>
     <script th:href="@{/js/notify.js}"></script>
-    <th:block th:replace="fragments/head :: header" />
+    <th:block th:replace="fragments/head.html :: header"></th:block>
     <script>
         window.onload = () => {
             var btninit = document.getElementById("iniciar");
@@ -51,16 +51,10 @@
         <form th:action="@{/lobby/{idGame}/leave(idGame=${game.id})}" method="POST" enctype="multipart/form-data">
             <button type="submit" class="boton">Abandonar</button>
         </form>
-        <form th:action="@{/lobby/{idGame} (idGame=${game.id})}" method="POST" enctype="multipart/form-data">
+        <form th:action="@{/game/}" method="POST" enctype="multipart/form-data">
             <button type="submit" id="iniciar" class="boton">Iniciar</button>
         </form>
     </div>
-
-    <script>
-        if("[[${errorMessage}]]".length > 0){
-            $.notify("[[${errorMessage}]]", {globalPosition: "right middle"});
-        }
-    </script>
 </main>
 </body>
 </html>

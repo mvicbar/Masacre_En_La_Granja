@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import javax.persistence.*;
 
@@ -14,7 +15,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 @Entity
 @NamedQueries({ @NamedQuery(name = "Game.all", query = "SELECT x FROM Game x"),
-		@NamedQuery(name = "Game.getGame", query = "SELECT g FROM Game g WHERE g.id = :gameID")})
+
+		@NamedQuery(name = "Game.getGame", query = "SELECT g FROM Game g WHERE g.id = :gameID"),
+
+				@NamedQuery(name = "Game.active", query = "SELECT g FROM Game g WHERE g.status NOT LIKE '%finished%'")
+			})
 public class Game {
 
 	@Id
@@ -84,6 +89,39 @@ public class Game {
 		this.password = password;
 	}
 
+	public Status getStatusObj(){
+		ObjectMapper mapper = new ObjectMapper();
+		Status s = null;
+		try {
+			s = mapper.readValue(this.status, Status.class);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return s;
+	}
+
+	public Status getStatusObjFromString(String str){
+		ObjectMapper mapper = new ObjectMapper();
+		Status s = null;
+		try {
+			s = mapper.readValue(str, Status.class);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return s;
+	}
+
+	public String getStatusStringFromObj(Status s){
+		String st = "";
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+            st = mapper.writeValueAsString(s);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+		}
+		return st;
+	}
+
 	public void initLobby() {
         ObjectMapper mapper = new ObjectMapper();
         Status st = new Status();
@@ -100,15 +138,13 @@ public class Game {
 	 * @return a boolean telling if the game has started
 	 */
 	public boolean started() {
-		ObjectMapper mapper = new ObjectMapper();
-		Boolean haEmpezado = false;
-		try {
-			Status aux = mapper.readValue(this.status, Status.class);
-			haEmpezado = aux.momento.equals("inLobby");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return !haEmpezado;
+		Status s = this.getStatusObj();
+		return !s.momento.equals("inLobby");
+	}
+
+	public Boolean finished(){
+		Status s = this.getStatusObj();
+		return s.momento.equals("finished");
 	}
 	
 	public boolean equals(Object other) {
@@ -121,13 +157,43 @@ public class Game {
     
     public void init() {
         // TODO faltan cosas para inicializar realmente la partida
-        ObjectMapper mapper = new ObjectMapper();
         Status st = new Status();
         st.momento = "playing";
-        try {
-            status = mapper.writeValueAsString(st);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
+        st.dia = 0;
+        
+        String[] roles = initialRoles();
+        Random random = new Random();
+        for(User user : users) {
+            int pos;
+            
+            if (users.size() == st.players.size()) {
+                pos = random.nextInt(users.size() - st.players.size());
+            } else {
+                pos = 0;
+            }
+            
+            st.players.put(user.getName(), roles[pos]);
+            roles[pos] = roles[users.size() - st.players.size()];
         }
+        
+    	status = getStatusStringFromObj(st);
+    }
+    
+    private String[] initialRoles() {
+        int count = 0;
+        String[] roles = new String[users.size()];
+        
+        for(; count < users.size() / 4; ++count) {
+            roles[count] = "VAMPIRE";
+        }
+        
+        roles[count] = "HUNTER";
+        ++count;
+        
+        for(; count < users.size(); ++count) {
+            roles[count] = "FARMER";
+        }
+        
+        return roles;
     }
 }

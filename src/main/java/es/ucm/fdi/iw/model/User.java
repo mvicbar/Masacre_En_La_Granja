@@ -123,4 +123,11 @@ public class User {
 	public boolean equals(Object other) {
 		return other instanceof User && id == ((User) other).id;
 	}
+
+	public Game getActiveGame(){
+		for(Game g: this.games){
+			if(!g.finished()) return g;
+		}
+		return null;
+	}
 }
