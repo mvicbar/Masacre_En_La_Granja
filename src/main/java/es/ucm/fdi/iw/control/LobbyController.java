@@ -6,6 +6,8 @@ import es.ucm.fdi.iw.model.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -115,18 +117,38 @@ public class LobbyController {
         
         return "redirect:/user/searchGame";
     }
+/*
+    @GetMapping("/{idGame}/init")
+    @Transactional
+    public String showInitGame(Model model, @PathVariable String idGame) {
+      //  Game game = entityManager.find(Game.class, Long.parseLong(idGame));
+        return "redirect:/lobby/ " + idGame + "";
+    }
 
     @PostMapping("/{idGame}/init")
     @Transactional
     public String initGame(Model model, HttpSession session, @PathVariable String idGame) {
        // User user = (User) session.getAttribute("user");
         //TODO Añadir la opción de iniciar la partida en caso de que se pueda
+        log.info("HOLA");
         Game game = entityManager.find(Game.class, Long.parseLong(idGame));
         log.info(game.canBegin());
         if(!game.canBegin())
             model.addAttribute("errorMessage", "¡Todavía no hay suficientes jugadores!");
+        return "lobby/" + idGame + "";
+    }*/
 
-        return idGame+"/join";
+    //Función para comprobar que el nombre del user que se va a registrar no existe
+    @PostMapping("/startGameOk/{gameID}")
+   // @Transactional
+    public ResponseEntity enoughPlayers(@PathVariable String gameID){
+        //Mirar en la base de datos mágicamente para ver si está creado
+        Game game = entityManager.createNamedQuery("Game.getGame", Game.class)
+                .setParameter("gameID", gameID).getSingleResult();
+        log.info("AAAAAAAAAAAAAAAA" + game);
+
+        if(game.canBegin()) return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
     }
     
     @GetMapping("select")

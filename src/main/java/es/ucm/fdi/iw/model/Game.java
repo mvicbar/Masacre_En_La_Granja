@@ -13,7 +13,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 /**
  */
 @Entity
-@NamedQueries({ @NamedQuery(name = "Game.all", query = "SELECT x FROM Game x") })
+@NamedQueries({ @NamedQuery(name = "Game.all", query = "SELECT x FROM Game x"),
+		@NamedQuery(name = "Game.getGame", query = "SELECT g FROM Game g WHERE g.id = :gameID")})
 public class Game {
 
 	@Id
