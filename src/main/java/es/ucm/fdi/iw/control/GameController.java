@@ -49,13 +49,16 @@ public class GameController {
         //DESCOMENTAR Y COMENTAR/BORRAR DESDE AQUI
         Status s = new Status();
         s.dia = 0;
-        s.momento = "ingame";
+        s.momento = "VAMPIRE";
         s.players = new HashMap<String, String>();
         s.players.put("tor", "VAMPIRE");
         s.players.put("mac", "FARMER");
         s.currentDeaths = new ArrayList<String>();
         s.votes = new HashMap<String, Integer>();
         s.acciones = new ArrayList<Acciones>();
+        s.played = new HashMap<String, Integer>();
+        s.played.put("tor", 1);
+        s.played.put("mac", 0);
 
         g.setStatus(g.getStatusStringFromObj(s));
 
@@ -84,6 +87,7 @@ public class GameController {
         String text = "{" + "\"comienzaLaPartida\": {" + "\"idGame\":\"" + game.getId() + "\"}}";
 
         for (User u : game.getUsers()) {
+            if(u.getId()==user.getId()) continue;
             iwSocketHandler.sendText(u.getName(), text);
         }
         return "redirect:/game/";
