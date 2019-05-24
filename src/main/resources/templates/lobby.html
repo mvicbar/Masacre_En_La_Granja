@@ -5,7 +5,31 @@
     <title>Crear grupo | Masacre en la granja</title>
     <link rel="stylesheet" type="text/css" media="screen" th:href="@{/css/nav.css}">
     <link rel="stylesheet" type="text/css" media="screen" th:href="@{/css/lobby.css}">
+    <script th:href="@{/js/jquery-3.4.1.js}"></script>
+    <script th:href="@{/js/notify.js}"></script>
     <th:block th:replace="fragments/head.html :: header"></th:block>
+    <script>
+        window.onload = () => {
+            var btninit = document.getElementById("iniciar");
+            btninit.setCustomValidity("No sé si está libre");
+            btninit.onclick = () => {
+                var gid = document.getElementById("gameid").textContent;
+
+                const headers = {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": config.csrf.value
+                };
+                const params = {
+                    method: 'POST', headers: headers
+                };
+
+                fetch(config.gameStartURL + gid, params).then((response) => {
+                    btninit.setCustomValidity(response.status == 200 ? "" : "¡No hay suficientes jugadores para una partida!");
+                });
+
+            };
+        };
+    </script>
 </head>
 <body>
 <nav th:replace="fragments/nav.html :: nav">
@@ -16,7 +40,7 @@
 </div>
 <main>
     <div class="gameID">
-        <span>Id de partida: </span><span th:text="${game.id}">game id</span>
+        <span>Id de partida: </span><span id="gameid" th:text="${game.id}">game id</span>
     </div>
     <div class="miembros">
         <div class= "nombre" th:each="jugador : ${jugadores}">
@@ -28,7 +52,7 @@
             <button type="submit" class="boton">Abandonar</button>
         </form>
         <form th:action="@{/game/}" method="POST" enctype="multipart/form-data">
-            <button type="submit" class="boton">Iniciar</button>
+            <button type="submit" id="iniciar" class="boton">Iniciar</button>
         </form>
     </div>
 </main>
