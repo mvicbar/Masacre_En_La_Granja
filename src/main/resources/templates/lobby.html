@@ -12,20 +12,18 @@
     <script>
         window.onload = () => {
             var btninit = document.getElementById("iniciar");
-         //   var btnfetch = document.getElementById("fetch");
-           // btninit.setCustomValidity("No sé si está libre");
-            //btnfetch.onclick = () => {
             btninit.onclick = () => {
                 var gid = document.getElementById("gameid").textContent;
-               // console.log(gid);
+
                 const headers = {
                     "Content-Type": "application/json",
                     "X-CSRF-TOKEN": config.csrf.value
                 };
                 const params = {
                     method: 'POST', headers: headers
-                }
-                fetch(config.gameStartURL/*"/lobby/startGameOk/"*/ + gid, params).then((response) => {
+                };
+
+                fetch(/*config.gameStartURL*/"/lobby/startGameOk/" + gid, params).then((response) => {
                     btninit.setCustomValidity(response.status == 200 ? "" : "¡No hay suficientes jugadores!");
                 });
 
@@ -53,9 +51,7 @@
         <form th:action="@{/lobby/{idGame}/leave(idGame=${game.id})}" method="POST" enctype="multipart/form-data">
             <button type="submit" class="boton">Abandonar</button>
         </form>
-        <!--/user/searchGame/    /lobby/{idGame}/(idGame=${game.id})  -->
-        <form th:action="@{/lobby/{idGame}(idGame=${game.id})}" method="POST" enctype="multipart/form-data">
-        <!-- <form th:action="@{/lobby/{idGame}/init(idGame=${game.id})}" method="POST" enctype="multipart/form-data"> -->
+        <form th:action="@{/lobby/{idGame} (idGame=${game.id})}" method="POST" enctype="multipart/form-data">
             <button type="submit" id="iniciar" class="boton">Iniciar</button>
         </form>
     </div>

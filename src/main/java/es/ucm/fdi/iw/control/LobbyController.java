@@ -64,6 +64,14 @@ public class LobbyController {
         Game game = entityManager.find(Game.class, Long.parseLong(idGame));
         return getLobby(model, game);
     }
+
+
+    @PostMapping("/{idGame}")
+    @Transactional
+    public String showLobbyPost(Model model, @PathVariable String idGame) {
+        Game game = entityManager.find(Game.class, Long.parseLong(idGame));
+        return getLobby(model, game);
+    }
     
     @Transactional
     public String getLobby(Model model, Game game) {
