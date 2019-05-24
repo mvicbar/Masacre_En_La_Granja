@@ -31,8 +31,16 @@ function cargarPartida() {
     fetch("/api/game/getStatus", params).then((response) => {
         if (response.status == 200) {
             response.text().then(function (text){
+            	console.log("Status leído del getStatus: " + text);
                 status = JSON.parse(text);
+                console.log("momento: " + status.momento);
+                console.log("dia: " + status.dia);
+                console.log("acciones: " + status.acciones);
+                console.log("currentDeaths: " + status.currentDeaths);
+                console.log("votes: " + status.votes);
+                console.log("Jugadores en el JSON: " + status.players);
                 endGame = (status.momento == "FINISHED") ? 1 : 0;
+                console.log("end game: "+ endGame);
                 currentDeaths = status.currentDeaths;
                 played = status.played[clientPlayer];
                 console.log(status.played);

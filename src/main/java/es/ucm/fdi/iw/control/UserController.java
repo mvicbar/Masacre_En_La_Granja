@@ -57,7 +57,6 @@ public class UserController {
 	public String getUser(@PathVariable long id, Model model, HttpSession session) {
 		User u = entityManager.find(User.class, id);
 		model.addAttribute("user", u);
-		//log.info("Games of user: " + u.getGames());
 		return "user";
 	}
 
@@ -181,8 +180,11 @@ public class UserController {
 			}
 			log.info("Successfully uploaded photo for {} into {}!", u.getId(), f.getAbsolutePath());
 		}
-
+		
 		session.setAttribute("user", u);
+		session.setAttribute("ws", request.getRequestURL().toString()
+				.replaceFirst("[^:]*", "ws")		// http[s]://... => ws://...
+				.replaceFirst("/user.*", "/ws"));
 
 		return "redirect:/user/" + u.getId();
 	}
