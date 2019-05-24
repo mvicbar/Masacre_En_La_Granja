@@ -11,7 +11,7 @@
 		<script>
     const config = {
 				socketUrl: '[[${session.ws}?:false]]',
-        gameStartURL: '[[@{/lobby/startGameOk/}]]',
+        		gameStartURL: '[[@{/lobby/startGameOk/}]]',
 				csrf: {
 					name: "[[${_csrf.parameterName}]]",
 					value: "[[${_csrf.token}]]"
@@ -19,7 +19,7 @@
 				admin: [[${ session.user != null && session.user.hasRole('admin') } ? 'true' : 'false']],
 				userId: [[${ session.user != null } ? ${ session.user.id }: -1]]
 			};
-		
+
 		/**
 		 * Creates a new voting form based on a question's data. Also
 		 * appends it wherever it should go.
@@ -27,6 +27,7 @@
 		 * @param data (as returned by the server after adding a question)
 		 * @returns nothing
 		 */
+		/*
 		function addQuestion(data) {
 			const questionDiv = document.createElement("div");
 			const canDelete = (data.author.id == km.userId) || km.admin;
@@ -60,43 +61,44 @@
 				'</form>'].join('\n');	
 			document.querySelector(data.poll ? ".polls" : ".questions").append(questionDiv);
 			addVoteListener(questionDiv.querySelector(".vote"));
-		}
+		} */
 
 		/**
 		 * WebSocket API, which only works once initialized
 		 */
+		/*
 		const ws = {
-				
+				*/
 			/**
 			 * WebSocket, or null if none connected
 			 */
-			socket: null,
+			//socket: null,
 			
 			/**
 			 * Sends a string to the server via the websocket.
 			 * @param {string} text to send 
 			 * @returns nothing
 			 */
-			send: (text) => {
+		/*	send: (text) => {
 				if (ws.socket != null) {
 					ws.socket.send(text);
 				}
 			},
-
+*/
 			/**
 			 * Default action when text is received. 
 			 * @returns
 			 */
-			receive: (text) => {
+			/*receive: (text) => {
 				console.log(text);
-			},
+			},*/
 			
 			/**
 			 * Attempts to establish communication with the specified
 			 * web-socket endpoint. If successfull, will call 
 			 * @returns
 			 */
-			initialize: (endpoint) => {
+			/*initialize: (endpoint) => {
 				try {
 					ws.socket = new WebSocket(endpoint);
 					ws.socket.onmessage = (e) => ws.receive(e.data);
@@ -105,15 +107,17 @@
 					console.log("Error, connection to WS '" + endpoint + "' FAILED: ", e);
 				}
 			}
-		} 
+		} */
 		
 		/**
 		 * Actions to perform once the page is fully loaded
 		 */
+		/*
 		window.addEventListener('load', () => {
 			if (config.socketUrl !== false) {
 				ws.initialize(config.socketUrl);
 			}
+		});*/
 
 		</script>
 	</th:block>
