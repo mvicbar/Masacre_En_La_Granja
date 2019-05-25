@@ -152,9 +152,9 @@ public class Game {
 	}
     
     public boolean canBegin() {
-        return users.size() >= 8;
+        return users.size() >= 2;
     }
-    
+
     public void init() {
         // TODO faltan cosas para inicializar realmente la partida
         Status st = new Status();
