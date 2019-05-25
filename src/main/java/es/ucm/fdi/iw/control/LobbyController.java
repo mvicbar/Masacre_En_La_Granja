@@ -5,6 +5,8 @@ import es.ucm.fdi.iw.model.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -68,6 +70,13 @@ public class LobbyController {
         return getLobby(model, game);
     }
 
+    @PostMapping("/{idGame}")
+    @Transactional
+    public String showLobbyPost(Model model, @PathVariable String idGame) {
+        Game game = entityManager.find(Game.class, Long.parseLong(idGame));
+        return getLobby(model, game);
+    }
+    
     @Transactional
     public String getLobby(Model model, Game game) {
         model.addAttribute("game", game);
@@ -76,10 +85,10 @@ public class LobbyController {
             log.info("El juego existe");
             List<User> users = new ArrayList<>(game.getUsers());
             model.addAttribute("jugadores", users);
-        } else {
+        }
+        else {
             log.info("El juego no existe");
         }
-
         return "lobby";
     }
 
@@ -89,9 +98,11 @@ public class LobbyController {
         Game game = entityManager.find(Game.class, Long.parseLong(idGame));
 
         if (game == null) {
-            return "redirect:/user/searchGame"; // TODO mensaje de error
+            model.addAttribute("errorMessage", "¡Esa partida no existe!");
+            return "elegirPartida";
         } else if (game.started()) {
-            return "redirect:/user/searchGame"; // TODO mensaje de error
+             model.addAttribute("errorMessage", "¡La partida ya ha empezado!");
+            return "elegirPartida";
         } else {
             addUserToGame(session, game);
 
@@ -121,6 +132,18 @@ public class LobbyController {
         return "redirect:/user/searchGame";
     }
 
+    //Función para comprobar que la partida puede empezar
+    @PostMapping("/startGameOk/{gameID}")
+   // @Transactional
+    public ResponseEntity enoughPlayers(@PathVariable String gameID){
+        //Mirar en la base de datos mágicamente para ver si está creado
+        Game game = entityManager.createNamedQuery("Game.getGame", Game.class)
+                .setParameter("gameID", gameID).getSingleResult();
+
+        if(game.canBegin()) return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
+    }
+  
     @GetMapping("select")
     public String showSelect() {
         return "elegirPartida";

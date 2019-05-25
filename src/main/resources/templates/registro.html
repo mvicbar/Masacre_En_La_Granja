@@ -10,7 +10,7 @@
 	<script>
 		window.onload = () => {
 			var login = document.getElementById("login");
-			login.setCustomValidity("no se si esta libre");
+			login.setCustomValidity("No sé si está libre");
 
 			login.onchange = () => {
 				const v = login.value;
@@ -20,7 +20,8 @@
 				};
 				const params = {
 					method: 'POST', headers: headers
-				}
+				};
+        
 				fetch("/api/user/loginOk/" + v, params).then((response) => {
 					login.setCustomValidity(response.status == 200 ? "" : "¡Este usuario ya existe!");
 				});
@@ -32,7 +33,7 @@
 				if (pass.value.length >= 8) {
 					pass.setCustomValidity("");
 				} else {
-					pass.setCustomValidity("demasiado fácil");
+					pass.setCustomValidity("¡Contraseña demasiado fácil!");
 				}
 
 			};
@@ -66,7 +67,7 @@
 
 				<button type="submit">Registrarse</button>
 			</form>
-			<form th:action="@{/user/login}" method="GET" enctype="multipart/form-data">
+			<form th:action="@{/user/login}" method="POST" enctype="multipart/form-data">
 				<button type="submit">Iniciar sesión</button>
 			</form>
 		</div>

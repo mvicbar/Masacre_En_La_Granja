@@ -3,7 +3,7 @@ function addNewPlayerToLobby(name) {
 	miembros[0].innerHTML = miembros[0].innerHTML + "<td>" + name + "</td>";
 }
 
-function receiveChatMessage(message) {
+function reciveChatMessage(message) {
 	const lineOutput = document.getElementById("recibido");
 	lineOutput.value = lineOutput.value + '\n' + message.propietario + ": " + message.mensaje;
 }
@@ -13,13 +13,24 @@ const handleNewPlayer = (name) => {
 }
 
 const handleChatMessage = (chatMessage) => {
-	receiveChatMessage(chatMessage);
+	reciveChatMessage(chatMessage);
+}
+
+const handleNuevoEstado = (newState) => {
+	reciveStatus(newState);
+}
+
+const handleComenzarPartida = (idGame) => {
+	console.log(idGame);
+	window.location.href = "/game/";
 }
 
 const handleMessage = (o) => {
 	console.log(o);
 	if (o.newPlayer) handleNewPlayer(o.newPlayer);
 	if (o.chatMessage) handleChatMessage(o.chatMessage);
+	if (o.nuevoEstado) handleNuevoEstado(o.nuevoEstado);
+	if (o.comienzaLaPartida) handleComenzarPartida(o.comienzaLaPartida);
 }
 
 window.addEventListener('load', () => {

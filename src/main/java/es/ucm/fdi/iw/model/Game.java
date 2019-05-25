@@ -15,6 +15,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 @Entity
 @NamedQueries({ @NamedQuery(name = "Game.all", query = "SELECT x FROM Game x"),
+
+		@NamedQuery(name = "Game.getGame", query = "SELECT g FROM Game g WHERE g.id = :gameID"),
+
 				@NamedQuery(name = "Game.active", query = "SELECT g FROM Game g WHERE g.status NOT LIKE '%finished%'")
 			})
 public class Game {
@@ -96,6 +99,18 @@ public class Game {
 		}
 		return s;
 	}
+
+	public Status getStatusObjFromString(String str){
+		ObjectMapper mapper = new ObjectMapper();
+		Status s = null;
+		try {
+			s = mapper.readValue(str, Status.class);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return s;
+	}
+
 	public String getStatusStringFromObj(Status s){
 		String st = "";
 		ObjectMapper mapper = new ObjectMapper();
@@ -129,7 +144,7 @@ public class Game {
 
 	public Boolean finished(){
 		Status s = this.getStatusObj();
-		return s.momento.equals("finished");
+		return s.momento.equals("FINISHED");
 	}
 	
 	public boolean equals(Object other) {
@@ -157,7 +172,7 @@ public class Game {
                 pos = 0;
             }
             
-            st.players.put(user.getId(), roles[pos]);
+            st.players.put(user.getName(), roles[pos]);
             roles[pos] = roles[users.size() - st.players.size()];
         }
         
