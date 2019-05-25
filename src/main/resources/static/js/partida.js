@@ -1,6 +1,6 @@
 actualRol = "";
 endGame = 1;
-played = 0;
+played = 0; // played = 0 ===> no es tu turno(o ya has jugado); played = 1 ===> puedes realizar una jugada
 currentDeaths = [];
 
 function cargarPartida() {
@@ -63,7 +63,7 @@ function cargarPartida() {
 
 function vote(player) {
 
-    if (clientRol != "DEAD" && played == 0) {
+    if (clientRol != "DEAD" && played == 1) {
         if (actualRol == clientRol) {
             switch (actualRol) {
                 case "VAMPIRE":
@@ -140,7 +140,7 @@ function popularPlay(victim_) {
 }
 
 function vampirePlay(victim_) {
-    played = 1;
+    played = 0;
     noteEntry("Your victim is " + victim_);
     //Envía jugada al servidor vía Ajax
     playJSON = {
@@ -195,9 +195,8 @@ function hunterPlay(victim_) {
     this.newRol ='';
 }*/
 
-function receiveStatus(newStateJSON)//Actualiza el estado del cliente via websocket
+function receiveStatus(newState)//Actualiza el estado del cliente via websocket
 {
-    var newState = JSON.parse(newStateJSON);
     currentDeaths = newState.deaths;
     switch (newState.id) {
         case "VAMPIRES_VOTED":
