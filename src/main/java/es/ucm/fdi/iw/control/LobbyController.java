@@ -120,7 +120,7 @@ public class LobbyController {
         User user = (User) session.getAttribute("user");
         Game game = entityManager.find(Game.class, Long.parseLong(idGame));
 
-        if(game != null && !game.started()) {
+        if (game != null && !game.started()) {
             user = entityManager.find(User.class, user.getId());
             game.getUsers().remove(user);
             user.getGames().remove(game);
