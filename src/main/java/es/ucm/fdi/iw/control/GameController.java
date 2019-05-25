@@ -45,7 +45,7 @@ public class GameController {
         Game g = user.getActiveGame();
         if (g == null) return null;
 
-        //g.init();
+      //  g.init();
         //DESCOMENTAR Y COMENTAR/BORRAR DESDE AQUI
         Status s = new Status();
         s.dia = 0;
