@@ -3,7 +3,7 @@ function addNewPlayerToLobby(name) {
 	miembros[0].innerHTML = miembros[0].innerHTML + "<td>" + name + "</td>";
 }
 
-function reciveChatMessage(message) {
+function receiveChatMessage(message) {
 	const lineOutput = document.getElementById("recibido");
 	lineOutput.value = lineOutput.value + '\n' + message.propietario + ": " + message.mensaje;
 }
@@ -13,11 +13,11 @@ const handleNewPlayer = (name) => {
 }
 
 const handleChatMessage = (chatMessage) => {
-	reciveChatMessage(chatMessage);
+	receiveChatMessage(chatMessage);
 }
 
 const handleNuevoEstado = (newState) => {
-	reciveStatus(newState);
+	receiveStatus(newState);
 }
 
 const handleComenzarPartida = (idGame) => {

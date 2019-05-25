@@ -112,7 +112,7 @@ function witchPlay(objetive) {
             headers: headers,
             body: text
         };
-        fetch("/api/game/recivePlay", params).then((response) => {
+        fetch("/api/game/receivePlay", params).then((response) => {
             if (response.status == 200) console.log("JUGADA ENVIADA");
             else {
                 console.log("MIERDA!! ALGO HA SALIDO MAL");
@@ -131,7 +131,7 @@ function popularPlay(victim_) {
         victim: victim_,
         option: ""
     };
-    fetch("/api/game/recivePlay", params).then((response) => {
+    fetch("/api/game/receivePlay", params).then((response) => {
         if (response.status == 200) console.log("JUGADA ENVIADA");
         else {
             console.log("MIERDA!! ALGO HA SALIDO MAL");
@@ -159,7 +159,7 @@ function vampirePlay(victim_) {
         headers: headers,
         body: text
     };
-    fetch("/api/game/recivePlay", params).then((response) => {
+    fetch("/api/game/receivePlay", params).then((response) => {
         if (response.status == 200) console.log("JUGADA ENVIADA");
         else {
             console.log("MIERDA!! ALGO HA SALIDO MAL");
@@ -178,7 +178,7 @@ function hunterPlay(victim_) {
         victim: victim_,
         option: ""
     }
-    fetch("/api/game/recivePlay", params).then((response) => {
+    fetch("/api/game/receivePlay", params).then((response) => {
         if (response.status == 200) console.log("JUGADA ENVIADA");
         else {
             console.log("MIERDA!! ALGO HA SALIDO MAL");
@@ -195,7 +195,7 @@ function hunterPlay(victim_) {
     this.newRol ='';
 }*/
 
-function reciveStatus(newStateJSON)//Actualiza el estado del cliente via websocket
+function receiveStatus(newStateJSON)//Actualiza el estado del cliente via websocket
 {
     var newState = JSON.parse(newStateJSON);
     currentDeaths = newState.deaths;
@@ -286,7 +286,7 @@ function hideOptions() {
     document.getElementById("controlB").style.backgroundColor = '#782112';
     document.getElementById('controls').style.display = 'none';
 }
-function showOpritons(){
+function showOptions(){
     document.getElementById('controls').style.display = 'flex';
 }
 

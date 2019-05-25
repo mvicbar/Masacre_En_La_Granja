@@ -105,11 +105,7 @@ public class LobbyController {
             return "elegirPartida";
         } else {
             addUserToGame(session, game);
-
-            if (game.canBegin()) {
-                game.init();
-            }
-
+            
             return getLobby(model, game);
         }
     }
