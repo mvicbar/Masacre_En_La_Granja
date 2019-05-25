@@ -23,6 +23,7 @@ function statusUpdate() {
 	this.votes = {};
 	this.dia = 0;//0 noche , 1 dia
 	this.players = [];
+	this.played = [];
 }
 /*Para consultar
 playJSON = {
@@ -43,6 +44,7 @@ function receivePlay(oldStateJSON, playJSON)//Tambien recibirá el estado de la 
 	object.dia = oldState.dia;
 	object.players = oldState.players;
 	object.votation = oldState.votes;
+	object.played = oldState.played;
 	switch (play.rol) {
 		case 'VAMPIRE':
 			vampireMove(play, object); //Se le envía el nuevo estado al servidor
@@ -59,7 +61,7 @@ function receivePlay(oldStateJSON, playJSON)//Tambien recibirá el estado de la 
 	}
 	object.deaths = object.currentDeaths;
 	object.acciones = oldState.acciones;
-	object.acciones.push(playJSON);
+	object.acciones.push(play);
 
 	var newStatus = {
 		momento: object.id,
@@ -67,7 +69,8 @@ function receivePlay(oldStateJSON, playJSON)//Tambien recibirá el estado de la 
 		players: object.players,
 		acciones: object.acciones,
 		currentDeaths: object.currentDeaths,
-		votes: object.votation
+		votes: object.votation,
+		played: object.played
 	};
 
 	return Java.to([JSON.stringify(object), JSON.stringify(newStatus)],"java.lang.String[]");
@@ -130,8 +133,8 @@ function hunterMove(play, object) {
 
 function vampireMove(play, object) {
 	object.votation[play.victim]++;
+	object.played[play.client] = 0;
 	if (countNumVotes(object) == countRol("VAMPIRE",object)) {
-		resetVotes(object);
 		i = evenRepeatVotationCount(object);
 		if (i == "") {
 			object.logs.push("Vampires couldn't decide who to kill!");
@@ -143,6 +146,7 @@ function vampireMove(play, object) {
 		}
 		object.id = 'VAMPIRES_VOTED';
 		object.newRol = nextRol("VAMPIRE", object);
+		playedYourTurn(object);
 		object.votation = [];
 	}
 	else {
@@ -270,8 +274,11 @@ function countRol(rol, object) {
 	return people;
 }
 
-function resetVotes(object) {
-	for (i = 0; i < object.players.length; i++) {
-		object.votes[i] = 0;
+function playedYourTurn(object){
+	for(i in object.players){
+		if (object.players[i] == object.newRol
+			|| (object.newRol == "POPULAR_VOTATION" && object.players[i] != "DEAD"))
+			
+				object.played[i] = 1;
 	}
 }
