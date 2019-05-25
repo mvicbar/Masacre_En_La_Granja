@@ -97,7 +97,7 @@ public class ApiController {
 
 		String object = result[0];
 
-		String message = "{" + "\"nuevoEstado\":\"" + object + "\"}";
+		String message = "{" + "\"nuevoEstado\":" + object + "}";
 
 		for (User u : users) {
 			iwSocketHandler.sendText(u.getName(), message);
