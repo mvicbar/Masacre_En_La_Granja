@@ -141,4 +141,16 @@ public class ApiController {
 		if(g == null) return null;
 		return ResponseEntity.ok(g.getStatus());
 	}
+
+	//Función para comprobar que la partida puede empezar
+    @PostMapping("/lobby/startGameOk/{gameID}")
+    @Transactional
+    public ResponseEntity enoughPlayers(@PathVariable String gameID){
+        //Mirar en la base de datos mágicamente para ver si está creado
+        Game game = entityManager.createNamedQuery("Game.getGame", Game.class)
+                .setParameter("gameID", Long.parseLong(gameID)).getSingleResult();
+
+        if(game.canBegin()) return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
+    }
 }

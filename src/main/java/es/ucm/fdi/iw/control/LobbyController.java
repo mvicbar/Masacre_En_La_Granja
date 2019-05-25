@@ -127,18 +127,6 @@ public class LobbyController {
 
         return "redirect:/user/searchGame";
     }
-
-    //Función para comprobar que la partida puede empezar
-    @PostMapping("/startGameOk/{gameID}")
-    @Transactional
-    public ResponseEntity enoughPlayers(@PathVariable String gameID){
-        //Mirar en la base de datos mágicamente para ver si está creado
-        Game game = entityManager.createNamedQuery("Game.getGame", Game.class)
-                .setParameter("gameID", Long.parseLong(gameID)).getSingleResult();
-
-        if(game.canBegin()) return ResponseEntity.status(HttpStatus.OK).build();
-        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
-    }
   
     @GetMapping("select")
     public String showSelect() {
