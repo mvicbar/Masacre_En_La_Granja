@@ -106,10 +106,6 @@ public class LobbyController {
         } else {
             addUserToGame(session, game);
 
-            if (game.canBegin()) {
-                game.init();
-            }
-
             return getLobby(model, game);
         }
     }
@@ -131,18 +127,6 @@ public class LobbyController {
 
         return "redirect:/user/searchGame";
     }
-
-    //Función para comprobar que la partida puede empezar
-    @PostMapping("/startGameOk/{gameID}")
-   // @Transactional
-    public ResponseEntity enoughPlayers(@PathVariable String gameID){
-        //Mirar en la base de datos mágicamente para ver si está creado
-        Game game = entityManager.createNamedQuery("Game.getGame", Game.class)
-                .setParameter("gameID", gameID).getSingleResult();
-
-        if(game.canBegin()) return ResponseEntity.status(HttpStatus.OK).build();
-        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
-    }
   
     @GetMapping("select")
     public String showSelect() {
@@ -161,11 +145,10 @@ public class LobbyController {
         Iterator<Game> iterator = games.iterator();
         Game game = null;
 
-        if (iterator.hasNext()) {
-            game = iterator.next();
-            while (iterator.hasNext() && game.started()) {
-                game = iterator.next();
-            }
+        while(iterator.hasNext()) {
+        	Game g = iterator.next();
+        	if(!g.started())
+        		game = g;
         }
 
         if (game != null) {

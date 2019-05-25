@@ -77,9 +77,9 @@ public class ApiController {
 		return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
 	}
 
-	@PostMapping("/game/recivePlay")
+	@PostMapping("/game/receivePlay")
 	@Transactional
-	public ResponseEntity<?> recivePlay(HttpSession session, @RequestBody String jugada) {
+	public ResponseEntity<?> receivePlay(HttpSession session, @RequestBody String jugada) {
 
 		User user = (User) session.getAttribute("user"); // <-- este usuario no está conectado a la bd
 		user = entityManager.find(User.class, user.getId()); // <-- obtengo usuario de la BD
@@ -122,7 +122,7 @@ public class ApiController {
 		String[] result = null;
 		// call function from script file
 		try {
-			result = (String[]) inv.invokeFunction("recivePlay", state, jugada);
+			result = (String[]) inv.invokeFunction("receivePlay", state, jugada);
 		} catch (NoSuchMethodException | ScriptException e) {
 			log.warn("Error running script", e);
 		}
@@ -141,4 +141,16 @@ public class ApiController {
 		if(g == null) return null;
 		return ResponseEntity.ok(g.getStatus());
 	}
+
+	//Función para comprobar que la partida puede empezar
+    @PostMapping("/lobby/startGameOk/{gameID}")
+    @Transactional
+    public ResponseEntity enoughPlayers(@PathVariable String gameID){
+        //Mirar en la base de datos mágicamente para ver si está creado
+        Game game = entityManager.createNamedQuery("Game.getGame", Game.class)
+                .setParameter("gameID", Long.parseLong(gameID)).getSingleResult();
+
+        if(game.canBegin()) return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
+    }
 }

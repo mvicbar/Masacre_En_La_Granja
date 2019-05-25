@@ -1,9 +1,9 @@
 function addNewPlayerToLobby(name) {
 	const miembros = document.getElementsByClassName("miembros");
-	miembros[0].innerHTML = miembros[0].innerHTML + "<td>" + name + "</td>";
+	miembros[0].innerHTML = miembros[0].innerHTML + "<div class=\"nombre\" id=" + name + "><span>" + name + "</span></div>";
 }
 
-function reciveChatMessage(message) {
+function receiveChatMessage(message) {
 	const lineOutput = document.getElementById("recibido");
 	lineOutput.value = lineOutput.value + '\n' + message.propietario + ": " + message.mensaje;
 }
@@ -13,11 +13,11 @@ const handleNewPlayer = (name) => {
 }
 
 const handleChatMessage = (chatMessage) => {
-	reciveChatMessage(chatMessage);
+	receiveChatMessage(chatMessage);
 }
 
 const handleNuevoEstado = (newState) => {
-	reciveStatus(newState);
+	receiveStatus(newState);
 }
 
 const handleComenzarPartida = (idGame) => {

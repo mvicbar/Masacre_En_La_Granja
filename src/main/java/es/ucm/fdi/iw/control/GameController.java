@@ -39,38 +39,21 @@ public class GameController {
     @GetMapping("/")
     @Transactional
     public String play(Model model, HttpSession session) {
+        
         User user = (User) session.getAttribute("user"); // <-- este usuario no está conectado a la bd
-
         user = entityManager.find(User.class, user.getId()); // <-- obtengo usuario de la BD
         Game g = user.getActiveGame();
         if (g == null) return null;
-
-        //g.init();
-        //DESCOMENTAR Y COMENTAR/BORRAR DESDE AQUI
-        Status s = new Status();
-        s.dia = 0;
-        s.momento = "VAMPIRE";
-        s.players = new HashMap<String, String>();
-        s.players.put("tor", "VAMPIRE");
-        s.players.put("mac", "FARMER");
-        s.currentDeaths = new ArrayList<String>();
-        s.votes = new HashMap<String, Integer>();
-        s.acciones = new ArrayList<Acciones>();
-        s.played = new HashMap<String, Integer>();
-        s.played.put("tor", 1);
-        s.played.put("mac", 0);
-
-        g.setStatus(g.getStatusStringFromObj(s));
+        
+        g.init();
 
         entityManager.persist(g);
         entityManager.flush();
-
-        //HASTA AQUI
-        //mas o menos... sacar el status
-
-        model.addAttribute("players", s.players.keySet());
+        
+        model.addAttribute("players", g.getStatusObj().players.keySet());
         model.addAttribute("userName", user.getName());
-        model.addAttribute("userRol", s.players.get(user.getName()));
+        model.addAttribute("userRol", g.getStatusObj().players.get(user.getName()));
+        
         return "partida";
     }
 
@@ -87,7 +70,6 @@ public class GameController {
         String text = "{" + "\"comienzaLaPartida\": {" + "\"idGame\":\"" + game.getId() + "\"}}";
 
         for (User u : game.getUsers()) {
-            if(u.getId()==user.getId()) continue;
             iwSocketHandler.sendText(u.getName(), text);
         }
         return "redirect:/game/";
