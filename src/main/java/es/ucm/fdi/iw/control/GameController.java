@@ -46,7 +46,7 @@ public class GameController {
         if (g == null) return null;
         
         g.init();
-        
+
         entityManager.persist(g);
         entityManager.flush();
         

@@ -157,11 +157,10 @@ public class LobbyController {
         Iterator<Game> iterator = games.iterator();
         Game game = null;
 
-        if (iterator.hasNext()) {
-            game = iterator.next();
-            while (iterator.hasNext() && game.started()) {
-                game = iterator.next();
-            }
+        while(iterator.hasNext()) {
+        	Game g = iterator.next();
+        	if(!g.started())
+        		game = g;
         }
 
         if (game != null) {
