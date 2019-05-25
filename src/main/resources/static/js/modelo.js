@@ -32,9 +32,9 @@ playJSON = {
 }
 */
 
-function recivePlay(oldStateJSON, playJSON)//Tambien recibirá el estado de la partida
+function receivePlay(oldStateJSON, playJSON)//Tambien recibirá el estado de la partida
 {
-	//Se hactualiza la infromación de la partida desde la BD
+	//Se actualiza la infromación de la partida desde la BD
 	var oldState = JSON.parse(oldStateJSON);
 	//Get the player, rol, and action of the play and process it
 	var play = JSON.parse(playJSON);
