@@ -10,7 +10,7 @@
     <script>
         window.onload = () => {
             var btninit = document.getElementById("iniciar");
-            btninit.setCustomValidity("No sé si está libre");
+            //btninit.setCustomValidity("No sé si está libre");
             btninit.onclick = () => {
                 var gid = document.getElementById("gameid").textContent;
 
@@ -23,7 +23,7 @@
                 };
 
                 fetch(config.gameStartURL + gid, params).then((response) => {
-                    btninit.setCustomValidity(response.status == 200 ? "" : "¡No hay suficientes jugadores para una partida!");
+                    btninit.setCustomValidity(response.status == 200 ? "A" : "¡No hay suficientes jugadores para una partida!");
                 });
 
             };

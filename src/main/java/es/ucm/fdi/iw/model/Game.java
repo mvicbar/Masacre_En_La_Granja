@@ -3,6 +3,7 @@ package es.ucm.fdi.iw.model;
 import java.io.IOException;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -10,6 +11,9 @@ import javax.persistence.*;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import es.ucm.fdi.iw.control.RootController;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  */
@@ -21,7 +25,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 				@NamedQuery(name = "Game.active", query = "SELECT g FROM Game g WHERE g.status NOT LIKE '%finished%'")
 			})
 public class Game {
-
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
@@ -158,11 +162,17 @@ public class Game {
     public void init() {
         // TODO faltan cosas para inicializar realmente la partida
         Status st = new Status();
-        st.momento = "playing";
+        st.momento = "VAMPIRE";
         st.dia = 0;
+        st.currentDeaths = new ArrayList<>();
+        st.votes = new HashMap<>();
+        st.acciones = new ArrayList<>();
+        st.played = new HashMap<>();
+        st.players = new HashMap<>();
         
         String[] roles = initialRoles();
         Random random = new Random();
+        
         for(User user : users) {
             int pos;
             
@@ -173,6 +183,13 @@ public class Game {
             }
             
             st.players.put(user.getName(), roles[pos]);
+            
+            if(roles[pos].equals("VAMPIRE")) {
+            	st.played.put(user.getName(), 1);
+			} else {
+            	st.played.put(user.getName(), 0);
+			}
+            
             roles[pos] = roles[users.size() - st.players.size()];
         }
         
@@ -183,12 +200,12 @@ public class Game {
         int count = 0;
         String[] roles = new String[users.size()];
         
-        for(; count < users.size() / 4; ++count) {
+        for(; count < 1 || count < users.size() / 4; ++count) {
             roles[count] = "VAMPIRE";
         }
         
-        roles[count] = "HUNTER";
-        ++count;
+        //roles[count] = "HUNTER";
+        //++count;
         
         for(; count < users.size(); ++count) {
             roles[count] = "FARMER";
