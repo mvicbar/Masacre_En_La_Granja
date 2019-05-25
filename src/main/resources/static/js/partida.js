@@ -32,7 +32,7 @@ function cargarPartida() {
         if (response.status == 200) {
             response.text().then(function (text){
             	console.log("Status leído del getStatus: " + text);
-                status = JSON.parse(text);
+                var status = JSON.parse(text);
                 console.log("momento: " + status.momento);
                 console.log("dia: " + status.dia);
                 console.log("acciones: " + status.acciones);
