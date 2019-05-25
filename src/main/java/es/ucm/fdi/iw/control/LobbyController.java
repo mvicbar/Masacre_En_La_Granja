@@ -105,7 +105,6 @@ public class LobbyController {
             return "elegirPartida";
         } else {
             addUserToGame(session, game);
-            
 
             return getLobby(model, game);
         }
