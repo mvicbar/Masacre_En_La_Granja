@@ -1,6 +1,6 @@
 function addNewPlayerToLobby(name) {
 	const miembros = document.getElementsByClassName("miembros");
-	miembros[0].innerHTML = miembros[0].innerHTML + "<td>" + name + "</td>";
+	miembros[0].innerHTML = miembros[0].innerHTML + "<div class=\"nombre\" id=" + name + "><span>" + name + "</span></div>";
 }
 
 function receiveChatMessage(message) {
