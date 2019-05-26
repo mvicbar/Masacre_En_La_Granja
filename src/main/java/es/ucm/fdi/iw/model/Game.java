@@ -176,7 +176,7 @@ public class Game {
         for(User user : users) {
             int pos;
             
-            if (users.size() == st.players.size()) {
+            if (users.size() != st.players.size()) {
                 pos = random.nextInt(users.size() - st.players.size());
             } else {
                 pos = 0;
