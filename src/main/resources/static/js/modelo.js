@@ -134,6 +134,7 @@ function hunterMove(play, object) {
 function vampireMove(play, object) {
 	object.votation[play.victim]++;
 	object.played[play.client] = 0;
+	console.log("CONTANDO LOS VAMPIROS: " + countRol("VAMPIRE",object));
 	if (countNumVotes(object) == countRol("VAMPIRE",object)) {
 		i = evenRepeatVotationCount(object);
 		if (i == "") {
@@ -150,7 +151,9 @@ function vampireMove(play, object) {
 		object.votation = [];
 	}
 	else {
+		console.log("Entra a continuar la votación");
 		object.id = 'CONTINUE_VOTATION';
+		//endNight(object);
 	}
 }
 
