@@ -1,17 +1,9 @@
-//Informacion de la partida
-
-/*players[0] = "VAMPIRE";
-players[1] = "HUNTER";
-players[2] = "WITCH";
-players[3] = "FARMER";
-players[4] = "FARMER";
-players[5] = "VAMPIRE";
-players[6] = "FARMER";
-players[7] = "FARMER";*/
 rolOrder = [];
 rolOrder[0] = "VAMPIRE";
 rolOrder[1] = "WITCH";
 
+BORRAR = 0;
+BORRAR2 = 0;
 
 function statusUpdate() {
 	this.id = '';
@@ -22,16 +14,9 @@ function statusUpdate() {
 	this.votation = {};
 	this.votes = {};
 	this.dia = 0;//0 noche , 1 dia
-	this.players = [];
+	this.players = {};
 	this.played = [];
 }
-/*Para consultar
-playJSON = {
-    rol: 'VAMPIRE',
-    client: client,
-    victim: victim_,
-}
-*/
 
 function receivePlay(oldStateJSON, playJSON)//Tambien recibirá el estado de la partida
 {
@@ -73,7 +58,7 @@ function receivePlay(oldStateJSON, playJSON)//Tambien recibirá el estado de la 
 		played: object.played
 	};
 
-	return Java.to([JSON.stringify(object), JSON.stringify(newStatus)],"java.lang.String[]");
+	return Java.to([JSON.stringify(object), JSON.stringify(newStatus), JSON.stringify([BORRAR2, BORRAR])],"java.lang.String[]");
 }
 
 function witchMove(play, object) {
@@ -98,15 +83,13 @@ function popularMove(play, object) {
 		if (i < 0) {
 			//Repite Votacion
 			object.logs.push("Votation tied and there is no time to vote again...");
-			object.id = 'POPULAR_VOTED';
-			startNight(object);
 		}
 		else {
 			object.currentDeaths.push(i);
 			object.logs.push("The farmers decided hang Player " + play.victim);
-			object.id = 'POPULAR_VOTED';
-			startNight(object);
 		}
+		object.id = 'POPULAR_VOTED';
+		startNight(object);
 		object.votation = [];
 	}
 	else {
@@ -132,7 +115,8 @@ function hunterMove(play, object) {
 }
 
 function vampireMove(play, object) {
-	object.votation[play.victim]++;
+	if(object.votation[play.victim] == null) object.votation[play.victim] = 1;
+	else object.votation[play.victim]++;
 	object.played[play.client] = 0;
 	if (countNumVotes(object) == countRol("VAMPIRE",object)) {
 		i = evenRepeatVotationCount(object);
@@ -147,7 +131,7 @@ function vampireMove(play, object) {
 		object.id = 'VAMPIRES_VOTED';
 		object.newRol = nextRol("VAMPIRE", object);
 		playedYourTurn(object);
-		object.votation = [];
+		object.votation = {};
 	}
 	else {
 		object.id = 'CONTINUE_VOTATION';
@@ -168,7 +152,7 @@ function evenRepeatVotationCount(object) {
 		}
 	}
 	if (greatestVotes == greatestEven) {
-		return "";//Empate al mejor, se repite votacion
+		return "";//Empate
 	}
 	return greatest;//Mayoría
 }
@@ -187,7 +171,7 @@ function nextRol(rol, object) {
 	else {
 		j++;
 		while (j < rolOrder.length) {
-			if (countRol(rolOrder[j]) > 0) {
+			if (countRol(rolOrder[j], object) > 0) {
 				return rolOrder[j];
 			}
 			j++;
@@ -252,6 +236,7 @@ function countNumVotes(object){
 	for(i in object.votation){
 		num += object.votation[i];
 	}
+	BORRAR2 = object.votation;
 	return num;
 }
 
@@ -271,6 +256,7 @@ function countRol(rol, object) {
 			people++;
 		}
 	}
+	BORRAR = people;
 	return people;
 }
 
