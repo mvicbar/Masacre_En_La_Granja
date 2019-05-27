@@ -5,8 +5,6 @@ import es.ucm.fdi.iw.model.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -48,7 +46,7 @@ public class LobbyController {
             for (User u : users) {
                 if (u == user)
                     continue;
-                iwSocketHandler.addNewUserLobby(u.getName(), message);
+                iwSocketHandler.sendMessageLobby(u.getName(), message);
             }
         }
     }
@@ -85,8 +83,7 @@ public class LobbyController {
             log.info("El juego existe");
             List<User> users = new ArrayList<>(game.getUsers());
             model.addAttribute("jugadores", users);
-        }
-        else {
+        } else {
             log.info("El juego no existe");
         }
         return "lobby";
@@ -105,7 +102,6 @@ public class LobbyController {
             return "elegirPartida";
         } else {
             addUserToGame(session, game);
-
             return getLobby(model, game);
         }
     }
@@ -123,6 +119,14 @@ public class LobbyController {
             entityManager.persist(user);
             entityManager.persist(game);
             entityManager.flush();
+    
+            List<User> users = new ArrayList<>(game.getUsers());
+            String message = "{\"removePlayer\": \"" + user.getName() + "\" }";
+            for (User u : users) {
+                if (u != user) {
+                    iwSocketHandler.sendMessageLobby(u.getName(), message);
+                }
+            }
         }
 
         return "redirect:/user/searchGame";
