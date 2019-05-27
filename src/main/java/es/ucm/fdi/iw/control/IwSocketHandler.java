@@ -103,7 +103,7 @@ public class IwSocketHandler extends TextWebSocketHandler {
 		users.remove(userName);
 	}
 
-	public void addNewUserLobby(String userName, String text) {
+	public void sendMessageLobby(String userName, String text) {
 
 		User propietario = entityManager.createNamedQuery("User.ByName", User.class).setParameter("userName", userName)
 				.getSingleResult();

@@ -160,7 +160,6 @@ public class Game {
     }
 
     public void init() {
-        // TODO faltan cosas para inicializar realmente la partida
         Status st = new Status();
         st.momento = "VAMPIRE";
         st.dia = 0;
@@ -176,7 +175,7 @@ public class Game {
         for(User user : users) {
             int pos;
             
-            if (users.size() == st.players.size()) {
+            if (users.size() != st.players.size()) {
                 pos = random.nextInt(users.size() - st.players.size());
             } else {
                 pos = 0;
