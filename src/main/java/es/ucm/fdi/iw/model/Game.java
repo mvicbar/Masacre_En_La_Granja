@@ -160,7 +160,6 @@ public class Game {
     }
 
     public void init() {
-        // TODO faltan cosas para inicializar realmente la partida
         Status st = new Status();
         st.momento = "VAMPIRE";
         st.dia = 0;

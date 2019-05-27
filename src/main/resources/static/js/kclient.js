@@ -3,6 +3,12 @@ function addNewPlayerToLobby(name) {
 	miembros[0].innerHTML = miembros[0].innerHTML + "<div class=\"nombre\" id=" + name + "><span>" + name + "</span></div>";
 }
 
+function removePlayerFromLobby(name) {
+	console.log("REMOVE" + name);
+	var elem = document.getElementById(name);
+	elem.parentNode.removeChild(elem);
+}
+
 function receiveChatMessage(message) {
 	const lineOutput = document.getElementById("recibido");
 	lineOutput.value = lineOutput.value + '\n' + message.propietario + ": " + message.mensaje;
@@ -25,12 +31,17 @@ const handleComenzarPartida = (idGame) => {
 	window.location.href = "/game/";
 }
 
+const handleRemovePlayer = (name) => {
+	removePlayerFromLobby(name);
+}
+
 const handleMessage = (o) => {
 	console.log(o);
 	if (o.newPlayer) handleNewPlayer(o.newPlayer);
 	if (o.chatMessage) handleChatMessage(o.chatMessage);
 	if (o.nuevoEstado) handleNuevoEstado(o.nuevoEstado);
 	if (o.comienzaLaPartida) handleComenzarPartida(o.comienzaLaPartida);
+	if (o.removePlayer) handleRemovePlayer(o.removePlayer);
 }
 
 window.addEventListener('load', () => {
