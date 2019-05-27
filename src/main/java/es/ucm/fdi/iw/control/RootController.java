@@ -45,6 +45,11 @@ public class RootController {
 		return "faq";
 	}
 	
+	@GetMapping("/partida")
+	public String partida(Model model) {
+		return "partida";
+	}
+	
 	@GetMapping("/login")
 	public String getLogin(Model model) { return "iniciosesion"; }
 	

@@ -22,7 +22,7 @@ import javax.validation.constraints.NotEmpty;
 public class User {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 
 	@NotNull
@@ -122,5 +122,12 @@ public class User {
 
 	public boolean equals(Object other) {
 		return other instanceof User && id == ((User) other).id;
+	}
+
+	public Game getActiveGame(){
+		for(Game g: this.games){
+			if(!g.finished()) return g;
+		}
+		return null;
 	}
 }
