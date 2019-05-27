@@ -30,8 +30,8 @@ function cargarPartida() {
 
     fetch("/api/game/getStatus", params).then((response) => {
         if (response.status == 200) {
-            response.text().then(function (text){
-            	console.log("Status leído del getStatus: " + text);
+            response.text().then(function (text) {
+                console.log("Status leído del getStatus: " + text);
                 var status = JSON.parse(text);
                 console.log("momento: " + status.momento);
                 console.log("dia: " + status.dia);
@@ -40,7 +40,7 @@ function cargarPartida() {
                 console.log("votes: " + status.votes);
                 console.log("Jugadores en el JSON: " + status.players);
                 endGame = (status.momento == "FINISHED") ? 1 : 0;
-                console.log("end game: "+ endGame);
+                console.log("end game: " + endGame);
                 currentDeaths = status.currentDeaths;
                 played = status.played[clientPlayer];
                 console.log(status.played);
@@ -55,30 +55,29 @@ function cargarPartida() {
     for (p in players) {
         if (players[p] == clientPlayer) continue;
         document.getElementById(players[p] + "Card")
-            .addEventListener("click", function () {
-                vote(players[p]);
-            });
+            .addEventListener("click", vote(players[p]));
     }
 }
 
 function vote(player) {
-
-    if (clientRol != "DEAD" && played == 1) {
-        if (actualRol == clientRol) {
-            switch (actualRol) {
-                case "VAMPIRE":
-                    vampirePlay(player);
-                    break;
-                case "HUNTER":
-                    hunterPlay(player);
-                    break;
-                case "WITCH":
-                    witchPlay(player);
-                    break;
+    return function () {
+        if (clientRol != "DEAD" && played == 1) {
+            if (actualRol == clientRol) {
+                switch (actualRol) {
+                    case "VAMPIRE":
+                        vampirePlay(player);
+                        break;
+                    case "HUNTER":
+                        hunterPlay(player);
+                        break;
+                    case "WITCH":
+                        witchPlay(player);
+                        break;
+                }
             }
-        }
-        else if (actualRol == "POPULAR_VOTATION") {
-            popularPlay(player);
+            else if (actualRol == "POPULAR_VOTATION") {
+                popularPlay(player);
+            }
         }
     }
 }
@@ -259,7 +258,7 @@ function updateDeaths(deaths) {
         else {
             noteEntry(deaths[i] + " has died!");
             document.getElementById(p + "Player").innerHTML = "DEAD";
-        }players
+        } players
     }
     currentDeaths = [];
 }
@@ -285,7 +284,7 @@ function hideOptions() {
     document.getElementById("controlB").style.backgroundColor = '#782112';
     document.getElementById('controls').style.display = 'none';
 }
-function showOptions(){
+function showOptions() {
     document.getElementById('controls').style.display = 'flex';
 }
 

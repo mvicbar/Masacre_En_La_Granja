@@ -2,9 +2,6 @@ rolOrder = [];
 rolOrder[0] = "VAMPIRE";
 rolOrder[1] = "WITCH";
 
-BORRAR = 0;
-BORRAR2 = 0;
-
 function statusUpdate() {
 	this.id = '';
 	this.deaths = [];
@@ -58,7 +55,7 @@ function receivePlay(oldStateJSON, playJSON)//Tambien recibirá el estado de la 
 		played: object.played
 	};
 
-	return Java.to([JSON.stringify(object), JSON.stringify(newStatus), JSON.stringify([BORRAR2, BORRAR])],"java.lang.String[]");
+	return Java.to([JSON.stringify(object), JSON.stringify(newStatus)],"java.lang.String[]");
 }
 
 function witchMove(play, object) {
@@ -236,7 +233,6 @@ function countNumVotes(object){
 	for(i in object.votation){
 		num += object.votation[i];
 	}
-	BORRAR2 = object.votation;
 	return num;
 }
 
@@ -256,7 +252,6 @@ function countRol(rol, object) {
 			people++;
 		}
 	}
-	BORRAR = people;
 	return people;
 }
 

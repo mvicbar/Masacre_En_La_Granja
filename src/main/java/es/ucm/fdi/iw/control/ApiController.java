@@ -91,22 +91,13 @@ public class ApiController {
 
 		String[] result = procesarJugada(jugada, g.getStatus());
 		String nuevoEstado = result[1];
-		log.info(result[2]);
-		log.info("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-		log.info("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-		log.info("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-		log.info("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 		log.info(nuevoEstado);
-		g.setStatus(nuevoEstado);
+		g.setStatus("NUEVO ESTADO --> " + nuevoEstado);
 		entityManager.persist(g);
 		entityManager.flush();
 
 		String object = result[0];
-		log.info("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
-		log.info("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
-		log.info("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
-		log.info("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
-		log.info(object);
+		log.info("EL OBJETO ESTE... --> " + object);
 
 		String message = "{" + "\"nuevoEstado\":" + object + "}";
 
