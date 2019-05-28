@@ -184,6 +184,11 @@ function nextRol(rol, object) {
 
 function endNight(object) {
 	processDeaths(object);
+
+	if (object.turno == "FARMERS_WON" || object.turno == "VAMPIRES_WON") {
+		return object.turno;
+	}
+
 	if (object.turno != "HUNTER") {
 		object.dia = 1;
 		object.turno = "POPULAR_VOTATION";
@@ -195,9 +200,7 @@ function endNight(object) {
 		object.logs.push("The farmers wake up");
 	}
 
-	if (object.turno == "FARMERS_WON" || object.turno == "VAMPIRES_WON") {
-		return object.turno;
-	}
+
 	return "POPULAR_VOTATION";
 }
 
