@@ -1,4 +1,5 @@
 var rolOrder = ["VAMPIRE", "WITCH"];
+var cosasQuePasan = "";
 
 function createStatus() {
 	this.logs = [];
@@ -56,7 +57,7 @@ function receivePlay(oldStateJSON, playJSON) //También recibirá el estado de l
 		played: object.played
 	};
 
-	return Java.to([JSON.stringify(object), JSON.stringify(newStatus)], "java.lang.String[]");
+	return Java.to([JSON.stringify(object), JSON.stringify(newStatus), JSON.stringify(cosasQuePasan)], "java.lang.String[]");
 }
 
 function witchMove(play, object) {
@@ -184,6 +185,11 @@ function nextRol(rol, object) {
 
 function endNight(object) {
 	processDeaths(object);
+
+	if (object.turno == "FARMERS_WON" || object.turno == "VAMPIRES_WON") {
+		return object.turno;
+	}
+
 	if (object.turno != "HUNTER") {
 		object.dia = 1;
 		object.turno = "POPULAR_VOTATION";
@@ -195,10 +201,7 @@ function endNight(object) {
 		object.logs.push("The farmers wake up");
 	}
 
-	if (object.turno == "FARMERS_WON" || object.turno == "VAMPIRES_WON") {
-		object.gameState = "FINISHED";
-		return object.turno;
-	}
+
 	return "POPULAR_VOTATION";
 }
 
@@ -238,6 +241,7 @@ function checkWin(object)//Comprueba si un bando ha ganado
 		}
 		else if (object.players[i] != "DEAD") {
 			farmersLeft++;
+			cosasQuePasan+= "Ha entrado en farmersLeft '\n'";
 		}
 	}
 	if (vampiresLeft == 0) {
