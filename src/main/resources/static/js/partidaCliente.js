@@ -1,4 +1,4 @@
-var actualRol = "";
+var turno = "";
 var endGame = 1;
 var played = 0; // played = 0 ===> no es tu turno(o ya has jugado); played = 1 ===> puedes realizar una jugada
 var currentDeaths = [];
@@ -199,23 +199,22 @@ function hunterPlay(victim_) {
 
 function receiveStatus(newState)//Actualiza el estado del cliente via websocket
 {
-    currentDeaths = newState.currentDeaths;
     printLogs(newState.logs);
     
-            noteEntry("The vampires have been eliminated. FARMERS WIN!");
-            noteEntry("The weak farmers have fallen. VAMPIRES WIN!");
- 
-    if (turno == "WITCH" && clientRol == "WITCH") witchInfo();
-    if (!endGame) printLogs(newState.logs);
-
-    if (endGame) notifyEndedGame();
+    /*
+    noteEntry("The vampires have been eliminated. FARMERS WIN!");
+    noteEntry("The weak farmers have fallen. VAMPIRES WIN!");
+    */
 }
 
 function notifyEndedGame(){
 	document.getElementById('finalizar_partida').style.display = 'flex';
 }
 
-function witchInfo() {
+function witchInfo(message) {
+
+    printLogs(message);
+    /*
     if (currentDeaths[0] == null) {
         logEntry("Nobody is gonna die tonight");
         noteEntry("Nobody is gonna die tonight");
@@ -223,6 +222,7 @@ function witchInfo() {
         logEntry(currentDeaths[0] + " is gonna die tonight...");
         noteEntry(currentDeaths[0] + " is gonna die tonight...");
     }
+    */
     document.getElementById('controls').style.display = 'flex';
 }
 function resetPlay() {
