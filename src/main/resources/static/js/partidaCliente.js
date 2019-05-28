@@ -197,14 +197,13 @@ function hunterPlay(victim_) {
 function receiveStatus(newState)//Actualiza el estado del cliente via websocket
 {
     currentDeaths = newState.currentDeaths;
-
+    console.log("Estado de la partida: " + newState.newRol);
     switch (newState.id) {
         case "VAMPIRES_VOTED":
             actualRol = newState.newRol;
             logEntry("Vampires choosed their prey...");
             if (newState.newRol == "POPULAR_VOTATION") { updateDeaths(newState.deaths); }
             resetPlay();
-
             break;
         case "WITCH_PLAYED":
             actualRol = newState.newRol;
@@ -235,7 +234,6 @@ function receiveStatus(newState)//Actualiza el estado del cliente via websocket
     }
     if (actualRol == "WITCH" && clientRol == "WITCH") witchInfo();
     if (!endGame) printLogs(newState.logs);
-
     if (endGame) notifyEndedGame();
 }
 
@@ -253,6 +251,7 @@ function witchInfo() {
     }
     document.getElementById('controls').style.display = 'flex';
 }
+
 function resetPlay() {
     played = 0;
 }
@@ -265,8 +264,8 @@ function updateDeaths(deaths) {
         }
         else {
             noteEntry(deaths[i] + " has died!");
-            document.getElementById(p + "Player").innerHTML = "DEAD";
-        } players
+            document.getElementById(deaths[i] + "Player").innerHTML = "DEAD";
+        }
     }
     currentDeaths = [];
 }

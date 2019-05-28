@@ -180,10 +180,10 @@ function endNight(object) {
 		object.newRol = "POPULAR_VOTATION";
 		object.logs.push("The farmers wake up");
 	}
-	return "POPULAR_VOTATION";
-
-
-
+	
+	if(object.id == "FARMERS_WON" || object.id == "VAMPIRES_WON")
+		return "FINISHED";
+	else return "POPULAR_VOTATION";
 }
 
 function startNight(object) {
@@ -212,16 +212,15 @@ function processDeaths(object) {
 	checkWin(object);
 }
 
-function checkWin(object)//Comprueba si un bando ha ganado
-{
+function checkWin(object) {//Comprueba si un bando ha ganado
 	vampiresLeft = 0;
 	farmersLeft = 0;
 	for (i in object.players) {
 		if (object.players[i] == "VAMPIRE") { vampiresLeft++; }
 		else if (object.players[i] != "DEAD") { farmersLeft++; }
 	}
-	if (vampiresLeft == 0) { object.id = "FARMERS_WON"; }
-	else if (farmersLeft == 0) { object.id = "VAMPIRES_WON"; }
+	if (vampiresLeft == 0) { object.id = "FARMERS_WON"; object.newRol = "FARMENS_WON"; }
+	else if (farmersLeft == 0) { object.id = "VAMPIRES_WON"; object.newRol = "VAMPIRES_WON"; }
 }
 
 function countNumVotes(object){
@@ -255,7 +254,6 @@ function playedYourTurn(object){
 	for(i in object.players){
 		if (object.players[i] == object.newRol
 			|| (object.newRol == "POPULAR_VOTATION" && object.players[i] != "DEAD"))
-			
 				object.played[i] = 1;
 	}
 }
