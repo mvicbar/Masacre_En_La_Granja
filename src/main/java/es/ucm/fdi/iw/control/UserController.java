@@ -148,6 +148,7 @@ public class UserController {
 			@RequestParam String userPassword, @RequestParam String userPassword2,
 			@RequestParam("userPhoto") MultipartFile userPhoto, HttpSession session) {
 
+		userName = userName.replaceAll(" ", "_");
 		Long usersWithLogin = entityManager.createNamedQuery("User.HasName", Long.class)
 				.setParameter("userName", userName).getSingleResult();
 
@@ -228,7 +229,7 @@ public class UserController {
 	@GetMapping("/logout")
 	public String logout(Model model, HttpSession session) {
 		session.setAttribute("user", null);
-		return "redirect:/user/login";
+		return "redirect:/login";
 	}
 
 	@GetMapping("/searchGame")
