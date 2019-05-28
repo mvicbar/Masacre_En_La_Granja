@@ -131,22 +131,25 @@ function vampireMove(play, object) {
 }
 
 function mostVotedPlayer(object) {
-	greatest = "";
-	greatestVotes = -1;
-	greatestEven = -1;
+	var name = "";
+	var max = 0;
+	var draw = 0;
 
-	for (i in object.votation) {
-		if (object.votation[i] > greatestVotes) {
-			greatest = i;
-			greatestVotes = object.votation[i];
-		} else if (object.votation[i] == greatestVotes) {
-			greatestEven = greatestVotes;
+	for (let i in object.votation) {
+		if (object.votation[i] > max) {
+			name = i;
+			max = object.votation[i];
+			draw = 0;
+		} else if (object.votation[i] == max) {
+			draw = 1;
 		}
 	}
-	if (greatestVotes == greatestEven) {
-		return "";//Empate
+
+	if (draw == 1) {
+		return ""; // Empate
 	}
-	return greatest;//Mayoría
+
+	return name; // Jugador más votado
 }
 
 function nextRol(rol, object) {
