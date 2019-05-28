@@ -1,41 +1,68 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html lang="es-ES" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title> Partida | Masacre en la granja </title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" media="screen" th:href="@{/css/nav.css}">
     <link rel="stylesheet" type="text/css" media="screen" th:href="@{/css/partida.css}">
+    <th:block th:replace="fragments/head.html :: header"></th:block>
+    <script>
+        clientPlayer = "[[${userName}]]";
+        clientRol = '[[${userRol}]]';
+        players = [];
+    </script>
 </head>
+
 <body>
-    <div th:replace="fragments/footer.html :: bootstrap">
-        Nav goes here
-    </div>
-    <div class="contenedorPrincipal">
+    <select hidden id="myvar">
+        <option hidden th:each="player : ${players}" th:value="${player}"></option>
+    </select>
+    <script>
+        opts = document.getElementById("myvar");
+        for(i = 0; i < opts.options.length; i++){
+            players.push(opts.options[i].value);
+        }
+    </script>
+    <div class="contenedor_principal">
         <div class="notas">
-            <ul th:each="u: ${userStats}" class="cartasYjugadores" >
-                <li  th:class="|${u.user.name}card|" th:text="${u.user.name}">
-                    <div th:class="|${u.user.name}|" th:id="${u.user.name}" th:text="${u.user.name}"></div>
+            <ul class="cartas_y_jugadores">
+                <li class="player_card" th:each="player : ${players}">
+                    <div class="player" th:id="${player}" th:text="${player}">Player 1</div>
                     <textarea> </textarea>
                 </li>
             </ul>
         </div>
-        <div class="chat">
-            AQUÍ SE IMPLEMENTARÁ EL CHAT
+        <div class=center>
+            <div class="playerNo" id="plaNo" th:text="${userName}">You are Player 1</div>
+            <div class="playerRol" id="plaRol" th:text="${userRol}">VAMPIRE</div>
+            <div>
+                <textarea rows="7" cols="50" class="textLog" id="log" readonly></textarea>
+            </div>
+            <div class="notes" id="note">
+            </div>
+            <div class="chat">
+                <th:block th:replace="fragments/chat.html :: chat"></th:block>
+            </div>
+            <div id="controls">
+                <div class="control" , id="controlA">Kill</div>
+                <div class="control" , id="controlB">Revive</div>
+                <div class="control" , id="controlC">Pass</div>
+            </div>
+
         </div>
         <div class="mesa">
-            <ul class="cartasYjugadores" th:each="u: ${userStats}">
-                <li th:class="|${u.user.name}card|">
-                    <div th:class="|${u.user.name}|" th:id="${u.user.name}" th:text="${u.user.name}"></div>
-                    <div th:class="|${u.user.name}card|" th:id="${u.user.name}"></div>
+            <ul class="cartas_y_jugadores">
+                <li class="player_card" th:each="player : ${players}">
+                    <div class="player" th:id="${player}+Player" th:text="${player}">Player 1</div>
+                    <div class="card" th:id="${player}+Card">Card 1</div>
                 </li>
             </ul>
         </div>
-
+        <script th:src="@{/js/partida.js}" type="text/javascript"></script>
     </div>
 </body>
+
 
 </html>

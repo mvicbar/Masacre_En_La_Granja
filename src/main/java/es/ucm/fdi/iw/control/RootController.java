@@ -51,9 +51,9 @@ public class RootController {
 		return "faq";
 	}
 	
-	@GetMapping("/chat")
-	public String chat(Model model) {
-		return "chat";
+	@GetMapping("/partida")
+	public String partida(Model model) {
+		return "partida";
 	}
 	
 	@GetMapping("/login")
