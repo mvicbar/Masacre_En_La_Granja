@@ -73,7 +73,7 @@ function popularMove(play, object) {
 	object.votation[play.victim]++;
 	if (object.votation.length == countMaxVotes(object)) {
 		resetVotes(object);
-		i = evenRepeatVotationCount();
+		i = mostVotedPlayer();
 		if (i < 0) {
 			//Repite Votacion
 			object.logs.push("Votation tied and there is no time to vote again...");
@@ -113,14 +113,12 @@ function vampireMove(play, object) {
 	else object.votation[play.victim]++;
 	object.played[play.client] = 0;
 	if (countNumVotes(object) == countRol("VAMPIRE",object)) {
-		i = evenRepeatVotationCount(object);
+		i = mostVotedPlayer(object);
 		if (i == "") {
 			object.logs.push("Vampires couldn't decide who to kill!");
-			//object.id = 'REPEAT_NIGTH';???
 		}
 		else {
 			object.currentDeaths.push(i);
-			//object.id = 'VAMPIRES_VOTED';
 		}
 		object.id = 'VAMPIRES_VOTED';
 		object.newRol = nextRol("VAMPIRE", object);
@@ -132,7 +130,7 @@ function vampireMove(play, object) {
 	}
 }
 
-function evenRepeatVotationCount(object) {
+function mostVotedPlayer(object) {
 	greatest = "";
 	greatestVotes = -1;
 	greatestEven = -1;
