@@ -94,7 +94,7 @@ public class ApiController {
 		Status s = g.getStatusObj();
 		Acciones a = s.accionesStringToObj(jugada);
 		//Si nombre no coincide
-		if(user.getName().equals(a.client)) return null;
+		if(!user.getName().equals(a.client)) return null;
 		//Si rol no coincide
 		if(s.players.get(user.getName()).equals(a.rol)) return null;
 		//Si la victima no existe o esta muerta
