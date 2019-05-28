@@ -50,6 +50,16 @@
                 <div class="control" , id="controlB">Revive</div>
                 <div class="control" , id="controlC">Pass</div>
             </div>
+            
+            <div id="finalizar_partida">
+            	<form th:action="@{/user/searchGame}" method="GET">
+                	<button type="submit" id="finalizar" class="boton">Jugar otra vez</button>
+                </form>
+                <form th:action="@{/user/{id}(id=${session.user.id})}" method="GET">
+                	<button type="submit" id="perfil" class="boton">Volver al perfil</button>
+            	</form>
+            
+            </div>
 
         </div>
         <div class="mesa">

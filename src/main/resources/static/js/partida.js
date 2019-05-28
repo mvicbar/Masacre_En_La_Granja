@@ -234,7 +234,13 @@ function receiveStatus(newState)//Actualiza el estado del cliente via websocket
     }
     if (actualRol == "WITCH" && clientRol == "WITCH") witchInfo();
     if (!endGame) printLogs(newState.logs);
+    if (endGame) notifyEndedGame();
 }
+
+function notifyEndedGame(){
+	document.getElementById('finalizar_partida').style.display = 'flex';
+}
+
 function witchInfo() {
     if (currentDeaths[0] == null) {
         logEntry("Nobody is gonna die tonight");
@@ -283,6 +289,7 @@ function hideOptions() {
     document.getElementById("controlA").style.backgroundColor = '#782112';
     document.getElementById("controlB").style.backgroundColor = '#782112';
     document.getElementById('controls').style.display = 'none';
+    document.getElementById('finalizar_partida').style.display = 'none';
 }
 function showOptions() {
     document.getElementById('controls').style.display = 'flex';

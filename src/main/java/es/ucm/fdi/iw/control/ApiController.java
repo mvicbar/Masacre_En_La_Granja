@@ -91,8 +91,8 @@ public class ApiController {
 
 		String[] result = procesarJugada(jugada, g.getStatus());
 		String nuevoEstado = result[1];
-		log.info(nuevoEstado);
-		g.setStatus("NUEVO ESTADO --> " + nuevoEstado);
+		log.info("NUEVO ESTADO --> " + nuevoEstado);
+		g.setStatus(nuevoEstado);
 		entityManager.persist(g);
 		entityManager.flush();
 
@@ -155,4 +155,21 @@ public class ApiController {
         if(game.canBegin()) return ResponseEntity.status(HttpStatus.OK).build();
         return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
     }
+    
+    @PostMapping("game/endGame")
+	@Transactional
+	public ResponseEntity<?> endGame(HttpSession session, @RequestBody String players) {
+    	User user = (User) session.getAttribute("user"); // <-- este usuario no está conectado a la bd
+		user = entityManager.find(User.class, user.getId()); // <-- obtengo usuario de la BD
+
+		log.info("String de jugadores {}", players);
+		List<String> users = new ArrayList<String>();
+		
+		String message = "{\"endedGame\": \"true\"}";
+
+		for (String u : users) {
+			iwSocketHandler.sendText(u, message);
+		}
+		return ResponseEntity.status(HttpStatus.OK).build();
+	}
 }
