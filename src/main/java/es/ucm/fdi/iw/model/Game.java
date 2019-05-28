@@ -129,7 +129,7 @@ public class Game {
 	public void initLobby() {
         ObjectMapper mapper = new ObjectMapper();
         Status st = new Status();
-        st.momento = "inLobby";
+        st.gameState = "inLobby";
     
         try {
             status = mapper.writeValueAsString(st);
@@ -143,12 +143,12 @@ public class Game {
 	 */
 	public boolean started() {
 		Status s = this.getStatusObj();
-		return !s.momento.equals("inLobby");
+		return !s.gameState.equals("inLobby");
 	}
 
 	public Boolean finished(){
 		Status s = this.getStatusObj();
-		return s.momento.equals("FINISHED");
+		return s.gameState.equals("FINISHED");
 	}
 	
 	public boolean equals(Object other) {
@@ -161,7 +161,8 @@ public class Game {
 
     public void init() {
         Status st = new Status();
-        st.momento = "VAMPIRE";
+		st.turno = "VAMPIRE";
+		st.gameState = "INGAME";
         st.dia = 0;
         st.currentDeaths = new ArrayList<>();
         st.votes = new HashMap<>();
@@ -202,9 +203,12 @@ public class Game {
         for(; count < 1 || count < users.size() / 4; ++count) {
             roles[count] = "VAMPIRE";
         }
-        
-        //roles[count] = "HUNTER";
-        //++count;
+/*
+		roles[count] = "WITCH";
+		++count;
+        roles[count] = "HUNTER";
+        ++count;
+*/
         
         for(; count < users.size(); ++count) {
             roles[count] = "FARMER";

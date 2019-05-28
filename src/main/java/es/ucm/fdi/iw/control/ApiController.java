@@ -86,17 +86,16 @@ public class ApiController {
 		user = entityManager.find(User.class, user.getId()); // <-- obtengo usuario de la BD
 
 		Game g = user.getActiveGame();
-		if(g == null) return null;
-
+		if(g == null) return ResponseEntity.badRequest().build();
 		/*
 		INICIO SEGURIDAD!!!
 		*/
 		Status s = g.getStatusObj();
 		Acciones a = s.accionesStringToObj(jugada);
 		//Si nombre no coincide
-		if(user.getName().equals(a.client)) return null;
+		if(!user.getName().equals(a.client)) return ResponseEntity.badRequest().build();
 		//Si rol no coincide
-		if(s.players.get(user.getName()).equals(a.rol)) return null;
+		if(!s.players.get(user.getName()).equals(a.rol)) return ResponseEntity.badRequest().build();
 		//Si la victima no existe o esta muerta
 		boolean victimaValida = false;
 		for(User i : g.getUsers()){
@@ -105,7 +104,7 @@ public class ApiController {
 				break;
 			}
 		}
-		if(!victimaValida) return null;
+		if(!victimaValida) return ResponseEntity.badRequest().build();
 
 		/*
 		FIN SEGURIDAD!!!
@@ -165,7 +164,7 @@ public class ApiController {
 		user = entityManager.find(User.class, user.getId()); // <-- obtengo usuario de la BD
 
 		Game g = user.getActiveGame();
-		if(g == null) return null;
+		if(g == null) return ResponseEntity.badRequest().build();
 		return ResponseEntity.ok(g.getStatus());
 	}
 
@@ -180,4 +179,21 @@ public class ApiController {
         if(game.canBegin()) return ResponseEntity.status(HttpStatus.OK).build();
         return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
     }
+    
+    @PostMapping("game/endGame")
+	@Transactional
+	public ResponseEntity<?> endGame(HttpSession session, @RequestBody String players) {
+    	User user = (User) session.getAttribute("user"); // <-- este usuario no está conectado a la bd
+		user = entityManager.find(User.class, user.getId()); // <-- obtengo usuario de la BD
+
+		log.info("String de jugadores {}", players);
+		List<String> users = new ArrayList<String>();
+		
+		String message = "{\"endedGame\": \"true\"}";
+
+		for (String u : users) {
+			iwSocketHandler.sendText(u, message);
+		}
+		return ResponseEntity.status(HttpStatus.OK).build();
+	}
 }
