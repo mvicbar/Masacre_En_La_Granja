@@ -196,7 +196,7 @@ function hunterPlay(victim_) {
 
 function receiveStatus(newState)//Actualiza el estado del cliente via websocket
 {
-    currentDeaths = newState.deaths;
+    currentDeaths = newState.currentDeaths;
     switch (newState.id) {
         case "VAMPIRES_VOTED":
             actualRol = newState.newRol;

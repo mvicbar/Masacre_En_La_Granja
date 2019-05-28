@@ -23,7 +23,7 @@ const handleChatMessage = (chatMessage) => {
 }
 
 const handleNuevoEstado = (newState) => {
-	receiveStatus(newState);
+	receiveStatus(newState); //esta funcion esta en partidaCliente.js
 }
 
 const handleComenzarPartida = (idGame) => {
