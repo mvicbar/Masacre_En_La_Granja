@@ -5,7 +5,7 @@ var currentDeaths = [];
 var option = -1;
 
 function cargarPartida() {
-
+	console.log("Entrada en cargarPartida");
     document.getElementById("controlA").addEventListener("click", function () {
         option = 1;
         document.getElementById("controlA").style.backgroundColor = '#1D1C1C';
@@ -63,6 +63,7 @@ function cargarPartida() {
 }
 
 function vote(player) {
+	console.log("Entrada en la función vote con player: " + player);
     return function () {
         if (clientRol != "DEAD" && played == 1) {
             if (turno == clientRol) {
@@ -124,6 +125,7 @@ function witchPlay(objetive) {
 }
 
 function popularPlay(victim_) {
+	console.log("Entrada en popularPlay con victim_: " + victim_);
     played = 0;
     noteEntry("Your vote is for " + victim_);
 
@@ -134,6 +136,7 @@ function popularPlay(victim_) {
         option: ""
     };
     var text = JSON.stringify(playJSON);
+    console.log("Jugada enviada: " + text);
     const headers = {
         "Content-Type": "application/json",
         "X-CSRF-TOKEN": config.csrf.value
@@ -152,6 +155,7 @@ function popularPlay(victim_) {
 }
 
 function vampirePlay(victim_) {
+	console.log("Entrada en vampirePlay con victim_: " + victim_);
     played = 0;
     noteEntry("Your victim is " + victim_);
 
@@ -201,14 +205,13 @@ function hunterPlay(victim_) {
 
 function receiveStatus(newState)//Actualiza el estado del cliente via websocket
 {
+	console.log("Nuevo estado recibido");
     printLogs(newState.logs);
     played = newState.played[clientPlayer];
     turno = newState.turno;
     
-    /*
-    noteEntry("The vampires have been eliminated. FARMERS WIN!");
-    noteEntry("The weak farmers have fallen. VAMPIRES WIN!");
-    */
+    if(newState.gameState == "FINISHED")
+    	notifyEndedGame();
 }
 
 function notifyEndedGame(){
@@ -235,17 +238,15 @@ function resetPlay() {
 }
 
 function updateDeaths(deaths) {
-    for (var i = 0; i < deaths.length; i++) {
-        if (deaths[i] == clientRol) {//El cliente ha muerto
-            clientRol = "DEAD"
+	console.log("Entrada en updateDeaths");
+    for (i in deaths) {
+        if (deaths[i] == "DEAD") {//El cliente ha muerto
+            //clientRol = "DEAD"
             noteEntry("YOU DIED");
-        }
-        else {
-            noteEntry(deaths[i] + " has died!");
-            document.getElementById(p + "Player").innerHTML = "DEAD";
+            noteEntry(i + " has died!");
+            document.getElementById(i + "Player").innerHTML += " DEAD";
         }
     }
-    currentDeaths = [];
 }
 
 function logEntry(message) {

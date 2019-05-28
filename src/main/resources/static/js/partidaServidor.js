@@ -35,6 +35,7 @@ function receivePlay(oldStateJSON, playJSON) //También recibirá el estado de l
 			hunterMove(play, object);
 			break;
 		case 'POPULAR_VOTE':
+			object.turno = oldState.turno;
 			popularMove(play, object);
 			break;
 		case 'WITCH':
@@ -283,8 +284,8 @@ function countRol(rol, object) {
 
 function playedNextTurn(object) {
 	for (var i in object.players) {
-		if (object.players[i] == object.newRol
-			|| (object.newRol == "POPULAR_VOTATION" && object.players[i] != "DEAD"))
+		if ((object.players[i] == object.turno)
+			|| (object.turno == "POPULAR_VOTATION" && object.players[i] != "DEAD"))
 			object.played[i] = 1;
 	}
 }
