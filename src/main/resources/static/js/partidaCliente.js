@@ -225,6 +225,7 @@ function witchInfo(message) {
     */
     document.getElementById('controls').style.display = 'flex';
 }
+
 function resetPlay() {
     played = 0;
 }

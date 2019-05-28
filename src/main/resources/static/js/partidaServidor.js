@@ -185,14 +185,12 @@ function endNight(object) {
 		object.turno = "POPULAR_VOTATION";
 		object.logs.push("The farmers wake up");
 	}
+
 	if (object.turno == "FARMERS_WON" || object.turno == "VAMPIRES_WON") {
 		object.gameState = "FINISHED";
 		return object.turno;
 	}
 	return "POPULAR_VOTATION";
-
-
-
 }
 
 function startNight(object) {
@@ -241,6 +239,7 @@ function checkWin(object)//Comprueba si un bando ha ganado
 		object.turno = "VAMPIRES_WON";
 		object.gameState = "FINISHED";
 	}
+
 }
 
 function countNumVotes(object) {
@@ -274,7 +273,6 @@ function playedYourTurn(object) {
 	for (var i in object.players) {
 		if (object.players[i] == object.newRol
 			|| (object.newRol == "POPULAR_VOTATION" && object.players[i] != "DEAD"))
-
 			object.played[i] = 1;
 	}
 }
