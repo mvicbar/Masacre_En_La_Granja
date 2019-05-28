@@ -40,7 +40,25 @@ public class Game {
 
 	public Game() {
 	}
-
+	
+	public static String getIcon(String rol) {
+		String icon = "";
+		
+		if (rol.equals("VAMPIRE")) {
+			icon = "\uD83E\uDDDB\u200D♂️";
+		} else if (rol.equals("FARMER")) {
+			icon = "\uD83D\uDC68\u200D\uD83C\uDF3E ";
+		} else if (rol.equals("WITCH")) {
+			icon = "\uD83E\uDDD9\u200D♀️";
+		} else if (rol.equals("HUNTER")) {
+			icon = "\uD83C\uDFF9";
+		} else {
+			icon = "⚰";
+		}
+		
+		return icon;
+	}
+	
 	public boolean allowAccess(String _password) {
 		return password.equals(_password);
 	}
