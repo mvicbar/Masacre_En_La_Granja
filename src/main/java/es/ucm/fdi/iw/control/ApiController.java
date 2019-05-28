@@ -1,5 +1,6 @@
 package es.ucm.fdi.iw.control;
 
+import es.ucm.fdi.iw.model.Acciones;
 import es.ucm.fdi.iw.model.Game;
 import es.ucm.fdi.iw.model.Status;
 import es.ucm.fdi.iw.model.User;
@@ -86,6 +87,30 @@ public class ApiController {
 
 		Game g = user.getActiveGame();
 		if(g == null) return null;
+
+		/*
+		INICIO SEGURIDAD!!!
+		*/
+		Status s = g.getStatusObj();
+		Acciones a = s.accionesStringToObj(jugada);
+		//Si nombre no coincide
+		if(user.getName().equals(a.client)) return null;
+		//Si rol no coincide
+		if(s.players.get(user.getName()).equals(a.rol)) return null;
+		//Si la victima no existe o esta muerta
+		boolean victimaValida = false;
+		for(User i : g.getUsers()){
+			if(i.getName().equals(a.victim) && !s.players.get(a.victim).equals("DEAD")){
+				victimaValida = true;
+				break;
+			}
+		}
+		if(!victimaValida) return null;
+
+		/*
+		FIN SEGURIDAD!!!
+		*/
+
 
 		List<User> users = new ArrayList<>(g.getUsers());
 
