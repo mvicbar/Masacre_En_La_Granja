@@ -196,7 +196,8 @@ function hunterPlay(victim_) {
 
 function receiveStatus(newState)//Actualiza el estado del cliente via websocket
 {
-    currentDeaths = newState.deaths;
+    currentDeaths = newState.currentDeaths;
+
     switch (newState.id) {
         case "VAMPIRES_VOTED":
             actualRol = newState.newRol;
@@ -234,6 +235,7 @@ function receiveStatus(newState)//Actualiza el estado del cliente via websocket
     }
     if (actualRol == "WITCH" && clientRol == "WITCH") witchInfo();
     if (!endGame) printLogs(newState.logs);
+
     if (endGame) notifyEndedGame();
 }
 
@@ -290,6 +292,7 @@ function hideOptions() {
     document.getElementById("controlB").style.backgroundColor = '#782112';
     document.getElementById('controls').style.display = 'none';
     document.getElementById('finalizar_partida').style.display = 'none';
+
 }
 function showOptions() {
     document.getElementById('controls').style.display = 'flex';

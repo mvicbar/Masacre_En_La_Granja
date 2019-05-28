@@ -4,12 +4,10 @@ rolOrder[1] = "WITCH";
 
 function statusUpdate() {
 	this.id = '';
-	this.deaths = [];
 	this.logs = [];
 	this.newRol = '';
 	this.currentDeaths = [];
 	this.votation = {};
-	this.votes = {};
 	this.dia = 0;//0 noche , 1 dia
 	this.players = {};
 	this.played = [];
@@ -41,12 +39,11 @@ function receivePlay(oldStateJSON, playJSON)//Tambien recibirá el estado de la 
 			witchMove(play, object);
 			break;
 	}
-	object.deaths = object.currentDeaths;
 	object.acciones = oldState.acciones;
 	object.acciones.push(play);
 
 	var newStatus = {
-		momento: object.id,
+		momento: object.newRol,
 		dia: object.dia,
 		players: object.players,
 		acciones: object.acciones,
@@ -76,7 +73,7 @@ function popularMove(play, object) {
 	object.votation[play.victim]++;
 	if (object.votation.length == countMaxVotes(object)) {
 		resetVotes(object);
-		i = evenRepeatVotationCount();
+		i = mostVotedPlayer();
 		if (i < 0) {
 			//Repite Votacion
 			object.logs.push("Votation tied and there is no time to vote again...");
@@ -116,14 +113,12 @@ function vampireMove(play, object) {
 	else object.votation[play.victim]++;
 	object.played[play.client] = 0;
 	if (countNumVotes(object) == countRol("VAMPIRE",object)) {
-		i = evenRepeatVotationCount(object);
+		i = mostVotedPlayer(object);
 		if (i == "") {
 			object.logs.push("Vampires couldn't decide who to kill!");
-			//object.id = 'REPEAT_NIGTH';???
 		}
 		else {
 			object.currentDeaths.push(i);
-			//object.id = 'VAMPIRES_VOTED';
 		}
 		object.id = 'VAMPIRES_VOTED';
 		object.newRol = nextRol("VAMPIRE", object);
@@ -135,7 +130,7 @@ function vampireMove(play, object) {
 	}
 }
 
-function evenRepeatVotationCount(object) {
+function mostVotedPlayer(object) {
 	greatest = "";
 	greatestVotes = -1;
 	greatestEven = -1;
@@ -197,6 +192,7 @@ function startNight(object) {
 		object.dia = 0;
 		object.logs.push("The farmers go to bed...");
 		object.newRol = rolOrder[0];
+		object.currentDeaths = [];
 	}
 }
 

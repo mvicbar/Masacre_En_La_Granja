@@ -1,7 +1,10 @@
 package es.ucm.fdi.iw.model;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Status {
 
@@ -18,4 +21,14 @@ public class Status {
     public Map<String, Integer> votes; //Esto es para modelo.js // lista de nombres votados con recuento de votos
     public Map<String, Integer> played; // contiene todos los jugadores. Se mantiene a 0 (jugado). Se pone a 1 cuando se inicia un turno solo a los que pueden jugar.
 
+    public Acciones accionesStringToObj(String strAccion){
+        ObjectMapper mapper = new ObjectMapper();
+		Acciones a = null;
+		try {
+			a = mapper.readValue(strAccion, Acciones.class);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return a;
+    }
 }
