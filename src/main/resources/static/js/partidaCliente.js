@@ -1,9 +1,11 @@
-turno = "";
-endGame = 1;
-played = 0; // played = 0 ===> no es tu turno(o ya has jugado); played = 1 ===> puedes realizar una jugada
-currentDeaths = [];
+var actualRol = "";
+var endGame = 1;
+var played = 0; // played = 0 ===> no es tu turno(o ya has jugado); played = 1 ===> puedes realizar una jugada
+var currentDeaths = [];
 
 function cargarPartida() {
+    var option = -1;
+
     document.getElementById("controlA").addEventListener("click", function () {
         option = 1;
         document.getElementById("controlA").style.backgroundColor = '#1D1C1C';
@@ -53,7 +55,7 @@ function cargarPartida() {
         }
     });
 
-    for (p in players) {
+    for (var p in players) {
         if (players[p] == clientPlayer) continue;
         document.getElementById(players[p] + "Card")
             .addEventListener("click", vote(players[p]));
@@ -92,7 +94,7 @@ function witchPlay(objetive) {
             option == 2 && currentDeaths[0] == objetive) {
             hideOptions();
             played = 1;
-            playJSON = {
+            var playJSON = {
                 rol: 'WITCH',
                 client: clientPlayer,
                 victim: objetive,
@@ -125,7 +127,7 @@ function popularPlay(victim_) {
     played = 1;
     //Envía jugada al servidor vía Ajax
     noteEntry("Your vote is for " + victim_);
-    playJSON = {
+    var playJSON = {
         rol: 'POPULAR_VOTE',
         client: clientPlayer,
         victim: victim_,
@@ -143,7 +145,7 @@ function vampirePlay(victim_) {
     played = 0;
     noteEntry("Your victim is " + victim_);
     //Envía jugada al servidor vía Ajax
-    playJSON = {
+    var playJSON = {
         rol: 'VAMPIRE',
         client: clientPlayer,
         victim: victim_,
@@ -172,7 +174,7 @@ function hunterPlay(victim_) {
     players[clientPlayer][1] = 1;
     //Envía jugada al servidor vía Ajax
     noteEntry("You shot Player " + (victim_ + 1));
-    playJSON = {
+    var playJSON = {
         rol: 'HUNTER',
         client: clientPlayer,
         victim: victim_,
@@ -205,7 +207,14 @@ function receiveStatus(newState)//Actualiza el estado del cliente via websocket
  
     if (turno == "WITCH" && clientRol == "WITCH") witchInfo();
     if (!endGame) printLogs(newState.logs);
+
+    if (endGame) notifyEndedGame();
 }
+
+function notifyEndedGame(){
+	document.getElementById('finalizar_partida').style.display = 'flex';
+}
+
 function witchInfo() {
     if (currentDeaths[0] == null) {
         logEntry("Nobody is gonna die tonight");
@@ -221,7 +230,7 @@ function resetPlay() {
 }
 
 function updateDeaths(deaths) {
-    for (i = 0; i < deaths.length; i++) {
+    for (var i = 0; i < deaths.length; i++) {
         if (deaths[i] == clientRol) {//El cliente ha muerto
             clientRol = "DEAD"
             noteEntry("YOU DIED");
@@ -229,7 +238,7 @@ function updateDeaths(deaths) {
         else {
             noteEntry(deaths[i] + " has died!");
             document.getElementById(p + "Player").innerHTML = "DEAD";
-        } players
+        }
     }
     currentDeaths = [];
 }
@@ -254,6 +263,8 @@ function hideOptions() {
     document.getElementById("controlA").style.backgroundColor = '#782112';
     document.getElementById("controlB").style.backgroundColor = '#782112';
     document.getElementById('controls').style.display = 'none';
+    document.getElementById('finalizar_partida').style.display = 'none';
+
 }
 function showOptions() {
     document.getElementById('controls').style.display = 'flex';
