@@ -3,7 +3,6 @@
 *{
     padding: 0;
     margin: 0;
-
 }
 
 div.contenedor_principal{
@@ -170,6 +169,38 @@ div.playerRol
     display: none;
     top: 60%;
     left: 30%;
+}
+
+#finalizar_partida{
+   position: absolute;
+    width: 50%;
+    height: 20%;
+    background-color: rgb(80, 80, 80);
+    font-size: 2vw;
+    display: none;
+    display: flex;
+    top: 50%;
+    left: 24%;
+    align-items: center;
+    justify-content: space-evenly;
+    border:solid;
+    font-family: 'Felipa', cursive;
+}
+
+#finalizar, #perfil{
+	background-color: rgb(120, 33, 18);
+    width: 100%;
+    text-align: center;
+    border-radius: 4px;
+    border: solid;
+    border-color: black;
+    background-color: rgb(120, 33, 18);
+    color: white;
+    margin-left: 5%;
+    margin-right: 5%;
+    margin-top: 7%;
+    cursor: pointer;
+    padding: 4%;
 }
 
 .control
