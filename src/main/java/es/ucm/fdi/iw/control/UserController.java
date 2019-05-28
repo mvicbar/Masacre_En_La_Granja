@@ -127,7 +127,9 @@ public class UserController {
 	}
 
 	@GetMapping("/register")
-	public String getRegister(Model model) {
+	public String getRegister(Model model, HttpSession session) {
+		if(session.getAttribute("user") != null) 
+			return "redirect:/user/" + ((User) session.getAttribute("user")).getId();
 		return "registro";
 	}
 
@@ -191,7 +193,10 @@ public class UserController {
 	}
 
 	@GetMapping("/login")
-	public String getLogin(Model model) {
+	public String getLogin(Model model, HttpSession session) {
+		if(session.getAttribute("user") != null) 
+			return "redirect:/user/" + ((User) session.getAttribute("user")).getId();
+	
 		return "iniciosesion";
 	}
 
