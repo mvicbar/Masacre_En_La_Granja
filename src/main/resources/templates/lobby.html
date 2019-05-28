@@ -11,7 +11,6 @@
     <script>
         window.onload = () => {
             var btninit = document.getElementById("iniciar");
-            btninit.setCustomValidity("¡No hay suficientes jugadores para una partida!");
             btninit.onclick = () => {
                 var gid = document.getElementById("gameid").textContent;
 
@@ -27,6 +26,8 @@
                     if (response.status == 200) {
                         btninit.setCustomValidity("");
                         fetch("/game/", params);
+                    }else{
+                        btninit.setCustomValidity("¡No hay suficientes jugadores para una partida!");
                     }
 
 

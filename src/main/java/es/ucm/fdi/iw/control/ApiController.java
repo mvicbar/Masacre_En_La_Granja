@@ -1,5 +1,6 @@
 package es.ucm.fdi.iw.control;
 
+import es.ucm.fdi.iw.model.Acciones;
 import es.ucm.fdi.iw.model.Game;
 import es.ucm.fdi.iw.model.Status;
 import es.ucm.fdi.iw.model.User;
@@ -87,12 +88,36 @@ public class ApiController {
 		Game g = user.getActiveGame();
 		if(g == null) return null;
 
+		/*
+		INICIO SEGURIDAD!!!
+		*/
+		Status s = g.getStatusObj();
+		Acciones a = s.accionesStringToObj(jugada);
+		//Si nombre no coincide
+		if(user.getName().equals(a.client)) return null;
+		//Si rol no coincide
+		if(s.players.get(user.getName()).equals(a.rol)) return null;
+		//Si la victima no existe o esta muerta
+		boolean victimaValida = false;
+		for(User i : g.getUsers()){
+			if(i.getName().equals(a.victim) && !s.players.get(a.victim).equals("DEAD")){
+				victimaValida = true;
+				break;
+			}
+		}
+		if(!victimaValida) return null;
+
+		/*
+		FIN SEGURIDAD!!!
+		*/
+
+
 		List<User> users = new ArrayList<>(g.getUsers());
 
 		String[] result = procesarJugada(jugada, g.getStatus());
 		String nuevoEstado = result[1];
-		log.info(nuevoEstado);
-		g.setStatus("NUEVO ESTADO --> " + nuevoEstado);
+		log.info("NUEVO ESTADO --> " + nuevoEstado);
+		g.setStatus(nuevoEstado);
 		entityManager.persist(g);
 		entityManager.flush();
 
@@ -114,7 +139,7 @@ public class ApiController {
 		ScriptEngine engine = manager.getEngineByName("JavaScript");
 		// read script file
 		try {
-			engine.eval(new InputStreamReader(getClass().getResourceAsStream("/static/js/modelo.js"))); // relativo a
+			engine.eval(new InputStreamReader(getClass().getResourceAsStream("/static/js/partidaServidor.js"))); // relativo a
 																										// src/main/resources
 		} catch (ScriptException e) {
 			log.warn("Error loading script", e);
@@ -155,4 +180,21 @@ public class ApiController {
         if(game.canBegin()) return ResponseEntity.status(HttpStatus.OK).build();
         return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
     }
+    
+    @PostMapping("game/endGame")
+	@Transactional
+	public ResponseEntity<?> endGame(HttpSession session, @RequestBody String players) {
+    	User user = (User) session.getAttribute("user"); // <-- este usuario no está conectado a la bd
+		user = entityManager.find(User.class, user.getId()); // <-- obtengo usuario de la BD
+
+		log.info("String de jugadores {}", players);
+		List<String> users = new ArrayList<String>();
+		
+		String message = "{\"endedGame\": \"true\"}";
+
+		for (String u : users) {
+			iwSocketHandler.sendText(u, message);
+		}
+		return ResponseEntity.status(HttpStatus.OK).build();
+	}
 }
