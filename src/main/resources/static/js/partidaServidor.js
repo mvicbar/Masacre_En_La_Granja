@@ -2,7 +2,7 @@ rolOrder = [];
 rolOrder[0] = "VAMPIRE";
 rolOrder[1] = "WITCH";
 
-function statusUpdate() {
+function createStatus() {
 	this.id = '';
 	this.logs = [];
 	this.newRol = '';
@@ -13,18 +13,20 @@ function statusUpdate() {
 	this.played = [];
 }
 
-function receivePlay(oldStateJSON, playJSON)//Tambien recibirá el estado de la partida
+function receivePlay(oldStateJSON, playJSON) //También recibirá el estado de la partida
 {
 	//Se actualiza la infromación de la partida desde la BD
 	var oldState = JSON.parse(oldStateJSON);
 	//Get the player, rol, and action of the play and process it
 	var play = JSON.parse(playJSON);
-	object = new statusUpdate();
+	var object = new createStatus();
+
 	object.currentDeaths = oldState.currentDeaths;
 	object.dia = oldState.dia;
 	object.players = oldState.players;
 	object.votation = oldState.votes;
 	object.played = oldState.played;
+
 	switch (play.rol) {
 		case 'VAMPIRE':
 			vampireMove(play, object); //Se le envía el nuevo estado al servidor
@@ -39,6 +41,7 @@ function receivePlay(oldStateJSON, playJSON)//Tambien recibirá el estado de la 
 			witchMove(play, object);
 			break;
 	}
+
 	object.acciones = oldState.acciones;
 	object.acciones.push(play);
 
@@ -73,14 +76,14 @@ function popularMove(play, object) {
 	object.votation[play.victim]++;
 	if (object.votation.length == countMaxVotes(object)) {
 		resetVotes(object);
-		i = mostVotedPlayer();
+		var i = mostVotedPlayer();
 		if (i < 0) {
 			//Repite Votacion
 			object.logs.push("Votation tied and there is no time to vote again...");
 		}
 		else {
 			object.currentDeaths.push(i);
-			object.logs.push("The farmers decided hang Player " + play.victim);
+			object.logs.push("The farmers decided to hang Player " + play.victim);
 		}
 		object.id = 'POPULAR_VOTED';
 		startNight(object);
@@ -112,6 +115,7 @@ function vampireMove(play, object) {
 	if(object.votation[play.victim] == null) object.votation[play.victim] = 1;
 	else object.votation[play.victim]++;
 	object.played[play.client] = 0;
+	console.log("CONTANDO LOS VAMPIROS: " + countRol("VAMPIRE",object));
 	if (countNumVotes(object) == countRol("VAMPIRE",object)) {
 		i = mostVotedPlayer(object);
 		if (i == "") {
@@ -126,7 +130,9 @@ function vampireMove(play, object) {
 		object.votation = {};
 	}
 	else {
+		console.log("Entra a continuar la votación");
 		object.id = 'CONTINUE_VOTATION';
+		//endNight(object);
 	}
 }
 
@@ -135,7 +141,7 @@ function mostVotedPlayer(object) {
 	var max = 0;
 	var draw = 0;
 
-	for (let i in object.votation) {
+	for (var i in object.votation) {
 		if (object.votation[i] > max) {
 			name = i;
 			max = object.votation[i];
@@ -153,7 +159,7 @@ function mostVotedPlayer(object) {
 }
 
 function nextRol(rol, object) {
-	j = 0;
+	var j = 0;
 	while (j < rolOrder.length) {
 		if (rol == rolOrder[j]) {
 			break;
@@ -200,7 +206,7 @@ function startNight(object) {
 }
 
 function processDeaths(object) {
-	for (i in object.currentDeaths) {
+	for (var i in object.currentDeaths) {
 		if (object.players[object.currentDeaths[i]] == "HUNTER") {//Si el cazador muere, será su turno
 			object.logs.push(object.currentDeaths[i] + " was the Hunter, and wants retribution!");
 			object.newRol = "HUNTER";
@@ -217,9 +223,9 @@ function processDeaths(object) {
 
 function checkWin(object)//Comprueba si un bando ha ganado
 {
-	vampiresLeft = 0;
-	farmersLeft = 0;
-	for (i in object.players) {
+	var vampiresLeft = 0;
+	var farmersLeft = 0;
+	for (var i in object.players) {
 		if (object.players[i] == "VAMPIRE") { vampiresLeft++; }
 		else if (object.players[i] != "DEAD") { farmersLeft++; }
 	}
@@ -228,16 +234,16 @@ function checkWin(object)//Comprueba si un bando ha ganado
 }
 
 function countNumVotes(object){
-	num = 0;
-	for(i in object.votation){
+	var num = 0;
+	for(var i in object.votation){
 		num += object.votation[i];
 	}
 	return num;
 }
 
 function countMaxVotes(object) {
-	people = 0;
-	for (i in object.players) {
+	var people = 0;
+	for (var i in object.players) {
 		if (object.players[i] != "DEAD") {
 			people++;
 		}
@@ -245,8 +251,8 @@ function countMaxVotes(object) {
 	return people;
 }
 function countRol(rol, object) {
-	people = 0;
-	for (i in object.players) {
+	var people = 0;
+	for (var i in object.players) {
 		if (object.players[i] == rol) {
 			people++;
 		}
@@ -255,7 +261,7 @@ function countRol(rol, object) {
 }
 
 function playedYourTurn(object){
-	for(i in object.players){
+	for(var i in object.players){
 		if (object.players[i] == object.newRol
 			|| (object.newRol == "POPULAR_VOTATION" && object.players[i] != "DEAD"))
 			
