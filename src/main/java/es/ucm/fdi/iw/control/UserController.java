@@ -148,6 +148,7 @@ public class UserController {
 			@RequestParam String userPassword, @RequestParam String userPassword2,
 			@RequestParam("userPhoto") MultipartFile userPhoto, HttpSession session) {
 
+		userName = userName.replaceAll(" ", "_");
 		Long usersWithLogin = entityManager.createNamedQuery("User.HasName", Long.class)
 				.setParameter("userName", userName).getSingleResult();
 
