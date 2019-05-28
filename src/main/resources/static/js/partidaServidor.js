@@ -115,7 +115,7 @@ function vampireMove(play, object) {
 	object.played[play.client] = 0;
 	console.log("CONTANDO LOS VAMPIROS: " + countRol("VAMPIRE",object));
 	if (countNumVotes(object) == countRol("VAMPIRE",object)) {
-		i = mostVotedPlayer(object);
+		var i = mostVotedPlayer(object);
 		if (i == "") {
 			object.logs.push("Vampires couldn't decide who to kill!");
 		}
