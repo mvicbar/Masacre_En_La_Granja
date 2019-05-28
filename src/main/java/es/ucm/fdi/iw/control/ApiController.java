@@ -91,8 +91,8 @@ public class ApiController {
 
 		String[] result = procesarJugada(jugada, g.getStatus());
 		String nuevoEstado = result[1];
-		log.info(nuevoEstado);
-		g.setStatus("NUEVO ESTADO --> " + nuevoEstado);
+		log.info("NUEVO ESTADO --> " + nuevoEstado);
+		g.setStatus(nuevoEstado);
 		entityManager.persist(g);
 		entityManager.flush();
 
@@ -114,7 +114,7 @@ public class ApiController {
 		ScriptEngine engine = manager.getEngineByName("JavaScript");
 		// read script file
 		try {
-			engine.eval(new InputStreamReader(getClass().getResourceAsStream("/static/js/modelo.js"))); // relativo a
+			engine.eval(new InputStreamReader(getClass().getResourceAsStream("/static/js/partidaServidor.js"))); // relativo a
 																										// src/main/resources
 		} catch (ScriptException e) {
 			log.warn("Error loading script", e);

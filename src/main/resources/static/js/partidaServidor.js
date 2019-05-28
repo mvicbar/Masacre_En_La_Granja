@@ -4,12 +4,10 @@ rolOrder[1] = "WITCH";
 
 function statusUpdate() {
 	this.id = '';
-	this.deaths = [];
 	this.logs = [];
 	this.newRol = '';
 	this.currentDeaths = [];
 	this.votation = {};
-	this.votes = {};
 	this.dia = 0;//0 noche , 1 dia
 	this.players = {};
 	this.played = [];
@@ -41,12 +39,11 @@ function receivePlay(oldStateJSON, playJSON)//Tambien recibirá el estado de la 
 			witchMove(play, object);
 			break;
 	}
-	object.deaths = object.currentDeaths;
 	object.acciones = oldState.acciones;
 	object.acciones.push(play);
 
 	var newStatus = {
-		momento: object.id,
+		momento: object.newRol,
 		dia: object.dia,
 		players: object.players,
 		acciones: object.acciones,
