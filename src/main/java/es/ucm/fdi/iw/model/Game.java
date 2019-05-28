@@ -161,7 +161,8 @@ public class Game {
 
     public void init() {
         Status st = new Status();
-        st.gameState = "VAMPIRE";
+		st.turno = "VAMPIRE";
+		st.gameState = "INGAME";
         st.dia = 0;
         st.currentDeaths = new ArrayList<>();
         st.votes = new HashMap<>();
