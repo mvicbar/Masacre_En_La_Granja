@@ -2,9 +2,9 @@ var turno = "";
 var endGame = 1;
 var played = 0; // played = 0 ===> no es tu turno(o ya has jugado); played = 1 ===> puedes realizar una jugada
 var currentDeaths = [];
+var option = -1;
 
 function cargarPartida() {
-    var option = -1;
 
     document.getElementById("controlA").addEventListener("click", function () {
         option = 1;
@@ -124,27 +124,37 @@ function witchPlay(objetive) {
 }
 
 function popularPlay(victim_) {
-    played = 1;
-    //Envía jugada al servidor vía Ajax
+    played = 0;
     noteEntry("Your vote is for " + victim_);
+
     var playJSON = {
         rol: 'POPULAR_VOTE',
         client: clientPlayer,
         victim: victim_,
         option: ""
     };
+    var text = JSON.stringify(playJSON);
+    const headers = {
+        "Content-Type": "application/json",
+        "X-CSRF-TOKEN": config.csrf.value
+    };
+    const params = {
+        method: 'POST',
+        headers: headers,
+        body: text
+    };
     fetch("/api/game/receivePlay", params).then((response) => {
         if (response.status == 200) console.log("JUGADA ENVIADA");
         else {
-            console.log("MIERDA!! ALGO HA SALIDO MAL");
+            console.log("ALGO HA SALIDO MAL");
         }
-    })
+    });
 }
 
 function vampirePlay(victim_) {
     played = 0;
     noteEntry("Your victim is " + victim_);
-    //Envía jugada al servidor vía Ajax
+
     var playJSON = {
         rol: 'VAMPIRE',
         client: clientPlayer,
@@ -164,7 +174,7 @@ function vampirePlay(victim_) {
     fetch("/api/game/receivePlay", params).then((response) => {
         if (response.status == 200) console.log("JUGADA ENVIADA");
         else {
-            console.log("MIERDA!! ALGO HA SALIDO MAL");
+            console.log("ALGO HA SALIDO MAL");
         }
     });
 
@@ -189,17 +199,11 @@ function hunterPlay(victim_) {
     })
 }
 
-
-/*function statusUpdate() {//Para consultar
-    this.id = '';
-    this.deaths = [];
-    this.logs = [];
-    this.turno ='';
-}*/
-
 function receiveStatus(newState)//Actualiza el estado del cliente via websocket
 {
     printLogs(newState.logs);
+    played = newState.played[clientPlayer];
+    turno = newState.turno;
     
     /*
     noteEntry("The vampires have been eliminated. FARMERS WIN!");
@@ -225,6 +229,7 @@ function witchInfo(message) {
     */
     document.getElementById('controls').style.display = 'flex';
 }
+
 function resetPlay() {
     played = 0;
 }

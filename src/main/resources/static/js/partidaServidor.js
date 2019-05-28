@@ -2,7 +2,6 @@ var rolOrder = ["VAMPIRE", "WITCH"];
 var cosasQuePasan = "";
 
 function createStatus() {
-	this.id = '';
 	this.logs = [];
 	this.turno = '';
 	this.currentDeaths = [];
@@ -75,25 +74,29 @@ function witchMove(play, object) {
 }
 
 function popularMove(play, object) {
-	object.votation[play.victim]++;
-	if (object.votation.length == countMaxVotes(object)) {
-		resetVotes(object);
-		var i = mostVotedPlayer();
-		if (i < 0) {
-			//Repite Votacion
+	//Si la victima aun no ha sido votada le ponemos un 1, si ya lo ha sido le sumanos 1
+	if (object.votation[play.victim] == null) object.votation[play.victim] = 1;
+	else object.votation[play.victim]++;
+	object.played[play.client] = 0;
+	if (countNumVotes(object) == countMaxVotes(object)) {
+		var i = mostVotedPlayer(object);
+		if (i == "") {
 			object.logs.push("Votation tied and there is no time to vote again...");
 		}
 		else {
 			object.currentDeaths.push(i);
 			object.logs.push("The farmers decided to hang Player " + play.victim);
 		}
-		object.turno = 'POPULAR_VOTED';
+		
 		startNight(object);
-		object.votation = [];
+		object.turno = "VAMPIRE";
+		playedNextTurn(object);
+		object.votation = {};
 	}
 	else {
 		object.logs.push("Player " + play.client + " voted Player " + play.victim + "!");
 	}
+
 }
 
 function hunterMove(play, object) {
@@ -127,7 +130,7 @@ function vampireMove(play, object) {
 		}
 		object.logs.push("Vampires choosed their prey...")
 		object.turno = nextRol("VAMPIRE", object);
-		playedYourTurn(object);
+		playedNextTurn(object);
 		object.votation = {};
 	}
 
@@ -184,8 +187,14 @@ function endNight(object) {
 	if (object.turno != "HUNTER") {
 		object.dia = 1;
 		object.turno = "POPULAR_VOTATION";
+		for(var i in object.players){
+			if(object.players[i] != "DEAD"){
+				object.played[i] = 1;
+			}
+		}
 		object.logs.push("The farmers wake up");
 	}
+
 	if (object.turno == "FARMERS_WON" || object.turno == "VAMPIRES_WON") {
 		return object.turno;
 	}
@@ -239,6 +248,7 @@ function checkWin(object)//Comprueba si un bando ha ganado
 		object.turno = "VAMPIRES_WON";
 		object.gameState = "FINISHED";
 	}
+
 }
 
 function countNumVotes(object) {
@@ -268,11 +278,10 @@ function countRol(rol, object) {
 	return people;
 }
 
-function playedYourTurn(object) {
+function playedNextTurn(object) {
 	for (var i in object.players) {
 		if (object.players[i] == object.newRol
 			|| (object.newRol == "POPULAR_VOTATION" && object.players[i] != "DEAD"))
-
 			object.played[i] = 1;
 	}
 }
