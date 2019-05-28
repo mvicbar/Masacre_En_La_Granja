@@ -129,7 +129,7 @@ public class Game {
 	public void initLobby() {
         ObjectMapper mapper = new ObjectMapper();
         Status st = new Status();
-        st.momento = "inLobby";
+        st.gameState = "inLobby";
     
         try {
             status = mapper.writeValueAsString(st);
@@ -143,12 +143,12 @@ public class Game {
 	 */
 	public boolean started() {
 		Status s = this.getStatusObj();
-		return !s.momento.equals("inLobby");
+		return !s.gameState.equals("inLobby");
 	}
 
 	public Boolean finished(){
 		Status s = this.getStatusObj();
-		return s.momento.equals("FINISHED");
+		return s.gameState.equals("FINISHED");
 	}
 	
 	public boolean equals(Object other) {
@@ -161,7 +161,7 @@ public class Game {
 
     public void init() {
         Status st = new Status();
-        st.momento = "VAMPIRE";
+        st.gameState = "VAMPIRE";
         st.dia = 0;
         st.currentDeaths = new ArrayList<>();
         st.votes = new HashMap<>();

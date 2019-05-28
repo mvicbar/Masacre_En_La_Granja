@@ -3,9 +3,8 @@ rolOrder[0] = "VAMPIRE";
 rolOrder[1] = "WITCH";
 
 function statusUpdate() {
-	this.id = '';
 	this.logs = [];
-	this.newRol = '';
+	this.turno = '';
 	this.currentDeaths = [];
 	this.votation = {};
 	this.dia = 0;//0 noche , 1 dia
@@ -43,7 +42,7 @@ function receivePlay(oldStateJSON, playJSON)//Tambien recibirá el estado de la 
 	object.acciones.push(play);
 
 	var newStatus = {
-		momento: object.newRol,
+		turno: object.turno,
 		dia: object.dia,
 		players: object.players,
 		acciones: object.acciones,
@@ -65,7 +64,7 @@ function witchMove(play, object) {
 			object.logs.push("The witch revived Player " + play.victim + " tonight!");
 		}
 	}
-	object.id = 'WITCH_PLAYED';
+	object.turno = 'WITCH_PLAYED';
 	endNight(object); //La bruja acaba la noche    
 }
 
@@ -82,19 +81,18 @@ function popularMove(play, object) {
 			object.currentDeaths.push(i);
 			object.logs.push("The farmers decided hang Player " + play.victim);
 		}
-		object.id = 'POPULAR_VOTED';
+		object.turno = 'POPULAR_VOTED';
 		startNight(object);
 		object.votation = [];
 	}
 	else {
-		object.id = 'CONTINUE_VOTATION';
 		object.logs.push("Player " + play.client + " voted Player " + play.victim + "!");
 	}
 }
 
 function hunterMove(play, object) {
 	object.currentDeaths.push(play.victim);
-	object.id = 'HUNTER_SHOT';
+	object.turno = 'HUNTER_SHOT';
 	object.logs.push("Player " + play.client + " has shot Player " + play.victim + "!")
 	object.players[play.client] = "DEAD";
 	//El cazador muere
@@ -109,6 +107,7 @@ function hunterMove(play, object) {
 }
 
 function vampireMove(play, object) {
+	//Si la victima aun no ha sido votada le ponemos un 1, si ya lo ha sido le sumanos 1
 	if(object.votation[play.victim] == null) object.votation[play.victim] = 1;
 	else object.votation[play.victim]++;
 	object.played[play.client] = 0;
@@ -120,13 +119,10 @@ function vampireMove(play, object) {
 		else {
 			object.currentDeaths.push(i);
 		}
-		object.id = 'VAMPIRES_VOTED';
-		object.newRol = nextRol("VAMPIRE", object);
+		object.logs.push("Vampires choosed their prey...")
+		object.turno = nextRol("VAMPIRE", object);
 		playedYourTurn(object);
 		object.votation = {};
-	}
-	else {
-		object.id = 'CONTINUE_VOTATION';
 	}
 }
 
@@ -175,10 +171,14 @@ function nextRol(rol, object) {
 
 function endNight(object) {
 	processDeaths(object);
-	if (object.newRol != "HUNTER") {
+	if (object.turno != "HUNTER") {
 		object.dia = 1;
-		object.newRol = "POPULAR_VOTATION";
+		object.turno = "POPULAR_VOTATION";
 		object.logs.push("The farmers wake up");
+	}
+	if(object.turno == "FARMERS_WON" || object.turno == "VAMPIRES_WON"){
+		object.gameState = "FINISHED";
+		return object.turno;
 	}
 	return "POPULAR_VOTATION";
 
@@ -188,10 +188,10 @@ function endNight(object) {
 
 function startNight(object) {
 	processDeaths(object);
-	if (object.newRol != "HUNTER") {
+	if (object.turno != "HUNTER") {
 		object.dia = 0;
 		object.logs.push("The farmers go to bed...");
-		object.newRol = rolOrder[0];
+		object.turno = rolOrder[0];
 		object.currentDeaths = [];
 	}
 }
@@ -200,7 +200,7 @@ function processDeaths(object) {
 	for (i in object.currentDeaths) {
 		if (object.players[object.currentDeaths[i]] == "HUNTER") {//Si el cazador muere, será su turno
 			object.logs.push(object.currentDeaths[i] + " was the Hunter, and wants retribution!");
-			object.newRol = "HUNTER";
+			object.turno = "HUNTER";
 			object.currentDeaths.splice(i, 1);
 		}
 		else {
@@ -220,8 +220,8 @@ function checkWin(object)//Comprueba si un bando ha ganado
 		if (object.players[i] == "VAMPIRE") { vampiresLeft++; }
 		else if (object.players[i] != "DEAD") { farmersLeft++; }
 	}
-	if (vampiresLeft == 0) { object.id = "FARMERS_WON"; }
-	else if (farmersLeft == 0) { object.id = "VAMPIRES_WON"; }
+	if (vampiresLeft == 0) { object.turno = "FARMERS_WON"; }
+	else if (farmersLeft == 0) { object.turno = "VAMPIRES_WON"; }
 }
 
 function countNumVotes(object){
@@ -253,8 +253,8 @@ function countRol(rol, object) {
 
 function playedYourTurn(object){
 	for(i in object.players){
-		if (object.players[i] == object.newRol
-			|| (object.newRol == "POPULAR_VOTATION" && object.players[i] != "DEAD"))
+		if (object.players[i] == object.turno
+			|| (object.turno == "POPULAR_VOTATION" && object.players[i] != "DEAD"))
 			
 				object.played[i] = 1;
 	}

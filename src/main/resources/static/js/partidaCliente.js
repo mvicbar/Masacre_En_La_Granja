@@ -1,4 +1,4 @@
-actualRol = "";
+turno = "";
 endGame = 1;
 played = 0; // played = 0 ===> no es tu turno(o ya has jugado); played = 1 ===> puedes realizar una jugada
 currentDeaths = [];
@@ -33,18 +33,19 @@ function cargarPartida() {
             response.text().then(function (text) {
                 console.log("Status leído del getStatus: " + text);
                 var status = JSON.parse(text);
-                console.log("momento: " + status.momento);
+                console.log("gameState: " + status.gameState);
+                console.log("turno: " + status.turno);
                 console.log("dia: " + status.dia);
                 console.log("acciones: " + status.acciones);
                 console.log("currentDeaths: " + status.currentDeaths);
                 console.log("votes: " + status.votes);
                 console.log("Jugadores en el JSON: " + status.players);
-                endGame = (status.momento == "FINISHED") ? 1 : 0;
+                endGame = (status.gameState == "FINISHED") ? 1 : 0;
                 console.log("end game: " + endGame);
                 currentDeaths = status.currentDeaths;
                 played = status.played[clientPlayer];
                 console.log(status.played);
-                actualRol = status.momento;
+                turno = status.turno;
             });
         }
         else {
@@ -62,8 +63,8 @@ function cargarPartida() {
 function vote(player) {
     return function () {
         if (clientRol != "DEAD" && played == 1) {
-            if (actualRol == clientRol) {
-                switch (actualRol) {
+            if (turno == clientRol) {
+                switch (turno) {
                     case "VAMPIRE":
                         vampirePlay(player);
                         break;
@@ -75,13 +76,13 @@ function vote(player) {
                         break;
                 }
             }
-            else if (actualRol == "POPULAR_VOTATION") {
+            else if (turno == "POPULAR_VOTATION") {
                 popularPlay(player);
             }
         }
     }
 }
-
+log
 function witchPlay(objetive) {
     if (option < 0) {
         noteEntry("Select an action, Witch");
@@ -191,48 +192,18 @@ function hunterPlay(victim_) {
     this.id = '';
     this.deaths = [];
     this.logs = [];
-    this.newRol ='';
+    this.turno ='';
 }*/
 
 function receiveStatus(newState)//Actualiza el estado del cliente via websocket
 {
     currentDeaths = newState.currentDeaths;
-    switch (newState.id) {
-        case "VAMPIRES_VOTED":
-            actualRol = newState.newRol;
-            logEntry("Vampires choosed their prey...");
-            if (newState.newRol == "POPULAR_VOTATION") { updateDeaths(newState.deaths); }
-            resetPlay();
-
-            break;
-        case "WITCH_PLAYED":
-            actualRol = newState.newRol;
-            updateDeaths(newState.deaths);
-            resetPlay();
-            break;
-        case "POPULAR_VOTED":
-            actualRol = newState.newRol;
-            updateDeaths(newState.deaths);
-            resetPlay();
-            break;
-        case "HUNTER_SHOT":
-            actualRol = newState.newRol;
-            updateDeaths(newState.deaths);
-            resetPlay();
-            break;
-        case "FARMERS_WON":
-            actualRol = "";
+    printLogs(newState.logs);
+    
             noteEntry("The vampires have been eliminated. FARMERS WIN!");
-            endGame = 1;
-            break;
-        case "VAMPIRES_WON":
-            actualRol = "";
             noteEntry("The weak farmers have fallen. VAMPIRES WIN!");
-            endGame = 1;
-            break;
-
-    }
-    if (actualRol == "WITCH" && clientRol == "WITCH") witchInfo();
+ 
+    if (turno == "WITCH" && clientRol == "WITCH") witchInfo();
     if (!endGame) printLogs(newState.logs);
 }
 function witchInfo() {
