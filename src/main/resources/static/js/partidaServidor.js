@@ -1,6 +1,4 @@
-rolOrder = [];
-rolOrder[0] = "VAMPIRE";
-rolOrder[1] = "WITCH";
+var rolOrder = ["VAMPIRE", "WITCH"];
 
 function createStatus() {
 	this.id = '';

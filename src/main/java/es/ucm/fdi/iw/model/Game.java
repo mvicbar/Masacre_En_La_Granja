@@ -202,12 +202,12 @@ public class Game {
         for(; count < 1 || count < users.size() / 4; ++count) {
             roles[count] = "VAMPIRE";
         }
-
+/*
 		roles[count] = "WITCH";
 		++count;
         roles[count] = "HUNTER";
         ++count;
-
+*/
         
         for(; count < users.size(); ++count) {
             roles[count] = "FARMER";
