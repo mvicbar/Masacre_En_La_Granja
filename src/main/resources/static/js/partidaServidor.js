@@ -91,7 +91,9 @@ function popularMove(play, object) {
 		}
 		
 		startNight(object);
-		object.turno = "VAMPIRE";
+		if(object.turno !== "HUNTER") {
+            object.turno = "VAMPIRE";
+        }
 		playedNextTurn(object);
 		object.votation = {};
 	}
