@@ -186,20 +186,20 @@ function receiveStatus(newState)//Actualiza el estado del cliente via websocket
     printLogs(newState.logs);
     turno = newState.turno;
     updateDeaths(newState.currentDeaths, newState.oldRols);
+    
+    switch (turno) {
+    case "VAMPIRES_WON":
+    	noteEntry("The vampires ate all the farmers! HAIL DRÁCULA!!");
+        break;
+    case "FARMERS_WON":
+    	noteEntry("The farmers killed all the vampires! HURRAY!!");
+        break;
+    }
+    	
 }
 
 function witchInfo(message) {
-
     printLogs(message);
-    /*
-    if (currentDeaths[0] == null) {
-        logEntry("Nobody is gonna die tonight");
-        noteEntry("Nobody is gonna die tonight");
-    } else {
-        logEntry(currentDeaths[0] + " is gonna die tonight...");
-        noteEntry(currentDeaths[0] + " is gonna die tonight...");
-    }
-    */
     document.getElementById('controls').style.display = 'flex';
 }
 
@@ -246,6 +246,7 @@ function logEntry(message) {
 }
 
 function noteEntry(message) {
+	console.log("Entrada en noteEntry");
     document.getElementById('note').innerHTML = message;
 }
 
