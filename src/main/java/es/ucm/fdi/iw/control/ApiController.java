@@ -115,6 +115,7 @@ public class ApiController {
 		List<User> users = new ArrayList<>(g.getUsers());
 
 		String[] result = procesarJugada(jugada, g.getStatus());
+		if(result == null) return ResponseEntity.badRequest().build();
 		String nuevoEstado = result[1];
 		log.info("NUEVO ESTADO --> " + nuevoEstado);
 		g.setStatus(nuevoEstado);
