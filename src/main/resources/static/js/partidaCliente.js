@@ -126,8 +126,6 @@ function witchPlay(objetive) {
 
 function popularPlay(victim_) {
 	console.log("Entrada en popularPlay con victim_: " + victim_);
-    played = 0;
-    noteEntry("Your vote is for " + victim_);
 
     var playJSON = {
         rol: 'POPULAR_VOTE',
@@ -147,7 +145,11 @@ function popularPlay(victim_) {
         body: text
     };
     fetch("/api/game/receivePlay", params).then((response) => {
-        if (response.status == 200) console.log("JUGADA ENVIADA");
+        if (response.status == 200){
+            console.log("JUGADA ENVIADA");
+            played = 0;
+            noteEntry("Your vote is for " + victim_);
+        }
         else {
             console.log("ALGO HA SALIDO MAL");
         }
@@ -156,8 +158,6 @@ function popularPlay(victim_) {
 
 function vampirePlay(victim_) {
 	console.log("Entrada en vampirePlay con victim_: " + victim_);
-    played = 0;
-    noteEntry("Your victim is " + victim_);
 
     var playJSON = {
         rol: 'VAMPIRE',
@@ -176,7 +176,11 @@ function vampirePlay(victim_) {
         body: text
     };
     fetch("/api/game/receivePlay", params).then((response) => {
-        if (response.status == 200) console.log("JUGADA ENVIADA");
+        if (response.status == 200){
+            console.log("JUGADA ENVIADA");
+            played = 0;
+            noteEntry("Your victim is " + victim_);
+        }
         else {
             console.log("ALGO HA SALIDO MAL");
         }
