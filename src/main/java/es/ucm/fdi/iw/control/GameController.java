@@ -48,6 +48,7 @@ public class GameController {
         model.addAttribute("players", g.getStatusObj().players.keySet());
         model.addAttribute("userName", user.getName());
         model.addAttribute("userRol", g.getStatusObj().players.get(user.getName()));
+        model.addAttribute("iconoRol", Game.getIcon(g.getStatusObj().players.get(user.getName())));
         
         return "partida";
     }
