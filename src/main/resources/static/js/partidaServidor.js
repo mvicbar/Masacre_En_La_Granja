@@ -202,7 +202,7 @@ function nextRol(rol, object) {
 function endNight(object) {
 	processDeaths(object);
 
-	if (object.turno == "FARMERS_WON" || object.turno == "VAMPIRES_WON") {
+	if (object.turno == "FARMERS_WON" || object.turno == "VAMPIRES_WON" || object.turno == "TIE") {
 		return object.turno;
 	}
 
@@ -247,13 +247,17 @@ function processDeaths(object) {
 }
 
 function checkWin(object)//Comprueba si un bando ha ganado
-{
+{   var hunterAlive = false;
 	var vampiresLeft = 0;
 	var farmersLeft = 0;
 	for (var i in object.players) {
 		if (object.players[i] == "VAMPIRE") {
 			vampiresLeft++;
-		} else if (object.players[i] != "DEAD") {
+		}
+		else if (object.players[i] != "DEAD") {
+            if(object.players[i] == "HUNTER"){
+                hunterAlive = true;
+            }
 			farmersLeft++;
 			cosasQuePasan += "Ha entrado en farmersLeft '\n'";
 		}
@@ -262,7 +266,11 @@ function checkWin(object)//Comprueba si un bando ha ganado
 	if (vampiresLeft == 0) {
 		object.turno = "FARMERS_WON";
 		object.gameState = "FINISHED";
-	} else if (farmersLeft <= vampiresLeft) {
+	} else if(hunterAlive && farmersLeft == 1 && vampiresLeft == 1){
+        object.turno = "TIE";
+        object.gameState = "FINISHED";
+    }
+	else if (farmersLeft <= vampiresLeft) {
 		object.turno = "VAMPIRES_WON";
 		object.gameState = "FINISHED";
 	}

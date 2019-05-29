@@ -222,8 +222,8 @@ public class Game {
             roles[count] = "VAMPIRE";
         }
 
-        roles[count] = "WITCH";
-		++count;
+        /*roles[count] = "WITCH";
+		++count;*/
         roles[count] = "HUNTER";
         ++count;
 
