@@ -189,22 +189,44 @@ function vampirePlay(victim_) {
 }
 
 function hunterPlay(victim_) {
-    players[clientPlayer][1] = 1;
+    console.log("Entrada en hunterPlay con victim_: " + victim_);
+
+   // players[clientPlayer][1] = 1;
+
+
     //Envía jugada al servidor vía Ajax
-    noteEntry("You shot Player " + (victim_ + 1));
+
     var playJSON = {
         rol: 'HUNTER',
         client: clientPlayer,
         victim: victim_,
         option: ""
     }
-    fetch("/api/game/receivePlay", params).then((response) => {
-        if (response.status == 200) console.log("JUGADA ENVIADA");
-        else {
-            console.log("MIERDA!! ALGO HA SALIDO MAL");
-        }
 
-    })
+    var text = JSON.stringify(playJSON);
+
+    const headers = {
+        "Content-Type": "application/json",
+        "X-CSRF-TOKEN": config.csrf.value
+    };
+
+    const params = {
+        method: 'POST',
+        headers: headers,
+        body: text
+    };
+
+
+    fetch("/api/game/receivePlay", params).then((response) => {
+        if (response.status == 200){
+        console.log("JUGADA ENVIADA");
+        played = 0;
+        noteEntry("You shot " + victim_);
+        }
+        else {
+        console.log("ALGO HA SALIDO MAL");
+        }
+    });
 }
 
 function receiveStatus(newState)//Actualiza el estado del cliente via websocket

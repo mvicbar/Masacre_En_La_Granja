@@ -102,12 +102,25 @@ function popularMove(play, object) {
 }
 
 function hunterMove(play, object) {
+    //La víctima muere
 	object.currentDeaths.push(play.victim);
+	object.players[play.victim] = "DEAD";
+
 	object.turno = 'HUNTER_SHOT';
-	object.logs.push("Player " + play.client + " has shot Player " + play.victim + "!")
+
+    object.played[play.client] = 0;
+	object.logs.push("Player " + play.client + " has shot Player " + play.victim + "!");
+
+
+    //El cazador muere
 	object.players[play.client] = "DEAD";
-	//El cazador muere
 	object.currentDeaths.push(play.client);
+
+    object.logs.push("The hunter has used his last bullet...")
+    object.turno = nextRol("HUNTER", object);
+    playedNextTurn(object);
+    object.votation = {};
+
 	if (object.dia) {//Si le ha matado el pueblo, empieza la noche
 		startNight(object);
 	}
@@ -201,7 +214,7 @@ function endNight(object) {
 		}
 		object.logs.push("The farmers wake up");
 	}
-
+    else return "HUNTER";
 
 	return "POPULAR_VOTATION";
 }
