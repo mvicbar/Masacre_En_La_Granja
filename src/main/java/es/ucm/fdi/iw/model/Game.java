@@ -187,6 +187,7 @@ public class Game {
         st.acciones = new ArrayList<>();
         st.played = new HashMap<>();
         st.players = new HashMap<>();
+        st.oldRols = new HashMap<>();
         
         String[] roles = initialRoles();
         Random random = new Random();
@@ -211,6 +212,7 @@ public class Game {
             roles[pos] = roles[users.size() - st.players.size()];
         }
         
+        st.oldRols = st.players;
     	status = getStatusStringFromObj(st);
     }
     

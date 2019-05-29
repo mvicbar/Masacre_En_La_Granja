@@ -8,6 +8,7 @@ function createStatus() {
 	this.votation = {};
 	this.dia = 0;//0 noche , 1 dia
 	this.players = {};
+	this.oldRols = {};
 	this.played = [];
 	this.gameState = "";
 }
@@ -20,13 +21,14 @@ function receivePlay(oldStateJSON, playJSON) //También recibirá el estado de l
 	var play = JSON.parse(playJSON);
 	var object = new createStatus();
 
-	object.currentDeaths = oldState.currentDeaths;
+	object.currentDeaths = [];
 	object.dia = oldState.dia;
 	object.players = oldState.players;
 	object.votation = oldState.votes;
 	object.played = oldState.played;
 	object.gameState = oldState.gameState;
 	object.turno = oldState.turno;
+	object.oldRols = oldState.oldRols;
 
 	switch (play.rol) {
 		case 'VAMPIRE':
@@ -52,6 +54,7 @@ function receivePlay(oldStateJSON, playJSON) //También recibirá el estado de l
 		turno: object.turno,
 		dia: object.dia,
 		players: object.players,
+		oldRols: object.oldRols,
 		acciones: object.acciones,
 		currentDeaths: object.currentDeaths,
 		votes: object.votation,
@@ -65,10 +68,10 @@ function witchMove(play, object) {
 	if (play.action != 0) {
 		if (play.action == 1) {//Bruja mata
 			object.currentDeaths.push(play.victim);
-			object.logs.push("The witch slayed Player " + play.victim + " tonight!");
+			object.logs.push("The witch slayed " + play.victim + " tonight!");
 		} else if (play.action == 2) {//Bruja revive
 			object.currentDeaths = [];
-			object.logs.push("The witch revived Player " + play.victim + " tonight!");
+			object.logs.push("The witch revived " + play.victim + " tonight!");
 		}
 	}
 	object.turno = 'WITCH_PLAYED';
@@ -87,7 +90,7 @@ function popularMove(play, object) {
 		}
 		else {
 			object.currentDeaths.push(i);
-			object.logs.push("The farmers decided to hang Player " + play.victim);
+			object.logs.push("The farmers decided to hang " + play.victim);
 		}
 		
 		startNight(object);
@@ -96,7 +99,7 @@ function popularMove(play, object) {
 		object.votation = {};
 	}
 	else {
-		object.logs.push("Player " + play.client + " voted Player " + play.victim + "!");
+		object.logs.push(play.client + " voted " + play.victim + "!");
 	}
 
 }
@@ -104,7 +107,7 @@ function popularMove(play, object) {
 function hunterMove(play, object) {
 	object.currentDeaths.push(play.victim);
 	object.turno = 'HUNTER_SHOT';
-	object.logs.push("Player " + play.client + " has shot Player " + play.victim + "!")
+	object.logs.push(play.client + " has shot " + play.victim + "!")
 	object.players[play.client] = "DEAD";
 	//El cazador muere
 	object.currentDeaths.push(play.client);
