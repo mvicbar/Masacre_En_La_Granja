@@ -218,7 +218,7 @@ public class Game {
         int count = 0;
         String[] roles = new String[users.size()];
         
-        for(; count < 1 || count < users.size() / 4; ++count) {
+        for(; count < 1 || count < users.size() / 2; ++count) {
             roles[count] = "VAMPIRE";
         }
 /*
