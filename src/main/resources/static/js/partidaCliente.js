@@ -35,18 +35,9 @@ function cargarPartida() {
             response.text().then(function (text) {
                 console.log("Status leído del getStatus: " + text);
                 var status = JSON.parse(text);
-                console.log("gameState: " + status.gameState);
-                console.log("turno: " + status.turno);
-                console.log("dia: " + status.dia);
-                console.log("acciones: " + status.acciones);
-                console.log("currentDeaths: " + status.currentDeaths);
-                console.log("votes: " + status.votes);
-                console.log("Jugadores en el JSON: " + status.players);
                 endGame = (status.gameState == "FINISHED") ? 1 : 0;
-                console.log("end game: " + endGame);
                 currentDeaths = status.currentDeaths;
                 played = status.played[clientPlayer];
-                console.log(status.played);
                 turno = status.turno;
             });
         }
@@ -118,7 +109,7 @@ function witchPlay(objetive) {
         fetch("/api/game/receivePlay", params).then((response) => {
             if (response.status == 200) console.log("JUGADA ENVIADA");
             else {
-                console.log("MIERDA!! ALGO HA SALIDO MAL");
+                console.log("ALGO HA SALIDO MAL");
             }
         });
     }
@@ -201,18 +192,19 @@ function hunterPlay(victim_) {
     fetch("/api/game/receivePlay", params).then((response) => {
         if (response.status == 200) console.log("JUGADA ENVIADA");
         else {
-            console.log("MIERDA!! ALGO HA SALIDO MAL");
+            console.log("ALGO HA SALIDO MAL");
         }
 
     })
 }
 
-function receiveStatus(newState)//Actualiza el estado del cliente via websocket
-{
+function receiveStatus(newState){ //Actualiza el estado del cliente via websocket
 	console.log("Nuevo estado recibido");
     printLogs(newState.logs);
+    newState.logs = [];
     played = newState.played[clientPlayer];
     turno = newState.turno;
+    updateDeaths(newState.currentDeaths, newState.oldRols);
     
     if(newState.gameState == "FINISHED")
     	notifyEndedGame();
@@ -241,16 +233,33 @@ function resetPlay() {
     played = 0;
 }
 
-function updateDeaths(deaths) {
+function updateDeaths(deaths, oldRols) {
 	console.log("Entrada en updateDeaths");
-    for (i in deaths) {
-        if (deaths[i] == "DEAD") {//El cliente ha muerto
-            //clientRol = "DEAD"
-            noteEntry("YOU DIED");
-            noteEntry(i + " has died!");
-            document.getElementById(i + "Player").innerHTML += " DEAD";
-        }
-    }
+	for(i=0; i < deaths.length; i++){
+		noteEntry("Player "+ deaths[i] +" has died!");
+		document.getElementById(deaths[i] + 'Dead').style.display = 'flex';
+		document.getElementById(deaths[i] + 'Dead').innerHTML = oldRols[deaths[i]];
+		
+		var icono;
+		switch(oldRols[deaths[i]]){
+		case "VAMPIRE":
+			icono = "\uD83E\uDDDB\u200D♂️";
+			break;
+		case "FARMER":
+			icono = "\uD83D\uDC68\u200D\uD83C\uDF3E ";
+			break;
+		case "WITCH":
+			icono = "\uD83E\uDDD9\u200D♀️";
+			break;
+		case "HUNTER":
+			icono = "\uD83C\uDFF9";
+			break;
+		}
+		
+		document.getElementById(deaths[i] + 'Card').style.backgroundColor = 'transparent';
+		document.getElementById(deaths[i] + 'Card').innerHTML = icono;
+	}
+	
 }
 
 function logEntry(message) {
@@ -260,9 +269,11 @@ function logEntry(message) {
         + date.getSeconds() + "  "
         + message;
 }
+
 function noteEntry(message) {
     document.getElementById('note').innerHTML = message;
 }
+
 function printLogs(logs) {
     for (i = 0; i < logs.length; i++) {
         logEntry(logs[i]);
@@ -274,6 +285,10 @@ function hideOptions() {
     document.getElementById("controlB").style.backgroundColor = '#782112';
     document.getElementById('controls').style.display = 'none';
     document.getElementById('finalizar_partida').style.display = 'none';
+    
+    var deads = document.getElementsByClassName("deadInfo");
+    for (var i = 0; i < deads.length; i++)
+      deads[i].style.display = "none";
 
 }
 function showOptions() {
