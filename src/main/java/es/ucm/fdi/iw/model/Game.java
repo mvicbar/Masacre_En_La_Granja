@@ -218,15 +218,15 @@ public class Game {
         int count = 0;
         String[] roles = new String[users.size()];
         
-        for(; count < 1 || count < users.size() / 2; ++count) {
+        for(; count < 1 || count < users.size() / 4; ++count) {
             roles[count] = "VAMPIRE";
         }
-/*
-		roles[count] = "WITCH";
-		++count;
+
+		/*roles[count] = "WITCH";
+		++count;*/
         roles[count] = "HUNTER";
         ++count;
-*/
+
         
         for(; count < users.size(); ++count) {
             roles[count] = "FARMER";
