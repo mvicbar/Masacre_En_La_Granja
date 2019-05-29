@@ -238,7 +238,16 @@ public class UserController {
 	}
 
 	@GetMapping("/searchGame")
-	public String searchGame() {
+	@Transactional
+	public String searchGame(HttpSession session) {
+		User user = (User) session.getAttribute("user");
+		user = entityManager.find(User.class, user.getId());
+		Game activeGame = user.getActiveGame();
+		
+		if (activeGame != null) {
+			return "redirect:/game/";
+		}
+		
 		return "buscarPartida";
 	}
 

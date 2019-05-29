@@ -31,10 +31,7 @@ public class LobbyController {
     private IwSocketHandler iwSocketHandler;
 
     @Transactional
-    public void addUserToGame(HttpSession session, Game game) {
-        User user = (User) session.getAttribute("user"); // <-- este usuario no está conectado a la bd
-        user = entityManager.find(User.class, user.getId()); // <-- obtengo usuario de la BD
-
+    public void addUserToGame(User user, Game game) {
         if (!game.getUsers().contains(user)) { // Añadimos al usuario si no está ya dentro
             game.addUser(user);
             user.getGames().add(game);
@@ -54,10 +51,18 @@ public class LobbyController {
     @Transactional
     @GetMapping("/newgame")
     public String newGame(HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        user = entityManager.find(User.class, user.getId());
+        Game activeGame = user.getActiveGame();
+        
+        if (activeGame != null) {
+            return "redirect:/game/";
+        }
+        
         Game game = new Game();
         game.setCreationTime(Date.valueOf(LocalDate.now()));
         game.initLobby();
-        addUserToGame(session, game);
+        addUserToGame(user, game);
         return "redirect:/lobby/" + game.getId();
     }
 
@@ -101,7 +106,10 @@ public class LobbyController {
              model.addAttribute("errorMessage", "¡La partida ya ha empezado!");
             return "elegirPartida";
         } else {
-            addUserToGame(session, game);
+            User user = (User) session.getAttribute("user");
+            user = entityManager.find(User.class, user.getId());
+    
+            addUserToGame(user, game);
             return getLobby(model, game);
         }
     }
@@ -138,13 +146,14 @@ public class LobbyController {
     }
 
     @PostMapping("select")
-    public String selectGame(@RequestParam String gameID) {
-        return "redirect:/lobby/" + gameID + "/join";
+    @Transactional
+    public String selectGame(Model model, HttpSession session, @RequestParam String gameID) {
+        return joinLobby(model, session, gameID);
     }
 
     @GetMapping("/random")
     @Transactional
-    public String randomGame() {
+    public String randomGame(Model model, HttpSession session) {
         List<Game> games = entityManager.createNamedQuery("Game.all", Game.class).getResultList();
         Iterator<Game> iterator = games.iterator();
         Game game = null;
@@ -156,9 +165,9 @@ public class LobbyController {
         }
 
         if (game != null) {
-            return "redirect:/lobby/" + game.getId() + "/join";
+            return joinLobby(model, session, String.valueOf(game.getId()));
         } else { // Si no hay un juego disponible, entonces lo crea
-            return "redirect:/lobby/newgame";
+            return newGame(session);
         }
     }
 }
