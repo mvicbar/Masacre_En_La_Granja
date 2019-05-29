@@ -94,7 +94,9 @@ function popularMove(play, object) {
 		}
 		
 		startNight(object);
-		object.turno = "VAMPIRE";
+		if(object.turno !== "HUNTER") {
+            object.turno = "VAMPIRE";
+        }
 		playedNextTurn(object);
 		object.votation = {};
 	}
@@ -105,12 +107,26 @@ function popularMove(play, object) {
 }
 
 function hunterMove(play, object) {
+    //La víctima muere
 	object.currentDeaths.push(play.victim);
+	object.players[play.victim] = "DEAD";
+
 	object.turno = 'HUNTER_SHOT';
-	object.logs.push(play.client + " has shot " + play.victim + "!")
+  
+  
+  object.played[play.client] = 0;
+	object.logs.push("Player " + play.client + " has shot Player " + play.victim + "!");
+
+
+    //El cazador muere
 	object.players[play.client] = "DEAD";
-	//El cazador muere
 	object.currentDeaths.push(play.client);
+
+    object.logs.push("The hunter has used his last bullet...")
+    object.turno = nextRol("HUNTER", object);
+    playedNextTurn(object);
+    object.votation = {};
+
 	if (object.dia) {//Si le ha matado el pueblo, empieza la noche
 		startNight(object);
 	}
@@ -190,7 +206,7 @@ function nextRol(rol, object) {
 function endNight(object) {
 	processDeaths(object);
 
-	if (object.turno == "FARMERS_WON" || object.turno == "VAMPIRES_WON") {
+	if (object.turno == "FARMERS_WON" || object.turno == "VAMPIRES_WON" || object.turno == "TIE") {
 		return object.turno;
 	}
 
@@ -204,7 +220,7 @@ function endNight(object) {
 		}
 		object.logs.push("The farmers wake up");
 	}
-
+    else return "HUNTER";
 
 	return "POPULAR_VOTATION";
 }
@@ -235,13 +251,17 @@ function processDeaths(object) {
 }
 
 function checkWin(object)//Comprueba si un bando ha ganado
-{
+{   var hunterAlive = false;
 	var vampiresLeft = 0;
 	var farmersLeft = 0;
 	for (var i in object.players) {
 		if (object.players[i] == "VAMPIRE") {
 			vampiresLeft++;
-		} else if (object.players[i] != "DEAD") {
+		}
+		else if (object.players[i] != "DEAD") {
+            if(object.players[i] == "HUNTER"){
+                hunterAlive = true;
+            }
 			farmersLeft++;
 			cosasQuePasan += "Ha entrado en farmersLeft '\n'";
 		}
@@ -250,7 +270,11 @@ function checkWin(object)//Comprueba si un bando ha ganado
 	if (vampiresLeft == 0) {
 		object.turno = "FARMERS_WON";
 		object.gameState = "FINISHED";
-	} else if (farmersLeft <= vampiresLeft) {
+	} else if(hunterAlive && farmersLeft == 1 && vampiresLeft == 1){
+        object.turno = "TIE";
+        object.gameState = "FINISHED";
+    }
+	else if (farmersLeft <= vampiresLeft) {
 		object.turno = "VAMPIRES_WON";
 		object.gameState = "FINISHED";
 	}
