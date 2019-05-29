@@ -65,13 +65,12 @@ function witchMove(play, object) {
 	if (play.action != 0) {
 		if (play.action == 1) {//Bruja mata
 			object.currentDeaths.push(play.victim);
-			object.logs.push("The witch slayed Player " + play.victim + " tonight!");
+			object.logs.push("The witch slayed " + play.victim + " tonight!");
 		} else if (play.action == 2) {//Bruja revive
 			object.currentDeaths = [];
-			object.logs.push("The witch revived Player " + play.victim + " tonight!");
+			object.logs.push("The witch revived " + play.victim + " tonight!");
 		}
 	}
-	object.turno = 'WITCH_PLAYED';
 	endNight(object); //La bruja acaba la noche    
 }
 

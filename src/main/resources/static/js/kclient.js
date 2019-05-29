@@ -38,18 +38,21 @@ const handleRemovePlayer = (name) => {
 const handleMostrarBruja = (divHtml) => {
 	const miembros = document.getElementsByClassName("center");
 	miembros[0].innerHTML = miembros[0].innerHTML + divHtml;
+	const haMuerto = document.getElementById("haMuerto").innerHTML;
 	document.getElementById("controlA").addEventListener("click", function () {
         option = 1;
         document.getElementById("controlA").style.backgroundColor = '#1D1C1C';
-        document.getElementById("controlB").style.backgroundColor = '#782112';
+		document.getElementById("controlB").style.backgroundColor = '#782112';
+		vote(haMuerto);
     });
     document.getElementById("controlB").addEventListener("click", function () {
         option = 2;
         document.getElementById("controlB").style.backgroundColor = '#1D1C1C';
-        document.getElementById("controlA").style.backgroundColor = '#782112';
+		document.getElementById("controlA").style.backgroundColor = '#782112';
+		vote(haMuerto);
     });
     document.getElementById("controlC").addEventListener("click", function () {
-        option = 0; vote(-1);
+        option = 0; vote(haMuerto);
     });
 }
 

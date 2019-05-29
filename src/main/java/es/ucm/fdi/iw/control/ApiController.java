@@ -123,18 +123,20 @@ public class ApiController {
 		entityManager.persist(g);
 		entityManager.flush();
 		if(g.getStatusObjFromString(nuevoEstado).turno.equals("WITCH")){
-			String divWitch = "<div id='controls'> "+
-					"<div class='control' , id='controlA'>Kill</div>"+
-					"<div class='control' , id='controlB'>Revive</div>"+
-					"<div class='control' , id='controlC'>Pass</div>"+
+			String divWitch = "<div id='controls' style='display:flex'> "+
+					"<div class='haMuerto' id='haMuerto'>"+
+						g.getStatusObjFromString(nuevoEstado).currentDeaths.get(0) +
+					"</div>"+
+					"<div class='control' id='controlA'>Kill</div>"+
+					"<div class='control' id='controlB'>Revive</div>"+
+					"<div class='control' id='controlC'>Pass</div>"+
 				"</div>";
 			String mensaje = "{" + "\"mostrarBruja\":\"" + divWitch + "\"}";
 			for (User u : users) {
-				if(g.getStatusObj().players.get(u.getName()) != "WITCH") continue;
+				if(!g.getStatusObj().players.get(u.getName()).equals("WITCH")) continue;
 				iwSocketHandler.sendText(u.getName(), mensaje);
 			}
 		}
-
 		if(g.getStatusObjFromString(nuevoEstado).gameState.equals("FINISHED")){
 			String divFin ="<div id='finalizar_partida' style='display:flex'>"+
 					"<form action='/user/searchGame' method='GET'>"+
