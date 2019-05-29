@@ -40,7 +40,25 @@ public class Game {
 
 	public Game() {
 	}
-
+	
+	public static String getIcon(String rol) {
+		String icon = "";
+		
+		if (rol.equals("VAMPIRE")) {
+			icon = "\uD83E\uDDDB\u200D♂️";
+		} else if (rol.equals("FARMER")) {
+			icon = "\uD83D\uDC68\u200D\uD83C\uDF3E ";
+		} else if (rol.equals("WITCH")) {
+			icon = "\uD83E\uDDD9\u200D♀️";
+		} else if (rol.equals("HUNTER")) {
+			icon = "\uD83C\uDFF9";
+		} else {
+			icon = "⚰";
+		}
+		
+		return icon;
+	}
+	
 	public boolean allowAccess(String _password) {
 		return password.equals(_password);
 	}
@@ -129,7 +147,7 @@ public class Game {
 	public void initLobby() {
         ObjectMapper mapper = new ObjectMapper();
         Status st = new Status();
-        st.momento = "inLobby";
+        st.gameState = "inLobby";
     
         try {
             status = mapper.writeValueAsString(st);
@@ -143,12 +161,12 @@ public class Game {
 	 */
 	public boolean started() {
 		Status s = this.getStatusObj();
-		return !s.momento.equals("inLobby");
+		return !s.gameState.equals("inLobby");
 	}
 
 	public Boolean finished(){
 		Status s = this.getStatusObj();
-		return s.momento.equals("FINISHED");
+		return s.gameState.equals("FINISHED");
 	}
 	
 	public boolean equals(Object other) {
@@ -161,7 +179,8 @@ public class Game {
 
     public void init() {
         Status st = new Status();
-        st.momento = "VAMPIRE";
+		st.turno = "VAMPIRE";
+		st.gameState = "INGAME";
         st.dia = 0;
         st.currentDeaths = new ArrayList<>();
         st.votes = new HashMap<>();
@@ -199,12 +218,15 @@ public class Game {
         int count = 0;
         String[] roles = new String[users.size()];
         
-        for(; count < 1 || count < users.size() / 4; ++count) {
+        for(; count < 1 || count < users.size() / 2; ++count) {
             roles[count] = "VAMPIRE";
         }
-        
-        //roles[count] = "HUNTER";
-        //++count;
+/*
+		roles[count] = "WITCH";
+		++count;
+        roles[count] = "HUNTER";
+        ++count;
+*/
         
         for(; count < users.size(); ++count) {
             roles[count] = "FARMER";

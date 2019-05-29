@@ -36,7 +36,7 @@
         </div>
         <div class=center>
             <div class="playerNo" id="plaNo" th:text="${userName}">You are Player 1</div>
-            <div class="playerRol" id="plaRol" th:text="${userRol}">VAMPIRE</div>
+            <div class="playerRol" id="plaRol" th:text="${userRol} +${iconoRol}">VAMPIRE </div>
             <div>
                 <textarea rows="7" cols="50" class="textLog" id="log" readonly></textarea>
             </div>
@@ -50,6 +50,16 @@
                 <div class="control" , id="controlB">Revive</div>
                 <div class="control" , id="controlC">Pass</div>
             </div>
+            
+            <div id="finalizar_partida">
+            	<form th:action="@{/user/searchGame}" method="GET">
+                	<button type="submit" id="finalizar" class="boton">Jugar otra vez</button>
+                </form>
+                <form th:action="@{/user/{id}(id=${session.user.id})}" method="GET">
+                	<button type="submit" id="perfil" class="boton">Volver al perfil</button>
+            	</form>
+            
+            </div>
 
         </div>
         <div class="mesa">
@@ -60,7 +70,7 @@
                 </li>
             </ul>
         </div>
-        <script th:src="@{/js/partida.js}" type="text/javascript"></script>
+        <script th:src="@{/js/partidaCliente.js}" type="text/javascript"></script>
     </div>
 </body>
 

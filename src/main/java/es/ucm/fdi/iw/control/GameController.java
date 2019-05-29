@@ -45,14 +45,10 @@ public class GameController {
         Game g = user.getActiveGame();
         if (g == null) return null;
         
-        g.init();
-
-        entityManager.persist(g);
-        entityManager.flush();
-        
         model.addAttribute("players", g.getStatusObj().players.keySet());
         model.addAttribute("userName", user.getName());
         model.addAttribute("userRol", g.getStatusObj().players.get(user.getName()));
+        model.addAttribute("iconoRol", Game.getIcon(g.getStatusObj().players.get(user.getName())));
         
         return "partida";
     }
@@ -66,6 +62,11 @@ public class GameController {
 
         Game game = user.getActiveGame();
         if(game == null) return null;
+
+        game.init();
+
+        entityManager.persist(game);
+        entityManager.flush();
 
         String text = "{" + "\"comienzaLaPartida\": {" + "\"idGame\":\"" + game.getId() + "\"}}";
 

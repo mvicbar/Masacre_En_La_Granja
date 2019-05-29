@@ -127,7 +127,9 @@ public class UserController {
 	}
 
 	@GetMapping("/register")
-	public String getRegister(Model model) {
+	public String getRegister(Model model, HttpSession session) {
+		if(session.getAttribute("user") != null) 
+			return "redirect:/user/" + ((User) session.getAttribute("user")).getId();
 		return "registro";
 	}
 
@@ -148,6 +150,7 @@ public class UserController {
 			@RequestParam String userPassword, @RequestParam String userPassword2,
 			@RequestParam("userPhoto") MultipartFile userPhoto, HttpSession session) {
 
+		userName = userName.replaceAll(" ", "_");
 		Long usersWithLogin = entityManager.createNamedQuery("User.HasName", Long.class)
 				.setParameter("userName", userName).getSingleResult();
 
@@ -190,7 +193,10 @@ public class UserController {
 	}
 
 	@GetMapping("/login")
-	public String getLogin(Model model) {
+	public String getLogin(Model model, HttpSession session) {
+		if(session.getAttribute("user") != null) 
+			return "redirect:/user/" + ((User) session.getAttribute("user")).getId();
+	
 		return "iniciosesion";
 	}
 
@@ -228,11 +234,20 @@ public class UserController {
 	@GetMapping("/logout")
 	public String logout(Model model, HttpSession session) {
 		session.setAttribute("user", null);
-		return "redirect:/user/login";
+		return "redirect:/login";
 	}
 
 	@GetMapping("/searchGame")
-	public String searchGame() {
+	@Transactional
+	public String searchGame(HttpSession session) {
+		User user = (User) session.getAttribute("user");
+		user = entityManager.find(User.class, user.getId());
+		Game activeGame = user.getActiveGame();
+		
+		if (activeGame != null) {
+			return "redirect:/game/";
+		}
+		
 		return "buscarPartida";
 	}
 

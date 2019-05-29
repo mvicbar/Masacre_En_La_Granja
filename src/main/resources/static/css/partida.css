@@ -3,7 +3,6 @@
 *{
     padding: 0;
     margin: 0;
-
 }
 
 div.contenedor_principal{
@@ -40,9 +39,9 @@ div.mesa{
     width: 96%;
     height: 96%;
     border-radius: 10%;
-    background-image: url("../static/img/marble.jpg");
     border: solid;
     display: flex;
+     background-image: url("../img/marble.jpg");
     justify-content: space-evenly;
     align-content: space-between;
     align-self: center;
@@ -170,6 +169,57 @@ div.playerRol
     display: none;
     top: 60%;
     left: 30%;
+}
+
+#finalizar_partida{
+   position: absolute;
+   width: 45%;
+   height: 20%;
+   background-color: rgb(80, 80, 80);
+   font-size: 2vw;
+   display: none;
+   display: flex;
+   top: 60%;
+   left: 26%;
+   align-items: center;
+   justify-content: space-evenly;
+   border: solid 4px;
+   border-color: #4d0b0b #711818 #711818 #4d0b0b;
+}
+
+#finalizar_partida .boton {
+    background-color: rgb(63, 63, 63);
+    color: rgb(196, 196, 196);
+    padding: 10px;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: solid 4px;
+    border-color: #4d0b0b #711818 #711818 #4d0b0b;
+
+}
+
+#finalizar_partida  .boton:hover{
+    background-color: rgb(49, 49, 49);
+}
+
+#finalizar_partida  .boton:active{
+    background-color: rgb(43, 42, 42);
+}
+
+#finalizar, #perfil{
+	background-color: rgb(120, 33, 18);
+    width: 100%;
+    text-align: center;
+    border-radius: 4px;
+    border: solid;
+    border-color: black;
+    background-color: rgb(120, 33, 18);
+    color: white;
+    cursor: pointer;
+    padding: 4%;
+    font-family: 'Felipa', cursive;
 }
 
 .control
