@@ -96,7 +96,8 @@ public class ApiController {
 		if(!user.getName().equals(a.client)) return ResponseEntity.badRequest().build();
 		//Si rol no coincide
 		if(!s.players.get(user.getName()).equals(a.rol) && !a.rol.equals("POPULAR_VOTE")) return ResponseEntity.badRequest().build();
-		//Si la victima no existe o esta muerta
+		if(s.players.get(user.getName()).equals(s.players.get(a.victim)) && !a.rol.equals("POPULAR_VOTE")) return ResponseEntity.badRequest().build();
+		//Si la víctima no existe o esta muerta
 		boolean victimaValida = false;
 		for(User i : g.getUsers()){
 			if(i.getName().equals(a.victim) && !s.players.get(a.victim).equals("DEAD")){

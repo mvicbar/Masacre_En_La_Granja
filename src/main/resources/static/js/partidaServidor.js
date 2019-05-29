@@ -26,6 +26,7 @@ function receivePlay(oldStateJSON, playJSON) //También recibirá el estado de l
 	object.votation = oldState.votes;
 	object.played = oldState.played;
 	object.gameState = oldState.gameState;
+	object.turno = oldState.turno;
 
 	switch (play.rol) {
 		case 'VAMPIRE':
