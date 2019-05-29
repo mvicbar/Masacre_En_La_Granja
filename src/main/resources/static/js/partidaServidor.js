@@ -221,8 +221,7 @@ function processDeaths(object) {
 			object.logs.push(object.currentDeaths[i] + " was the Hunter, and wants retribution!");
 			object.turno = "HUNTER";
 			object.currentDeaths.splice(i, 1);
-		}
-		else {
+		} else {
 			object.logs.push((object.currentDeaths[i] + " has died!"));
 			//El jugador muere
 			object.players[object.currentDeaths[i]] = "DEAD";
@@ -238,17 +237,16 @@ function checkWin(object)//Comprueba si un bando ha ganado
 	for (var i in object.players) {
 		if (object.players[i] == "VAMPIRE") {
 			vampiresLeft++;
-		}
-		else if (object.players[i] != "DEAD") {
+		} else if (object.players[i] != "DEAD") {
 			farmersLeft++;
-			cosasQuePasan+= "Ha entrado en farmersLeft '\n'";
+			cosasQuePasan += "Ha entrado en farmersLeft '\n'";
 		}
 	}
+
 	if (vampiresLeft == 0) {
 		object.turno = "FARMERS_WON";
 		object.gameState = "FINISHED";
-	}
-	else if (farmersLeft == 0) {
+	} else if (farmersLeft <= vampiresLeft) {
 		object.turno = "VAMPIRES_WON";
 		object.gameState = "FINISHED";
 	}
@@ -272,6 +270,7 @@ function countMaxVotes(object) {
 	}
 	return people;
 }
+
 function countRol(rol, object) {
 	var people = 0;
 	for (var i in object.players) {

@@ -85,7 +85,7 @@ function vote(player) {
         }
     }
 }
-log
+
 function witchPlay(objetive) {
     if (option < 0) {
         noteEntry("Select an action, Witch");
