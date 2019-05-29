@@ -35,6 +35,34 @@ const handleRemovePlayer = (name) => {
 	removePlayerFromLobby(name);
 }
 
+const handleMostrarBruja = (divHtml) => {
+	const miembros = document.getElementsByClassName("center");
+	miembros[0].innerHTML = miembros[0].innerHTML + divHtml;
+	document.getElementById("controlA").addEventListener("click", function () {
+        option = 1;
+        document.getElementById("controlA").style.backgroundColor = '#1D1C1C';
+        document.getElementById("controlB").style.backgroundColor = '#782112';
+    });
+    document.getElementById("controlB").addEventListener("click", function () {
+        option = 2;
+        document.getElementById("controlB").style.backgroundColor = '#1D1C1C';
+        document.getElementById("controlA").style.backgroundColor = '#782112';
+    });
+    document.getElementById("controlC").addEventListener("click", function () {
+        option = 0; vote(-1);
+    });
+}
+
+const handleMostrarFinPartida = (divHtml) => {
+	const miembros = document.getElementsByClassName("center");
+	miembros[0].innerHTML = miembros[0].innerHTML + divHtml;
+}
+
+const handleOcultarBruja = () => {
+	var elem = document.getElementById("controls");
+	elem.parentNode.removeChild(elem);
+}
+
 const handleMessage = (o) => {
 	console.log(o);
 	if (o.newPlayer) handleNewPlayer(o.newPlayer);
@@ -42,6 +70,9 @@ const handleMessage = (o) => {
 	if (o.nuevoEstado) handleNuevoEstado(o.nuevoEstado);
 	if (o.comienzaLaPartida) handleComenzarPartida(o.comienzaLaPartida);
 	if (o.removePlayer) handleRemovePlayer(o.removePlayer);
+	if (o.mostrarBruja) handleMostrarBruja(o.mostrarBruja);
+	if (o.ocultarBruja) handleOcultarBruja(o.ocultarBruja);
+	if (o.mostrarFinPartida) handleMostrarFinPartida(o.mostrarFinPartida);
 }
 
 window.addEventListener('load', () => {
