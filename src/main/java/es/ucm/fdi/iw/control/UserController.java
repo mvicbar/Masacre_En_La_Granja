@@ -53,6 +53,13 @@ public class UserController {
 	@Autowired
 	private AuthenticationManager authenticationManager;
 
+	@GetMapping("/")
+	public String getUserSession(Model model, HttpSession session) {
+		User user = (User) session.getAttribute("user"); // <-- este usuario no está conectado a la bd
+        user = entityManager.find(User.class, user.getId()); // <-- obtengo usuario de la BD
+		return "redirect:/user/"+user.getId();
+	}
+
 	@GetMapping("/{id}")
 	public String getUser(@PathVariable long id, Model model, HttpSession session) {
 		User u = entityManager.find(User.class, id);
@@ -238,7 +245,16 @@ public class UserController {
 	}
 
 	@GetMapping("/searchGame")
-	public String searchGame() {
+	@Transactional
+	public String searchGame(HttpSession session) {
+		User user = (User) session.getAttribute("user");
+		user = entityManager.find(User.class, user.getId());
+		Game activeGame = user.getActiveGame();
+		
+		if (activeGame != null && activeGame.started()) {
+			return "redirect:/game/";
+		}
+		
 		return "buscarPartida";
 	}
 
