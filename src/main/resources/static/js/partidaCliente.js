@@ -5,6 +5,9 @@ var option = -1;
 
 function cargarPartida() {
     console.log("Entrada en cargarPartida");
+    var deads = document.getElementsByClassName("deathInfo");
+    for (var i = 0; i < deads.length; i++)
+      deads[i].style.display = "none";
 
     const headers = {
         "Content-Type": "application/json",
@@ -160,7 +163,7 @@ function vampirePlay(victim_) {
 function hunterPlay(victim_) {
     players[clientPlayer][1] = 1;
     //Envía jugada al servidor vía Ajax
-    noteEntry("You shot Player " + (victim_ + 1));
+    noteEntry("You shot " + (victim_ + 1));
     var playJSON = {
         rol: 'HUNTER',
         client: clientPlayer,
@@ -207,9 +210,10 @@ function resetPlay() {
 function updateDeaths(deaths, oldRols) {
 	console.log("Entrada en updateDeaths");
 	for(i=0; i < deaths.length; i++){
-		noteEntry("Player "+ deaths[i] +" has died!");
-		document.getElementById(deaths[i] + 'Dead').style.display = 'flex';
-		document.getElementById(deaths[i] + 'Dead').innerHTML = oldRols[deaths[i]];
+		noteEntry(deaths[i] +" has died!");
+		document.getElementById(deaths[i] + 'Death').style.display = 'flex';
+		document.getElementById(deaths[i] + 'Death').style.alignSelf = 'center';
+		document.getElementById(deaths[i] + 'Death').innerHTML = oldRols[deaths[i]];
 		
 		var icono;
 		switch(oldRols[deaths[i]]){
