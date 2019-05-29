@@ -133,7 +133,7 @@ function vampireMove(play, object) {
 		else {
 			object.currentDeaths.push(i);
 		}
-		object.logs.push("Vampires choosed their prey...")
+		object.logs.push("Vampires chose " + play.victim + " as their prey...")
 		object.turno = nextRol("VAMPIRE", object);
 		playedNextTurn(object);
 		object.votation = {};
