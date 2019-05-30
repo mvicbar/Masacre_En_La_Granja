@@ -36,6 +36,8 @@ function cargarPartida() {
 
 function vote(player) {
     console.log("Entrada en la función vote con player: " + player);
+    console.log("turno = " + turno);
+    console.log("player = " + player);
     return function () {
         switch (turno) {
             case "VAMPIRE":
@@ -58,17 +60,13 @@ function vote(player) {
 // Option 1 -> mata al objetivo
 // Option 2 -> protege al jugador víctima de los vampiros
 function witchPlay(objective) {
-
+    console.log("Entrada en la funcion witchPlay");
     var playJSON = {
         rol: 'WITCH',
         client: clientPlayer,
-        objective: objective,
+        victim: objective,
         option: "" + option
     };
-
-    if (option === 2) {
-        playJSON.objective = currentDeaths[0];
-    }
 
     var text = JSON.stringify(playJSON);
     const headers = {

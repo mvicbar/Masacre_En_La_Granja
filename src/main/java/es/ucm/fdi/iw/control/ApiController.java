@@ -142,12 +142,12 @@ public class ApiController {
 			// Hay que hacer doble escapado de las comillas
 			// uno para el string y otro para el json
 			String divWitch = "<div id=\\\"controls\\\" style=\\\"display:flex\\\"> " + "<div class=\\\"haMuerto\\\" id=\\\"haMuerto\\\">"
-					+ g.getStatusObjFromString(nuevoEstado).currentDeaths.get(0) + "</div>"
+					+ nuevoEstadoObj.currentDeaths.get(0) + "</div>"
 					+ "<div id=\\\"controlA\\\" class=\\\"control\\\">Kill</div>"
 					+ "<div id=\\\"controlB\\\" class=\\\"control\\\">Revive</div>"
 					+ "<div id=\\\"controlC\\\" class=\\\"control\\\">Pass</div>" + "</div>";
 			String mensaje = "{" + "\"mostrarBruja\":{ \"divWitch\":\"" + divWitch + "\", \"availableWitchActions\":"
-					+ nuevoEstadoObj.availableWitchActions + "}}";
+					+ nuevoEstadoObj.availableWitchActions + ", \"gonnaDie\": \"" + nuevoEstadoObj.currentDeaths.get(0) + "\"}}";
 			for (User u : users) {
 				if (!g.getStatusObj().players.get(u.getName()).equals("WITCH"))
 					continue;

@@ -53,6 +53,7 @@ const handleMostrarBruja = (obj) => {
 			option = 2;
 			document.getElementById("controlB").style.backgroundColor = '#1D1C1C';
 		});
+		document.getElementById("controlB").addEventListener("mouseup", vote(obj.gonnaDie));
 	} else {
 		document.getElementById("controlB").style.backgroundColor = '#1D1C1C';
 	}
