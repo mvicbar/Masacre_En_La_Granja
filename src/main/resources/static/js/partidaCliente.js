@@ -4,6 +4,9 @@ var option = -1;
 
 function cargarPartida() {
     console.log("Entrada en cargarPartida");
+    var deads = document.getElementsByClassName("deathInfo");
+    for (var i = 0; i < deads.length; i++)
+      deads[i].style.display = "none";
 
     const headers = {
         "Content-Type": "application/json",
@@ -17,10 +20,11 @@ function cargarPartida() {
     fetch("/api/game/getStatus", params).then((response) => {
         if (response.status == 200) {
             response.text().then(function (text) {
-            	  logEntry("Night falls, the farmers go to bed, vampires rise...");
+            	logEntry("Night falls, the farmers go to bed, vampires rise...");
                 console.log("Status leído del getStatus: " + text);
                 var status = JSON.parse(text);
                 currentDeaths = status.currentDeaths;
+                console.log(status.played);
                 turno = status.turno;
             });
         }
@@ -38,8 +42,6 @@ function cargarPartida() {
 
 function vote(player) {
     console.log("Entrada en la función vote con player: " + player);
-    console.log("turno = " + turno);
-    console.log("player = " + player);
     return function () {
         switch (turno) {
             case "VAMPIRE":
@@ -153,9 +155,13 @@ function vampirePlay(victim_) {
 }
 
 function hunterPlay(victim_) {
-    players[clientPlayer][1] = 1;
+    console.log("Entrada en hunterPlay con victim_: " + victim_);
+
+   // players[clientPlayer][1] = 1;
+
+
     //Envía jugada al servidor vía Ajax
-    noteEntry("You shot Player " + (victim_ + 1));
+
     var playJSON = {
         rol: 'HUNTER',
         client: clientPlayer,
@@ -183,18 +189,18 @@ function hunterPlay(victim_) {
         played = 0;
         }
         else {
-            console.log("MIERDA!! ALGO HA SALIDO MAL");
+        console.log("ALGO HA SALIDO MAL");
         }
-
-    })
+    });
 }
+
 
 function receiveStatus(newState)//Actualiza el estado del cliente via websocket
 {
     console.log("Nuevo estado recibido con turno: " + newState.turno);
     printLogs(newState.logs);
     turno = newState.turno;
-
+    currentDeaths = newState.currentDeaths;
     if(turno == "VAMPIRES_WON" || turno == "FARMERS_WON" || turno == "TIE"){
     	for(p in newState.players)
     		newState.players[p] = "DEAD";
@@ -205,21 +211,20 @@ function receiveStatus(newState)//Actualiza el estado del cliente via websocket
     case "VAMPIRES_WON":    	
     	logEntry("The weak farmers have fallen...");
     	noteEntry("VAMPIRES WIN!");
-    	revealRoles(newState.players, newState.oldRols);
+    	//revealRoles(newState.players, newState.oldRols);
         break;
     case "FARMERS_WON":
     	logEntry("The vampires have been eliminated.");
     	noteEntry("FARMERS WIN!");
-    	revealRoles(newState.players, newState.oldRols);
+    	//revealRoles(newState.players, newState.oldRols);
         break;
     case "TIE":
     	logEntry("The farmers and vampires befriended each other!");
     	noteEntry("PEACE! LOVE!");
-    	revealRoles(newState.players, newState.oldRols);
-    	break;
+    	//revealRoles(newState.players, newState.oldRols);
+        break;
     }
     
-    document.getElementById('log').scrollIntoView();
 }
 
 function updateDeaths(deaths, oldRols) {
@@ -262,10 +267,12 @@ function logEntry(message) {
         + date.getSeconds() + "  "
         + message;
 }
+
 function noteEntry(message) {
 	console.log("Entrada en noteEntry");
     document.getElementById('note').innerHTML = message;
 }
+
 function printLogs(logs) {
     for (i = 0; i < logs.length; i++) {
         logEntry(logs[i]);

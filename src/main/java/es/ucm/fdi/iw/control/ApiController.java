@@ -99,7 +99,7 @@ public class ApiController {
 		// Si rol no coincide
 		if (!s.players.get(user.getName()).equals(a.rol) && !a.rol.equals("POPULAR_VOTE"))
 			return ResponseEntity.badRequest().build();
-		if (s.players.get(user.getName()).equals(s.players.get(a.victim)) && !a.rol.equals("POPULAR_VOTE"))
+		if (s.players.get(user.getName()).equals(s.players.get(a.victim)) && !a.rol.equals("POPULAR_VOTE") && !a.rol.equals("WITCH"))
 			return ResponseEntity.badRequest().build();
 		// Si la víctima no existe o esta muerta
 		boolean victimaValida = false;
@@ -116,9 +116,9 @@ public class ApiController {
 			return ResponseEntity.badRequest().build();
 		// Si es la bruja y puede hacer esa accion
 		if (a.rol.equals("WITCH") && s.availableWitchActions != 3) {
-			if (s.availableWitchActions == 2 && a.option != "2")
+			if (s.availableWitchActions == 2 && a.option.equals("1"))
 				return ResponseEntity.badRequest().build();
-			if (s.availableWitchActions == 1 && a.option != "1")
+			if (s.availableWitchActions == 1 && a.option.equals("2"))
 				return ResponseEntity.badRequest().build();
 		}
 
@@ -133,11 +133,12 @@ public class ApiController {
 			return ResponseEntity.badRequest().build();
 		String nuevoEstado = result[1];
 		log.info("NUEVO ESTADO --> " + nuevoEstado);
+		String turnoAnterior = s.turno;
 		g.setStatus(nuevoEstado);
 		entityManager.persist(g);
 		entityManager.flush();
 		Status nuevoEstadoObj = g.getStatusObjFromString(nuevoEstado);
-		if (nuevoEstadoObj.turno.equals("WITCH")) {
+		if (nuevoEstadoObj.turno.equals("WITCH") && !nuevoEstadoObj.turno.equals(turnoAnterior)) {
 			// TRIPLE BARRA SI O SI
 			// Hay que hacer doble escapado de las comillas
 			// uno para el string y otro para el json
@@ -148,6 +149,13 @@ public class ApiController {
 					+ "<div id=\\\"controlC\\\" class=\\\"control\\\">Pass</div>" + "</div>";
 			String mensaje = "{" + "\"mostrarBruja\":{ \"divWitch\":\"" + divWitch + "\", \"availableWitchActions\":"
 					+ nuevoEstadoObj.availableWitchActions + ", \"gonnaDie\": \"" + nuevoEstadoObj.currentDeaths.get(0) + "\"}}";
+			for (User u : users) {
+				if (!g.getStatusObj().players.get(u.getName()).equals("WITCH"))
+					continue;
+				iwSocketHandler.sendText(u.getName(), mensaje);
+			}
+		}else if(!nuevoEstadoObj.turno.equals(turnoAnterior) && turnoAnterior.equals("WITCH")){
+			String mensaje = "{" + "\"ocultarBruja\": \"a\"}";
 			for (User u : users) {
 				if (!g.getStatusObj().players.get(u.getName()).equals("WITCH"))
 					continue;
@@ -186,9 +194,8 @@ public class ApiController {
 		ScriptEngine engine = manager.getEngineByName("JavaScript");
 		// read script file
 		try {
-			engine.eval(new InputStreamReader(getClass().getResourceAsStream("/static/js/partidaServidor.js"))); // relativo
-																													// a
-			// src/main/resources
+			engine.eval(new InputStreamReader(getClass().getResourceAsStream("/static/js/partidaServidor.js"))); // relativo a
+																										// src/main/resources
 		} catch (ScriptException e) {
 			log.warn("Error loading script", e);
 		}
@@ -207,44 +214,25 @@ public class ApiController {
 
 	@PostMapping("/game/getStatus")
 	@Transactional
-	public ResponseEntity<String> getGameStatus(HttpSession session) {
+	public ResponseEntity<String> getGameStatus(HttpSession session){
 
 		User user = (User) session.getAttribute("user"); // <-- este usuario no está conectado a la bd
 		user = entityManager.find(User.class, user.getId()); // <-- obtengo usuario de la BD
 
 		Game g = user.getActiveGame();
-		if (g == null)
-			return ResponseEntity.badRequest().build();
+		if(g == null) return ResponseEntity.badRequest().build();
 		return ResponseEntity.ok(g.getStatus());
 	}
 
-	// Función para comprobar que la partida puede empezar
-	@PostMapping("/lobby/startGameOk/{gameID}")
-	@Transactional
-	public ResponseEntity enoughPlayers(@PathVariable String gameID) {
-		// Mirar en la base de datos mágicamente para ver si está creado
-		Game game = entityManager.createNamedQuery("Game.getGame", Game.class)
-				.setParameter("gameID", Long.parseLong(gameID)).getSingleResult();
+	//Función para comprobar que la partida puede empezar
+    @PostMapping("/lobby/startGameOk/{gameID}")
+    @Transactional
+    public ResponseEntity enoughPlayers(@PathVariable String gameID){
+        //Mirar en la base de datos mágicamente para ver si está creado
+        Game game = entityManager.createNamedQuery("Game.getGame", Game.class)
+                .setParameter("gameID", Long.parseLong(gameID)).getSingleResult();
 
-		if (game.canBegin())
-			return ResponseEntity.status(HttpStatus.OK).build();
-		return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
-	}
-
-	@PostMapping("game/endGame")
-	@Transactional
-	public ResponseEntity<?> endGame(HttpSession session, @RequestBody String players) {
-		User user = (User) session.getAttribute("user"); // <-- este usuario no está conectado a la bd
-		user = entityManager.find(User.class, user.getId()); // <-- obtengo usuario de la BD
-
-		log.info("String de jugadores {}", players);
-		List<String> users = new ArrayList<String>();
-
-		String message = "{\"endedGame\": \"true\"}";
-
-		for (String u : users) {
-			iwSocketHandler.sendText(u, message);
-		}
-		return ResponseEntity.status(HttpStatus.OK).build();
-	}
+        if(game.canBegin()) return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
+    }
 }

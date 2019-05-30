@@ -10,8 +10,8 @@
 
 		<span class="logx" th:if="${session.user != null}">
 			<a th:href="@{/user/searchGame/}"> Game </a>
-        	<a th:href="@{/}">Stats</a>
-        	<a th:href="@{/reglas}">Rules</a>
+        	<a th:href="@{/}"> Stats </a>
+        	<a th:href="@{/reglas}"> Rules </a>
         	<a th:href="@{/faq}">FAQ</a>
         	<div class="loggedUser">
         		<img th:src="@{/user/{id}/photo(id=${session.user.id})}" class="img-fluid">
