@@ -59,7 +59,7 @@ const handleMostrarBruja = (obj) => {
 	}
 
 	document.getElementById("controlC").addEventListener("click", function () {
-		option = 0; vote(-1)();
+		option = 0; vote(obj.gonnaDie)();
 	});
 }
 
