@@ -10,8 +10,7 @@ function createStatus() {
 	this.players = {};
 	this.played = [];
 	this.gameState = "";
-	this.witchProtected = 0; // 0 la bruja no ha protegido, 1 ya ha usado su poder
-	this.witchKilled = 0; // 0 la bruja ha matado, 1 ya ha usado su poder
+	this.availableWitchActions = 0; //0 = Ninguna, 1 = matar, 2 = revivir, 3 = ambas
 }
 
 function receivePlay(oldStateJSON, playJSON) //También recibirá el estado de la partida
@@ -29,6 +28,7 @@ function receivePlay(oldStateJSON, playJSON) //También recibirá el estado de l
 	object.played = oldState.played;
 	object.gameState = oldState.gameState;
 	object.turno = oldState.turno;
+	object.availableWitchActions = oldState.availableWitchActions;
 
 	switch (play.rol) {
 		case 'VAMPIRE':
@@ -57,29 +57,27 @@ function receivePlay(oldStateJSON, playJSON) //También recibirá el estado de l
 		acciones: object.acciones,
 		currentDeaths: object.currentDeaths,
 		votes: object.votation,
-		played: object.played
+		played: object.played,
+		availableWitchActions: object.availableWitchActions
 	};
 
 	return Java.to([JSON.stringify(object), JSON.stringify(newStatus), JSON.stringify(cosasQuePasan)], "java.lang.String[]");
 }
 
-// Option 0 -> no hace nada
-// Option 1 -> mata al objetivo
-// Option 2 -> protege al jugador víctima de los vampiros
+// action 0 -> no hace nada
+// action 1 -> mata al objetivo
+// action 2 -> protege al jugador víctima de los vampiros
 function witchMove(play, object) {
 	if (play.action === 0) { // La bruja no hace nada
 		endNight(object);
-	} else if (play.action === 1 // La bruja mata
-		&& object.witchKilled === 0 // La bruja no ha matado ya
-		&& play.objective !== object.currentDeaths[0]) {
-			object.witchKilled = 1;
-			object.currentDeaths.push(play.victim);
-			object.logs.push("The witch invoked the powers of Hell and forced " + play.objective + " to stab their own heart! You all shall fear the Dark Lord!");
-	} else if (play.action === 2 // La bruja protege
-		&& object.witchProtected === 0) { // La bruja no ha protegido ya
-			object.witchKilled = 1;
-			object.currentDeaths = [];
-			object.logs.push("The witch begged to her unholy god and protected " + play.objective + "'s soul ! Hail the Dark Lord!");
+	} else if (play.action === 1 && play.objective !== object.currentDeaths[0]) {// La bruja mata
+		object.availableWitchActions = object.availableWitchActions == 3 ? 2 : 0;
+		object.currentDeaths.push(play.victim);
+		object.logs.push("The witch invoked the powers of Hell and forced " + play.objective + " to stab their own heart! You all shall fear the Dark Lord!");
+	} else if (play.action === 2) { // La bruja protege
+		object.availableWitchActions = object.availableWitchActions == 3 ? 1 : 0;
+		object.currentDeaths = [];
+		object.logs.push("The witch begged to her unholy god and protected " + play.objective + "'s soul ! Hail the Dark Lord!");
 	}
 
 }
@@ -98,7 +96,7 @@ function popularMove(play, object) {
 			object.currentDeaths.push(i);
 			object.logs.push("The farmers decided to hang Player " + play.victim);
 		}
-		
+
 		startNight(object);
 		object.turno = "VAMPIRE";
 		playedNextTurn(object);
@@ -203,8 +201,8 @@ function endNight(object) {
 	if (object.turno != "HUNTER") {
 		object.dia = 1;
 		object.turno = "POPULAR_VOTATION";
-		for(var i in object.players){
-			if(object.players[i] != "DEAD"){
+		for (var i in object.players) {
+			if (object.players[i] != "DEAD") {
 				object.played[i] = 1;
 			}
 		}
@@ -251,7 +249,7 @@ function checkWin(object)//Comprueba si un bando ha ganado
 		}
 		else if (object.players[i] != "DEAD") {
 			farmersLeft++;
-			cosasQuePasan+= "Ha entrado en farmersLeft '\n'";
+			cosasQuePasan += "Ha entrado en farmersLeft '\n'";
 		}
 	}
 	if (vampiresLeft == 0) {

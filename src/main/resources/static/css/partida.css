@@ -166,7 +166,7 @@ div.playerRol
     height: 15%;
     background-color: rgb(80, 80, 80);
     font-size: 2vw;
-    display: none;
+    display: flex;
     top: 60%;
     left: 30%;
 }
@@ -177,7 +177,6 @@ div.playerRol
    height: 20%;
    background-color: rgb(80, 80, 80);
    font-size: 2vw;
-   display: none;
    display: flex;
    top: 60%;
    left: 26%;

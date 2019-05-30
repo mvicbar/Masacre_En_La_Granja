@@ -35,25 +35,34 @@ const handleRemovePlayer = (name) => {
 	removePlayerFromLobby(name);
 }
 
-const handleMostrarBruja = (divHtml) => {
+const handleMostrarBruja = (obj) => {
 	const miembros = document.getElementsByClassName("center");
-	miembros[0].innerHTML = miembros[0].innerHTML + divHtml;
-	const haMuerto = document.getElementById("haMuerto").innerHTML;
-	document.getElementById("controlA").addEventListener("click", function () {
-        option = 1;
-        document.getElementById("controlA").style.backgroundColor = '#1D1C1C';
-		document.getElementById("controlB").style.backgroundColor = '#782112';
-		vote(haMuerto);
-    });
-    document.getElementById("controlB").addEventListener("click", function () {
-        option = 2;
-        document.getElementById("controlB").style.backgroundColor = '#1D1C1C';
-		document.getElementById("controlA").style.backgroundColor = '#782112';
-		vote(haMuerto);
-    });
-    document.getElementById("controlC").addEventListener("click", function () {
-        option = 0; vote(haMuerto);
-    });
+	miembros[0].innerHTML = miembros[0].innerHTML + obj.divHtml;
+	console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAA");
+
+	if (obj.availableWitchActions == 1 || obj.availableWitchActions == 3) {
+		console.log("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
+		document.getElementById("controlA").addEventListener("click", function () {
+			option = 1;
+			document.getElementById("controlA").style.backgroundColor = '#1D1C1C';
+		});
+	} else {
+		document.getElementById("controlA").style.backgroundColor = '#1D1C1C';
+	}
+
+	if (obj.availableWitchActions == 2 || obj.availableWitchActions == 3) {
+		console.log("CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC");
+		document.getElementById("controlB").addEventListener("click", function () {
+			option = 2;
+			document.getElementById("controlB").style.backgroundColor = '#1D1C1C';
+		});
+	} else {
+		document.getElementById("controlB").style.backgroundColor = '#1D1C1C';
+	}
+
+	document.getElementById("controlC").addEventListener("click", function () {
+		option = 0; vote(-1);
+	});
 }
 
 const handleMostrarFinPartida = (divHtml) => {
@@ -61,7 +70,7 @@ const handleMostrarFinPartida = (divHtml) => {
 	miembros[0].innerHTML = miembros[0].innerHTML + divHtml;
 }
 
-const handleOcultarBruja = () => {
+const handleOcultarBruja = (o) => {
 	var elem = document.getElementById("controls");
 	elem.parentNode.removeChild(elem);
 }

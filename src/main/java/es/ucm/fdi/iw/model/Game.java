@@ -186,7 +186,8 @@ public class Game {
         st.votes = new HashMap<>();
         st.acciones = new ArrayList<>();
         st.played = new HashMap<>();
-        st.players = new HashMap<>();
+		st.players = new HashMap<>();
+		st.availableWitchActions = 3;
         
         String[] roles = initialRoles();
         Random random = new Random();
