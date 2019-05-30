@@ -37,11 +37,9 @@ const handleRemovePlayer = (name) => {
 
 const handleMostrarBruja = (obj) => {
 	const miembros = document.getElementsByClassName("center");
-	miembros[0].innerHTML = miembros[0].innerHTML + obj.divHtml;
-	console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAA");
+	miembros[0].innerHTML = miembros[0].innerHTML + obj.divWitch;
 
 	if (obj.availableWitchActions == 1 || obj.availableWitchActions == 3) {
-		console.log("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
 		document.getElementById("controlA").addEventListener("click", function () {
 			option = 1;
 			document.getElementById("controlA").style.backgroundColor = '#1D1C1C';
@@ -51,7 +49,6 @@ const handleMostrarBruja = (obj) => {
 	}
 
 	if (obj.availableWitchActions == 2 || obj.availableWitchActions == 3) {
-		console.log("CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC");
 		document.getElementById("controlB").addEventListener("click", function () {
 			option = 2;
 			document.getElementById("controlB").style.backgroundColor = '#1D1C1C';

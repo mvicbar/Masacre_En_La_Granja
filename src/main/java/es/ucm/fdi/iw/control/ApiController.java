@@ -138,11 +138,11 @@ public class ApiController {
 		entityManager.flush();
 		Status nuevoEstadoObj = g.getStatusObjFromString(nuevoEstado);
 		if (nuevoEstadoObj.turno.equals("WITCH")) {
-			String divWitch = "<div id='controls' style='display:flex'> " + "<div class='haMuerto' id='haMuerto'>"
+			String divWitch = "<div id=\\\"controls\\\" style=\\\"display:flex\\\"> " + "<div class=\\\"haMuerto\\\" id=\\\"haMuerto\\\">"
 					+ g.getStatusObjFromString(nuevoEstado).currentDeaths.get(0) + "</div>"
-					+ "<div id='controlA' class='control'>Kill</div>"
-					+ "<div id='controlB' class='control'>Revive</div>"
-					+ "<div id='controlC' class='control'>Pass</div>" + "</div>";
+					+ "<div id=\\\"controlA\\\" class=\\\"control\\\">Kill</div>"
+					+ "<div id=\\\"controlB\\\" class=\\\"control\\\">Revive</div>"
+					+ "<div id=\\\"controlC\\\" class=\\\"control\\\">Pass</div>" + "</div>";
 			String mensaje = "{" + "\"mostrarBruja\":{ \"divWitch\":\"" + divWitch + "\", \"availableWitchActions\":"
 					+ nuevoEstadoObj.availableWitchActions + "}}";
 			for (User u : users) {
@@ -153,11 +153,11 @@ public class ApiController {
 		}
 
 		if (nuevoEstadoObj.gameState.equals("FINISHED")) {
-			String divFin = "<div id='finalizar_partida' style='display:flex'>"
-					+ "<form action='/user/searchGame' method='GET'>"
-					+ "<button type='submit' id='finalizar' class='boton'>Jugar otra vez</button>" + "</form>"
-					+ "<form action='/user/' method='GET'>"
-					+ "<button type='submit' id='perfil' class='boton'>Volver al perfil</button>" + "</form>"
+			String divFin = "<div id=\\\"finalizar_partida\\\" style=\\\"display:flex\\\">"
+					+ "<form action=\\\"/user/searchGame\\\" method=\\\"GET\\\">"
+					+ "<button type=\\\"submit\\\" id=\\\"finalizar\\\" class=\\\"boton\\\">Jugar otra vez</button>" + "</form>"
+					+ "<form action=\\\"/user/\\\" method=\\\"GET\\\">"
+					+ "<button type=\\\"submit\\\" id=\\\"perfil\\\" class=\\\"boton\\\">Volver al perfil</button>" + "</form>"
 					+ "</div>";
 			String mensaje = "{" + "\"mostrarFinPartida\":\"" + divFin + "\"}";
 			for (User u : users) {
