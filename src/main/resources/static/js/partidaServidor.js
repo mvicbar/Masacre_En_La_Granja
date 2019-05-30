@@ -10,6 +10,8 @@ function createStatus() {
 	this.players = {};
 	this.played = [];
 	this.gameState = "";
+	this.witchProtected = 0; // 0 la bruja no ha protegido, 1 ya ha usado su poder
+	this.witchKilled = 0; // 0 la bruja ha matado, 1 ya ha usado su poder
 }
 
 function receivePlay(oldStateJSON, playJSON) //También recibirá el estado de la partida
@@ -61,27 +63,35 @@ function receivePlay(oldStateJSON, playJSON) //También recibirá el estado de l
 	return Java.to([JSON.stringify(object), JSON.stringify(newStatus), JSON.stringify(cosasQuePasan)], "java.lang.String[]");
 }
 
+// Option 0 -> no hace nada
+// Option 1 -> mata al objetivo
+// Option 2 -> protege al jugador víctima de los vampiros
 function witchMove(play, object) {
-	if (play.action != 0) {
-		if (play.action == 1) {//Bruja mata
+	if (play.action === 0) { // La bruja no hace nada
+		endNight(object);
+	} else if (play.action === 1 // La bruja mata
+		&& object.witchKilled === 0 // La bruja no ha matado ya
+		&& play.objective !== object.currentDeaths[0]) {
+			object.witchKilled = 1;
 			object.currentDeaths.push(play.victim);
-			object.logs.push("The witch slayed " + play.victim + " tonight!");
-		} else if (play.action == 2) {//Bruja revive
+			object.logs.push("The witch invoked the powers of Hell and forced " + play.objective + " to stab their own heart! You all shall fear the Dark Lord!");
+	} else if (play.action === 2 // La bruja protege
+		&& object.witchProtected === 0) { // La bruja no ha protegido ya
+			object.witchKilled = 1;
 			object.currentDeaths = [];
-			object.logs.push("The witch revived " + play.victim + " tonight!");
-		}
+			object.logs.push("The witch begged to her unholy god and protected " + play.objective + "'s soul ! Hail the Dark Lord!");
 	}
-	endNight(object); //La bruja acaba la noche    
+
 }
 
 function popularMove(play, object) {
 	//Si la victima aun no ha sido votada le ponemos un 1, si ya lo ha sido le sumanos 1
 	if (object.votation[play.victim] == null) object.votation[play.victim] = 1;
 	else object.votation[play.victim]++;
-	object.played[play.client] = 0;
 	if (countNumVotes(object) == countMaxVotes(object)) {
 		var i = mostVotedPlayer(object);
 		if (i == "") {
+			object.played[play.client] = 0;
 			object.logs.push("Votation tied and there is no time to vote again...");
 		}
 		else {

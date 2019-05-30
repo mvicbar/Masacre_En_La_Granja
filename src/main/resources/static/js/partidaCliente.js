@@ -54,16 +54,20 @@ function vote(player) {
     }
 }
 
-function witchPlay(objetive) {
+// Option 0 -> no hace nada
+// Option 1 -> mata al objetivo
+// Option 2 -> protege al jugador víctima de los vampiros
+function witchPlay(objective) {
 
-    if (option == 0 || (option == 1 && currentDeaths[0] != objetive) ||
-        option == 2 && currentDeaths[0] == objetive) {
-        var playJSON = {
-            rol: 'WITCH',
-            client: clientPlayer,
-            victim: objetive,
-            option: "" + option
-        }
+    var playJSON = {
+        rol: 'WITCH',
+        client: clientPlayer,
+        objective: objective,
+        option: "" + option
+    };
+
+    if (option === 2) {
+        playJSON.objective = currentDeaths[0];
     }
 
     var text = JSON.stringify(playJSON);
@@ -81,7 +85,7 @@ function witchPlay(objetive) {
         else {
             console.log("ALGO HA SALIDO MAL");
         }
-    });
+    })
 }
 
 function popularPlay(victim_) {
