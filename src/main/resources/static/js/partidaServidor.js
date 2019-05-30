@@ -90,11 +90,11 @@ function popularMove(play, object) {
 		}
 		else {
 			object.currentDeaths.push(i);
-			object.logs.push("The farmers decided to hang " + play.victim);
+			object.logs.push("The farmers decided to hang " + i);
 		}
 		
 		startNight(object);
-		if(object.turno !== "HUNTER") {
+		if(object.turno !== "HUNTER" && object.turno !== "VAMPIRES_WON" && object.turno !== "FARMERS_WON") {
             object.turno = "VAMPIRE";
         }
 		playedNextTurn(object);
@@ -109,14 +109,10 @@ function popularMove(play, object) {
 function hunterMove(play, object) {
     //La víctima muere
 	object.currentDeaths.push(play.victim);
-	object.players[play.victim] = "DEAD";
-
 	object.turno = 'HUNTER_SHOT';
   
-  
-  object.played[play.client] = 0;
-	object.logs.push("Player " + play.client + " has shot Player " + play.victim + "!");
-
+	object.played[play.client] = 0;
+	object.logs.push(play.client + " has shot " + play.victim + "!");
 
     //El cazador muere
 	object.players[play.client] = "DEAD";
@@ -227,11 +223,10 @@ function endNight(object) {
 
 function startNight(object) {
 	processDeaths(object);
-	if (object.turno != "HUNTER") {
+	if (object.turno != "HUNTER" && object.turno != "FARMERS_WON" && object.turno != "VAMPIRES_WON") {
 		object.dia = 0;
 		object.logs.push("The farmers go to bed...");
 		object.turno = rolOrder[0];
-		object.currentDeaths = [];
 	}
 }
 
@@ -247,6 +242,7 @@ function processDeaths(object) {
 			object.players[object.currentDeaths[i]] = "DEAD";
 		}
 	}
+	object.currentDeaths = [];
 	checkWin(object);
 }
 
