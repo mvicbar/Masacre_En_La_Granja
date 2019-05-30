@@ -1,9 +1,12 @@
-var turno = "";
+var turn = "";
 var currentDeaths = [];
 var option = -1;
 
-function cargarPartida() {
-    console.log("Entrada en cargarPartida");
+function loadGame() {
+    console.log("loadGame");
+    var deads = document.getElementsByClassName("deathInfo");
+    for (var i = 0; i < deads.length; i++)
+      deads[i].style.display = "none";
 
     const headers = {
         "Content-Type": "application/json",
@@ -20,10 +23,14 @@ function cargarPartida() {
                 var status = JSON.parse(text);
                 currentDeaths = status.currentDeaths;
                 turno = status.turno;
+
+                var status = JSON.parse(text);
+                currentDeaths = status.currentDeaths;
+                turn = status.turn;
             });
         }
         else {
-            console.log("NO HA SIDO POSIBLE CARGAR LA PARTIDA");
+            console.log("UNABLE TO LOAD THE GAME");
         }
     });
 
@@ -35,11 +42,12 @@ function cargarPartida() {
 }
 
 function vote(player) {
-    console.log("Entrada en la función vote con player: " + player);
-    console.log("turno = " + turno);
+    console.log("vote with player: " + player);
+    console.log("turno = " + turn);
     console.log("player = " + player);
+
     return function () {
-        switch (turno) {
+        switch (turn) {
             case "VAMPIRE":
                 vampirePlay(player);
                 break;
@@ -56,13 +64,13 @@ function vote(player) {
     }
 }
 
-// Option 0 -> no hace nada
-// Option 1 -> mata al objetivo
-// Option 2 -> protege al jugador víctima de los vampiros
-function witchPlay(objective) {
-    console.log("Entrada en la funcion witchPlay");
-    var playJSON = {
-        rol: 'WITCH',
+// Option 0 -> witch ends her turn
+// Option 1 -> witch kill objective
+// Option 2 -> witch protects objective
+function witchPlay(objetive) {
+      console.log("witch plays");
+      var playJSON = {
+        role: 'WITCH',
         client: clientPlayer,
         victim: objective,
         option: "" + option
@@ -79,24 +87,24 @@ function witchPlay(objective) {
         body: text
     };
     fetch("/api/game/receivePlay", params).then((response) => {
-        if (response.status == 200) console.log("JUGADA ENVIADA");
+        if (response.status == 200) console.log("PLAY SENT");
         else {
-            console.log("ALGO HA SALIDO MAL");
+            console.log("SOMETHING WENT WRONG");
         }
     })
 }
 
 function popularPlay(victim_) {
-    console.log("Entrada en popularPlay con victim_: " + victim_);
+    console.log("popularPlay with victim_: " + victim_);
 
     var playJSON = {
-        rol: 'POPULAR_VOTE',
+        role: 'POPULAR_VOTE',
         client: clientPlayer,
         victim: victim_,
         option: ""
     };
     var text = JSON.stringify(playJSON);
-    console.log("Jugada enviada: " + text);
+    console.log("Move sent: " + text);
     const headers = {
         "Content-Type": "application/json",
         "X-CSRF-TOKEN": config.csrf.value
@@ -108,20 +116,20 @@ function popularPlay(victim_) {
     };
     fetch("/api/game/receivePlay", params).then((response) => {
         if (response.status == 200) {
-            console.log("JUGADA ENVIADA");
+            console.log("MOVE SENT");
             noteEntry("Your vote is for " + victim_);
         }
         else {
-            console.log("ALGO HA SALIDO MAL");
+            console.log("SOMETHING WENT WRONG");
         }
     });
 }
 
 function vampirePlay(victim_) {
-    console.log("Entrada en vampirePlay con victim_: " + victim_);
+    console.log("vampirePlay with victim_: " + victim_);
 
     var playJSON = {
-        rol: 'VAMPIRE',
+        role: 'VAMPIRE',
         client: clientPlayer,
         victim: victim_,
         option: ""
@@ -138,53 +146,116 @@ function vampirePlay(victim_) {
     };
     fetch("/api/game/receivePlay", params).then((response) => {
         if (response.status == 200) {
-            console.log("JUGADA ENVIADA");
+            console.log("MOVE SENT");
             noteEntry("Your victim is " + victim_);
         }
         else {
-            console.log("ALGO HA SALIDO MAL");
+            console.log("SOMETHING WENT WRONG");
         }
     });
 
 }
 
 function hunterPlay(victim_) {
-    players[clientPlayer][1] = 1;
-    //Envía jugada al servidor vía Ajax
-    noteEntry("You shot Player " + (victim_ + 1));
+    console.log("hunterPlay with victim_: " + victim_);
+
+   // players[clientPlayer][1] = 1;
+
+
+    // Sends the move to the server by Ajax
+
     var playJSON = {
-        rol: 'HUNTER',
+        role: 'HUNTER',
         client: clientPlayer,
         victim: victim_,
         option: ""
     }
+
+    var text = JSON.stringify(playJSON);
+
+    const headers = {
+        "Content-Type": "application/json",
+        "X-CSRF-TOKEN": config.csrf.value
+    };
+
+    const params = {
+        method: 'POST',
+        headers: headers,
+        body: text
+    };
+
+
     fetch("/api/game/receivePlay", params).then((response) => {
-        if (response.status == 200) console.log("JUGADA ENVIADA");
+        if (response.status == 200){
+        console.log("MOVE SENT");
+        played = 0;
+        noteEntry("You shot " + victim_);
+        }
         else {
-            console.log("MIERDA!! ALGO HA SALIDO MAL");
+            console.log("SOMETHING WENT WRONG");
         }
-
-    })
+    });
 }
 
-function receiveStatus(newState)//Actualiza el estado del cliente via websocket
+
+function receiveStatus(newState)//Updates client's status by websocket
 {
-    console.log("Nuevo estado recibido");
+    console.log("New state received");
     printLogs(newState.logs);
-    turno = newState.turno;
+    turno = newState.turnn;
     currentDeaths = newState.currentDeaths;
+
+    turn = newState.turn;
+    //updateDeaths(newState.currentDeaths, newState.oldRoles);
 }
 
-function updateDeaths(deaths) {
-    console.log("Entrada en updateDeaths");
-    for (i in deaths) {
-        if (deaths[i] == "DEAD") {//El cliente ha muerto
-            //clientRol = "DEAD"
-            noteEntry("YOU DIED");
-            noteEntry(i + " has died!");
-            document.getElementById(i + "Player").innerHTML += " DEAD";
-        }
+function witchInfo(message) {
+
+    printLogs(message);
+    /*
+    if (currentDeaths[0] == null) {
+        logEntry("Nobody is gonna die tonight");
+        noteEntry("Nobody is gonna die tonight");
+    } else {
+        logEntry(currentDeaths[0] + " is gonna die tonight...");
+        noteEntry(currentDeaths[0] + " is gonna die tonight...");
     }
+    */
+    document.getElementById('controls').style.display = 'flex';
+}
+
+function resetPlay() {
+    played = 0;
+}
+
+function updateDeaths(deaths, oldRols) {
+	console.log("Update deaths");
+	for(i=0; i < deaths.length; i++){
+		noteEntry(deaths[i] +" has died!");
+		document.getElementById(deaths[i] + 'Death').style.display = 'flex';
+		document.getElementById(deaths[i] + 'Death').style.alignSelf = 'center';
+		document.getElementById(deaths[i] + 'Death').innerHTML = oldRoles[deaths[i]];
+		
+		var icon;
+		switch(oldRols[deaths[i]]){
+		case "VAMPIRE":
+			icon = "\uD83E\uDDDB\u200D♂️";
+			break;
+		case "FARMER":
+			icon = "\uD83D\uDC68\u200D\uD83C\uDF3E ";
+			break;
+		case "WITCH":
+			icon = "\uD83E\uDDD9\u200D♀️";
+			break;
+		case "HUNTER":
+			icon = "\uD83C\uDFF9";
+			break;
+		}
+		
+		document.getElementById(deaths[i] + 'Card').style.backgroundColor = 'transparent';
+		document.getElementById(deaths[i] + 'Card').innerHTML = icono;
+	}
+	
 }
 
 function logEntry(message) {
@@ -194,13 +265,15 @@ function logEntry(message) {
         + date.getSeconds() + "  "
         + message;
 }
+
 function noteEntry(message) {
     document.getElementById('note').innerHTML = message;
 }
+
 function printLogs(logs) {
     for (i = 0; i < logs.length; i++) {
         logEntry(logs[i]);
     }
 }
 
-cargarPartida();
+loadGame();
