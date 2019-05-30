@@ -94,7 +94,7 @@ function popularMove(play, object) {
 		}
 		
 		startNight(object);
-		if(object.turno !== "HUNTER" && object.turno !== "VAMPIRES_WON" && object.turno !== "FARMERS_WON") {
+		if(object.turno !== "HUNTER" && object.turno !== "VAMPIRES_WON" && object.turno !== "FARMERS_WON" && object.turno !== "TIE") {
             object.turno = "VAMPIRE";
         }
 		playedNextTurn(object);
