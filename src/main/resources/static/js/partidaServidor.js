@@ -1,5 +1,5 @@
 var rolOrder = ["VAMPIRE", "WITCH"];
-var cosasQuePasan = "";
+
 
 function createStatus() {
 	this.logs = [];
@@ -61,7 +61,7 @@ function receivePlay(oldStateJSON, playJSON) //También recibirá el estado de l
 		played: object.played
 	};
 
-	return Java.to([JSON.stringify(object), JSON.stringify(newStatus), JSON.stringify(cosasQuePasan)], "java.lang.String[]");
+	return Java.to([JSON.stringify(object), JSON.stringify(newStatus)], "java.lang.String[]");
 }
 
 function witchMove(play, object) {
@@ -263,7 +263,6 @@ function checkWin(object)//Comprueba si un bando ha ganado
                 hunterAlive = true;
             }
 			farmersLeft++;
-			cosasQuePasan += "Ha entrado en farmersLeft '\n'";
 		}
 	}
 
