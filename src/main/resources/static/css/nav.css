@@ -37,6 +37,7 @@ div.loggedUser {
     flex-direction: row;
     width: 15%;
     min-width: 141px;
+    max-height: 70px;
 }
 
 a{
