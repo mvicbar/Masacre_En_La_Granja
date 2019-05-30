@@ -22,7 +22,7 @@ function receivePlay(oldStateJSON, playJSON) //También recibirá el estado de l
 	var play = JSON.parse(playJSON);
 	var object = new createStatus();
 
-	object.currentDeaths = [];
+	object.currentDeaths = oldState.currentDeaths;
 	object.dia = oldState.dia;
 	object.players = oldState.players;
 	object.votation = oldState.votes;
