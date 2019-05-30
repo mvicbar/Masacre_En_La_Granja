@@ -1,12 +1,19 @@
 var turno = "";
+var endGame = 1;
 var currentDeaths = [];
 var option = -1;
 
 function cargarPartida() {
     console.log("Entrada en cargarPartida");
+<<<<<<< HEAD
     var deaths = document.getElementsByClassName('death');
     for(var i = 0; i < deaths.length; i++)
     	deaths[i].style.display = 'none';
+=======
+    var deads = document.getElementsByClassName("deathInfo");
+    for (var i = 0; i < deads.length; i++)
+      deads[i].style.display = "none";
+>>>>>>> parent of c565920... Merge branch 'develop' into vickingah
 
     const headers = {
         "Content-Type": "application/json",
@@ -23,7 +30,9 @@ function cargarPartida() {
             	logEntry("Night falls, the farmers go to bed, vampires rise...");
                 console.log("Status leído del getStatus: " + text);
                 var status = JSON.parse(text);
+                endGame = (status.gameState == "FINISHED") ? 1 : 0;
                 currentDeaths = status.currentDeaths;
+                console.log(status.played);
                 turno = status.turno;
             });
         }
@@ -41,8 +50,6 @@ function cargarPartida() {
 
 function vote(player) {
     console.log("Entrada en la función vote con player: " + player);
-    console.log("turno = " + turno);
-    console.log("player = " + player);
     return function () {
         switch (turno) {
             case "VAMPIRE":
@@ -61,34 +68,41 @@ function vote(player) {
     }
 }
 
-// Option 0 -> no hace nada
-// Option 1 -> mata al objetivo
-// Option 2 -> protege al jugador víctima de los vampiros
-function witchPlay(objective) {
-    console.log("Entrada en la funcion witchPlay");
-    var playJSON = {
-        rol: 'WITCH',
-        client: clientPlayer,
-        victim: objective,
-        option: "" + option
-    };
-
-    var text = JSON.stringify(playJSON);
-    const headers = {
-        "Content-Type": "application/json",
-        "X-CSRF-TOKEN": config.csrf.value
-    };
-    const params = {
-        method: 'POST',
-        headers: headers,
-        body: text
-    };
-    fetch("/api/game/receivePlay", params).then((response) => {
-        if (response.status == 200) console.log("JUGADA ENVIADA");
-        else {
-            console.log("ALGO HA SALIDO MAL");
+function witchPlay(objetive) {
+    if (option < 0) {
+        noteEntry("Select an action, Witch");
+    }
+    else {
+        if (option == 0 || (option == 1 && currentDeaths[0] != objetive) ||
+            option == 2 && currentDeaths[0] == objetive) {
+            hideOptions();
+            var playJSON = {
+                rol: 'WITCH',
+                client: clientPlayer,
+                victim: objetive,
+                option: "" + option
+            }
+        } else {
+            noteEntry("You can't do that, Witch");
         }
-    })
+
+        var text = JSON.stringify(playJSON);
+        const headers = {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": config.csrf.value
+        };
+        const params = {
+            method: 'POST',
+            headers: headers,
+            body: text
+        };
+        fetch("/api/game/receivePlay", params).then((response) => {
+            if (response.status == 200) console.log("JUGADA ENVIADA");
+            else {
+                console.log("ALGO HA SALIDO MAL");
+            }
+        });
+    }
 }
 
 function popularPlay(victim_) {
@@ -156,8 +170,18 @@ function vampirePlay(victim_) {
 }
 
 function hunterPlay(victim_) {
+<<<<<<< HEAD
     //Envía jugada al servidor vía Ajax
     noteEntry("You shot " + (victim_ + 1));
+=======
+    console.log("Entrada en hunterPlay con victim_: " + victim_);
+
+   // players[clientPlayer][1] = 1;
+
+
+    //Envía jugada al servidor vía Ajax
+
+>>>>>>> parent of c565920... Merge branch 'develop' into vickingah
     var playJSON = {
         rol: 'HUNTER',
         client: clientPlayer,
@@ -185,18 +209,17 @@ function hunterPlay(victim_) {
         played = 0;
         }
         else {
-            console.log("MIERDA!! ALGO HA SALIDO MAL");
+        console.log("ALGO HA SALIDO MAL");
         }
-
-    })
+    });
 }
+
 
 function receiveStatus(newState)//Actualiza el estado del cliente via websocket
 {
     console.log("Nuevo estado recibido con turno: " + newState.turno);
     printLogs(newState.logs);
     turno = newState.turno;
-
     if(turno == "VAMPIRES_WON" || turno == "FARMERS_WON" || turno == "TIE"){
     	for(p in newState.players)
     		newState.players[p] = "DEAD";
@@ -218,6 +241,15 @@ function receiveStatus(newState)//Actualiza el estado del cliente via websocket
     	break;
     }
     
+}
+
+function witchInfo(message) {
+    printLogs(message);
+    document.getElementById('controls').style.display = 'flex';
+}
+
+function resetPlay() {
+    played = 0;
 }
 
 function updateDeaths(deaths, oldRols) {
@@ -261,10 +293,12 @@ function logEntry(message) {
         + date.getSeconds() + "  "
         + message;
 }
+
 function noteEntry(message) {
 	console.log("Entrada en noteEntry");
     document.getElementById('note').innerHTML = message;
 }
+
 function printLogs(logs) {
     for (i = 0; i < logs.length; i++) {
         logEntry(logs[i]);

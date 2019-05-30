@@ -186,9 +186,14 @@ public class Game {
         st.votes = new HashMap<>();
         st.acciones = new ArrayList<>();
         st.played = new HashMap<>();
+<<<<<<< HEAD
 		st.players = new HashMap<>();
 		st.oldRols = new HashMap<>();
 		st.availableWitchActions = 3;
+=======
+        st.players = new HashMap<>();
+        st.oldRols = new HashMap<>();
+>>>>>>> parent of c565920... Merge branch 'develop' into vickingah
         
         String[] roles = initialRoles();
         Random random = new Random();
@@ -225,8 +230,13 @@ public class Game {
             roles[count] = "VAMPIRE";
         }
 
+<<<<<<< HEAD
 //		roles[count] = "WITCH";
 //		++count;
+=======
+        /*roles[count] = "WITCH";
+		++count;*/
+>>>>>>> parent of c565920... Merge branch 'develop' into vickingah
         roles[count] = "HUNTER";
         ++count;
 
