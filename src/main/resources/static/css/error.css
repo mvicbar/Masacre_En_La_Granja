@@ -21,12 +21,11 @@ h1{
     overflow: hidden;
 }
 
-div.dogImage{
-    width: 15vw;
-    height: 15vw;
+img{
+    width: 30vw;
+    height: 30vw;
     border-radius: 50%;
     border: none;
     display: flex;
-    background-image: url("../img/confusedDog.jpg");
     align-self: center;
 }
