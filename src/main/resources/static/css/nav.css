@@ -14,7 +14,7 @@ nav {
     border-bottom-right-radius: 30px;
     align-items: center;
     justify-content: space-evenly;
-    height: 80px;
+    height: auto;
 }
 
 .logx {
@@ -48,8 +48,9 @@ a:-webkit-any-link:active {
 }
 
 .img-fluid {
-    width: 68px;
-    height: 68px;
+    max-width: 74px;
+    min-width: 68px;
+    height: auto;
     border-radius: 50%;
     margin: 2%;
 }
