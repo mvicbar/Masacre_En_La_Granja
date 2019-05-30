@@ -224,7 +224,7 @@ function endNight(object) {
 
 function startNight(object) {
 	processDeaths(object);
-	if (object.turno != "HUNTER" && object.turno != "FARMERS_WON" && object.turno != "VAMPIRES_WON") {
+	if (object.turno != "HUNTER" && object.turno != "FARMERS_WON" && object.turno != "VAMPIRES_WON" && object.turno != "TIE") {
 		object.dia = 0;
 		object.logs.push("The farmers go to bed...");
 		object.turno = rolOrder[0];
