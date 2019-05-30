@@ -9,7 +9,6 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityManager;
@@ -138,7 +137,7 @@ public class ApiController {
 		entityManager.persist(g);
 		entityManager.flush();
 		Status nuevoEstadoObj = g.getStatusObjFromString(nuevoEstado);
-		if (nuevoEstadoObj.turno.equals("WITCH") && !nuevoEstadoObj.turno.equals(turnoAnterior)) {
+		if (nuevoEstadoObj.turno.equals("WITCH") && !nuevoEstadoObj.turno.equals(turnoAnterior) && nuevoEstadoObj.availableWitchActions != 0) {
 			// TRIPLE BARRA SI O SI
 			// Hay que hacer doble escapado de las comillas
 			// uno para el string y otro para el json
@@ -177,7 +176,6 @@ public class ApiController {
 		}
 
 		String object = result[0];
-		log.info("EL OBJETO ESTE... --> " + object);
 
 		String message = "{" + "\"nuevoEstado\":" + object + "}";
 
@@ -227,7 +225,7 @@ public class ApiController {
 	//Función para comprobar que la partida puede empezar
     @PostMapping("/lobby/startGameOk/{gameID}")
     @Transactional
-    public ResponseEntity enoughPlayers(@PathVariable String gameID){
+    public ResponseEntity<?> enoughPlayers(@PathVariable String gameID){
         //Mirar en la base de datos mágicamente para ver si está creado
         Game game = entityManager.createNamedQuery("Game.getGame", Game.class)
                 .setParameter("gameID", Long.parseLong(gameID)).getSingleResult();
