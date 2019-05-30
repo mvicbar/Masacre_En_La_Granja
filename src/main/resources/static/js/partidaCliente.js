@@ -218,7 +218,6 @@ function receiveStatus(newState)//Actualiza el estado del cliente via websocket
     	break;
     }
     
-    document.getElementById('log').scrollIntoView();
 }
 
 function updateDeaths(deaths, oldRols) {
