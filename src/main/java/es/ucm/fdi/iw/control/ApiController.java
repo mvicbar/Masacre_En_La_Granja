@@ -138,6 +138,9 @@ public class ApiController {
 		entityManager.flush();
 		Status nuevoEstadoObj = g.getStatusObjFromString(nuevoEstado);
 		if (nuevoEstadoObj.turno.equals("WITCH")) {
+			// TRIPLE BARRA SI O SI
+			// Hay que hacer doble escapado de las comillas
+			// uno para el string y otro para el json
 			String divWitch = "<div id=\\\"controls\\\" style=\\\"display:flex\\\"> " + "<div class=\\\"haMuerto\\\" id=\\\"haMuerto\\\">"
 					+ g.getStatusObjFromString(nuevoEstado).currentDeaths.get(0) + "</div>"
 					+ "<div id=\\\"controlA\\\" class=\\\"control\\\">Kill</div>"
