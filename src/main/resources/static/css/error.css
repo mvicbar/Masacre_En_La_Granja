@@ -1,0 +1,32 @@
+body {
+    background-color: #5c1414;
+}
+
+div.container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: auto;
+    align-content: space-evenly;
+    justify-content: space-evenly;
+    justify-items: center;
+    align-items: center;
+}
+
+h1{
+    line-height: 225px;
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+    font-size: 8vw;
+    color: #918d8d;
+    overflow: hidden;
+}
+
+div.dogImage{
+    width: 15vw;
+    height: 15vw;
+    border-radius: 50%;
+    border: none;
+    display: flex;
+    background-image: url("../img/confusedDog.jpg");
+    align-self: center;
+}
