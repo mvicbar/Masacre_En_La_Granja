@@ -122,6 +122,33 @@ public class ApiController {
 		g.setStatus(nuevoEstado);
 		entityManager.persist(g);
 		entityManager.flush();
+		if(g.getStatusObjFromString(nuevoEstado).turno.equals("WITCH")){
+			String divWitch = "<div id='controls'> "+
+					"<div class='control' , id='controlA'>Kill</div>"+
+					"<div class='control' , id='controlB'>Revive</div>"+
+					"<div class='control' , id='controlC'>Pass</div>"+
+				"</div>";
+			String mensaje = "{" + "\"mostrarBruja\":\"" + divWitch + "\"}";
+			for (User u : users) {
+				if(g.getStatusObj().players.get(u.getName()) != "WITCH") continue;
+				iwSocketHandler.sendText(u.getName(), mensaje);
+			}
+		}
+
+		if(g.getStatusObjFromString(nuevoEstado).gameState.equals("FINISHED")){
+			String divFin ="<div id='finalizar_partida' style='display:flex'>"+
+					"<form action='/user/searchGame' method='GET'>"+
+						"<button type='submit' id='finalizar' class='boton'>Jugar otra vez</button>"+
+					"</form>"+
+					"<form action='/user/' method='GET'>"+
+						"<button type='submit' id='perfil' class='boton'>Volver al perfil</button>"+
+					"</form>"+
+				"</div>";
+			String mensaje = "{" + "\"mostrarFinPartida\":\"" + divFin + "\"}";
+			for (User u : users) {
+				iwSocketHandler.sendText(u.getName(), mensaje);
+			}
+		}
 
 		String object = result[0];
 		log.info("EL OBJETO ESTE... --> " + object);
@@ -182,21 +209,4 @@ public class ApiController {
         if(game.canBegin()) return ResponseEntity.status(HttpStatus.OK).build();
         return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
     }
-    
-    @PostMapping("game/endGame")
-	@Transactional
-	public ResponseEntity<?> endGame(HttpSession session, @RequestBody String players) {
-    	User user = (User) session.getAttribute("user"); // <-- este usuario no está conectado a la bd
-		user = entityManager.find(User.class, user.getId()); // <-- obtengo usuario de la BD
-
-		log.info("String de jugadores {}", players);
-		List<String> users = new ArrayList<String>();
-		
-		String message = "{\"endedGame\": \"true\"}";
-
-		for (String u : users) {
-			iwSocketHandler.sendText(u, message);
-		}
-		return ResponseEntity.status(HttpStatus.OK).build();
-	}
 }

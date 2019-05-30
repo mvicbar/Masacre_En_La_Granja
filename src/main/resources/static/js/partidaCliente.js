@@ -1,25 +1,13 @@
 var turno = "";
 var endGame = 1;
-var played = 0; // played = 0 ===> no es tu turno(o ya has jugado); played = 1 ===> puedes realizar una jugada
 var currentDeaths = [];
 var option = -1;
 
 function cargarPartida() {
-	console.log("Entrada en cargarPartida");
-    document.getElementById("controlA").addEventListener("click", function () {
-        option = 1;
-        document.getElementById("controlA").style.backgroundColor = '#1D1C1C';
-        document.getElementById("controlB").style.backgroundColor = '#782112';
-    });
-    document.getElementById("controlB").addEventListener("click", function () {
-        option = 2;
-        document.getElementById("controlB").style.backgroundColor = '#1D1C1C';
-        document.getElementById("controlA").style.backgroundColor = '#782112';
-    });
-    document.getElementById("controlC").addEventListener("click", function () {
-        option = 0; vote(-1);
-    });
-    hideOptions();
+    console.log("Entrada en cargarPartida");
+    var deads = document.getElementsByClassName("deathInfo");
+    for (var i = 0; i < deads.length; i++)
+      deads[i].style.display = "none";
 
     const headers = {
         "Content-Type": "application/json",
@@ -35,17 +23,8 @@ function cargarPartida() {
             response.text().then(function (text) {
                 console.log("Status leído del getStatus: " + text);
                 var status = JSON.parse(text);
-                console.log("gameState: " + status.gameState);
-                console.log("turno: " + status.turno);
-                console.log("dia: " + status.dia);
-                console.log("acciones: " + status.acciones);
-                console.log("currentDeaths: " + status.currentDeaths);
-                console.log("votes: " + status.votes);
-                console.log("Jugadores en el JSON: " + status.players);
                 endGame = (status.gameState == "FINISHED") ? 1 : 0;
-                console.log("end game: " + endGame);
                 currentDeaths = status.currentDeaths;
-                played = status.played[clientPlayer];
                 console.log(status.played);
                 turno = status.turno;
             });
@@ -63,25 +42,21 @@ function cargarPartida() {
 }
 
 function vote(player) {
-	console.log("Entrada en la función vote con player: " + player);
+    console.log("Entrada en la función vote con player: " + player);
     return function () {
-        if (clientRol != "DEAD" && played == 1) {
-            if (turno == clientRol) {
-                switch (turno) {
-                    case "VAMPIRE":
-                        vampirePlay(player);
-                        break;
-                    case "HUNTER":
-                        hunterPlay(player);
-                        break;
-                    case "WITCH":
-                        witchPlay(player);
-                        break;
-                }
-            }
-            else if (turno == "POPULAR_VOTATION") {
+        switch (turno) {
+            case "VAMPIRE":
+                vampirePlay(player);
+                break;
+            case "HUNTER":
+                hunterPlay(player);
+                break;
+            case "WITCH":
+                witchPlay(player);
+                break;
+            case "POPULAR_VOTATION":
                 popularPlay(player);
-            }
+                break;
         }
     }
 }
@@ -94,7 +69,6 @@ function witchPlay(objetive) {
         if (option == 0 || (option == 1 && currentDeaths[0] != objetive) ||
             option == 2 && currentDeaths[0] == objetive) {
             hideOptions();
-            played = 1;
             var playJSON = {
                 rol: 'WITCH',
                 client: clientPlayer,
@@ -118,14 +92,14 @@ function witchPlay(objetive) {
         fetch("/api/game/receivePlay", params).then((response) => {
             if (response.status == 200) console.log("JUGADA ENVIADA");
             else {
-                console.log("MIERDA!! ALGO HA SALIDO MAL");
+                console.log("ALGO HA SALIDO MAL");
             }
         });
     }
 }
 
 function popularPlay(victim_) {
-	console.log("Entrada en popularPlay con victim_: " + victim_);
+    console.log("Entrada en popularPlay con victim_: " + victim_);
 
     var playJSON = {
         rol: 'POPULAR_VOTE',
@@ -145,9 +119,8 @@ function popularPlay(victim_) {
         body: text
     };
     fetch("/api/game/receivePlay", params).then((response) => {
-        if (response.status == 200){
+        if (response.status == 200) {
             console.log("JUGADA ENVIADA");
-            played = 0;
             noteEntry("Your vote is for " + victim_);
         }
         else {
@@ -157,7 +130,7 @@ function popularPlay(victim_) {
 }
 
 function vampirePlay(victim_) {
-	console.log("Entrada en vampirePlay con victim_: " + victim_);
+    console.log("Entrada en vampirePlay con victim_: " + victim_);
 
     var playJSON = {
         rol: 'VAMPIRE',
@@ -176,9 +149,8 @@ function vampirePlay(victim_) {
         body: text
     };
     fetch("/api/game/receivePlay", params).then((response) => {
-        if (response.status == 200){
+        if (response.status == 200) {
             console.log("JUGADA ENVIADA");
-            played = 0;
             noteEntry("Your victim is " + victim_);
         }
         else {
@@ -189,37 +161,53 @@ function vampirePlay(victim_) {
 }
 
 function hunterPlay(victim_) {
-    players[clientPlayer][1] = 1;
+    console.log("Entrada en hunterPlay con victim_: " + victim_);
+
+   // players[clientPlayer][1] = 1;
+
+
     //Envía jugada al servidor vía Ajax
-    noteEntry("You shot Player " + (victim_ + 1));
+
     var playJSON = {
         rol: 'HUNTER',
         client: clientPlayer,
         victim: victim_,
         option: ""
     }
-    fetch("/api/game/receivePlay", params).then((response) => {
-        if (response.status == 200) console.log("JUGADA ENVIADA");
-        else {
-            console.log("MIERDA!! ALGO HA SALIDO MAL");
-        }
 
-    })
+    var text = JSON.stringify(playJSON);
+
+    const headers = {
+        "Content-Type": "application/json",
+        "X-CSRF-TOKEN": config.csrf.value
+    };
+
+    const params = {
+        method: 'POST',
+        headers: headers,
+        body: text
+    };
+
+
+    fetch("/api/game/receivePlay", params).then((response) => {
+        if (response.status == 200){
+        console.log("JUGADA ENVIADA");
+        played = 0;
+        noteEntry("You shot " + victim_);
+        }
+        else {
+        console.log("ALGO HA SALIDO MAL");
+        }
+    });
 }
+
 
 function receiveStatus(newState)//Actualiza el estado del cliente via websocket
 {
-	console.log("Nuevo estado recibido");
+    console.log("Nuevo estado recibido");
     printLogs(newState.logs);
-    played = newState.played[clientPlayer];
     turno = newState.turno;
-    
-    if(newState.gameState == "FINISHED")
-    	notifyEndedGame();
-}
-
-function notifyEndedGame(){
-	document.getElementById('finalizar_partida').style.display = 'flex';
+    updateDeaths(newState.currentDeaths, newState.oldRols);
 }
 
 function witchInfo(message) {
@@ -241,16 +229,34 @@ function resetPlay() {
     played = 0;
 }
 
-function updateDeaths(deaths) {
+function updateDeaths(deaths, oldRols) {
 	console.log("Entrada en updateDeaths");
-    for (i in deaths) {
-        if (deaths[i] == "DEAD") {//El cliente ha muerto
-            //clientRol = "DEAD"
-            noteEntry("YOU DIED");
-            noteEntry(i + " has died!");
-            document.getElementById(i + "Player").innerHTML += " DEAD";
-        }
-    }
+	for(i=0; i < deaths.length; i++){
+		noteEntry(deaths[i] +" has died!");
+		document.getElementById(deaths[i] + 'Death').style.display = 'flex';
+		document.getElementById(deaths[i] + 'Death').style.alignSelf = 'center';
+		document.getElementById(deaths[i] + 'Death').innerHTML = oldRols[deaths[i]];
+		
+		var icono;
+		switch(oldRols[deaths[i]]){
+		case "VAMPIRE":
+			icono = "\uD83E\uDDDB\u200D♂️";
+			break;
+		case "FARMER":
+			icono = "\uD83D\uDC68\u200D\uD83C\uDF3E ";
+			break;
+		case "WITCH":
+			icono = "\uD83E\uDDD9\u200D♀️";
+			break;
+		case "HUNTER":
+			icono = "\uD83C\uDFF9";
+			break;
+		}
+		
+		document.getElementById(deaths[i] + 'Card').style.backgroundColor = 'transparent';
+		document.getElementById(deaths[i] + 'Card').innerHTML = icono;
+	}
+	
 }
 
 function logEntry(message) {
@@ -260,24 +266,15 @@ function logEntry(message) {
         + date.getSeconds() + "  "
         + message;
 }
+
 function noteEntry(message) {
     document.getElementById('note').innerHTML = message;
 }
+
 function printLogs(logs) {
     for (i = 0; i < logs.length; i++) {
         logEntry(logs[i]);
     }
-}
-
-function hideOptions() {
-    document.getElementById("controlA").style.backgroundColor = '#782112';
-    document.getElementById("controlB").style.backgroundColor = '#782112';
-    document.getElementById('controls').style.display = 'none';
-    document.getElementById('finalizar_partida').style.display = 'none';
-
-}
-function showOptions() {
-    document.getElementById('controls').style.display = 'flex';
 }
 
 cargarPartida();
