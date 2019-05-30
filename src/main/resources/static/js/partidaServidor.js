@@ -72,7 +72,7 @@ function receivePlay(oldStateJSON, playJSON) //También recibirá el estado de l
 // option 2 -> protege al jugador víctima de los vampiros
 function witchMove(play, object) {
 
-	if (play.option == 1) {// La bruja mata
+	if (play.option == 1 && (object.availableWitchActions == 1 || object.availableWitchActions == 3)) {// La bruja mata
 		var victimaCorrecta = 0;
 		if (object.currentDeaths.length > 0) {
 			if (play.victim != object.currentDeaths[0]) {
@@ -87,7 +87,7 @@ function witchMove(play, object) {
 			object.logs.push("The witch invoked the powers of Hell and forced " + play.victim + " to stab their own heart! You all shall fear the Dark Lord!");
 		}
 	}
-	else if (play.option == 2) { // La bruja protege
+	else if (play.option == 2 && (object.availableWitchActions == 2 || object.availableWitchActions == 3)) { // La bruja protege
 		object.availableWitchActions = object.availableWitchActions == 3 ? 1 : 0;
 		object.currentDeaths = []; //ojo que si mata y luego revive... revive a los dos....
 		object.logs.push("The witch begged to her unholy god and protected " + play.victim + "'s soul ! Hail the Dark Lord!");
@@ -212,7 +212,10 @@ function nextRol(rol, object) {
 		while (j < rolOrder.length) {
 			if (countRol(rolOrder[j], object) > 0) {
 				// si la bruja ya no puede jugar mas nos la saltamos
-				if(rolOrder[j] == "WITCH" && object.availableWitchActions == 0) continue;
+				if(rolOrder[j] == "WITCH" && object.availableWitchActions == 0){
+					j++;
+					continue;
+				}
 				return rolOrder[j];
 			}
 			j++;
