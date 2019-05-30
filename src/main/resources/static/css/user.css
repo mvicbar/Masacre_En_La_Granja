@@ -55,16 +55,17 @@ div.info{
     padding: 15px;
     border-radius: 8px;
     color: #161616;
+    justify-items: center;
+    align-items: center;
 }
 
 div.userInfo img {
-    max-width: 50%;
-    min-width: 20%;
-    height: auto;
+    height: 250px;
     min-height: 20%;
     border-radius: 50%;
     margin: 2%;
     align-self: center;
+    width: 250px;
 }
 
 form{
