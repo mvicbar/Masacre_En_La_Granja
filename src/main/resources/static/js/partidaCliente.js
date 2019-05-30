@@ -4,9 +4,6 @@ var option = -1;
 
 function cargarPartida() {
     console.log("Entrada en cargarPartida");
-    var deaths = document.getElementsByClassName('death');
-    for(var i = 0; i < deaths.length; i++)
-    	deaths[i].style.display = 'none';
 
     const headers = {
         "Content-Type": "application/json",
@@ -20,7 +17,7 @@ function cargarPartida() {
     fetch("/api/game/getStatus", params).then((response) => {
         if (response.status == 200) {
             response.text().then(function (text) {
-            	logEntry("Night falls, the farmers go to bed, vampires rise...");
+            	  logEntry("Night falls, the farmers go to bed, vampires rise...");
                 console.log("Status leído del getStatus: " + text);
                 var status = JSON.parse(text);
                 currentDeaths = status.currentDeaths;
@@ -156,8 +153,9 @@ function vampirePlay(victim_) {
 }
 
 function hunterPlay(victim_) {
+    players[clientPlayer][1] = 1;
     //Envía jugada al servidor vía Ajax
-    noteEntry("You shot " + (victim_ + 1));
+    noteEntry("You shot Player " + (victim_ + 1));
     var playJSON = {
         rol: 'HUNTER',
         client: clientPlayer,
@@ -207,14 +205,17 @@ function receiveStatus(newState)//Actualiza el estado del cliente via websocket
     case "VAMPIRES_WON":    	
     	logEntry("The weak farmers have fallen...");
     	noteEntry("VAMPIRES WIN!");
+    	revealRoles(newState.players, newState.oldRols);
         break;
     case "FARMERS_WON":
     	logEntry("The vampires have been eliminated.");
     	noteEntry("FARMERS WIN!");
+    	revealRoles(newState.players, newState.oldRols);
         break;
     case "TIE":
     	logEntry("The farmers and vampires befriended each other!");
     	noteEntry("PEACE! LOVE!");
+    	revealRoles(newState.players, newState.oldRols);
     	break;
     }
     
@@ -223,7 +224,6 @@ function receiveStatus(newState)//Actualiza el estado del cliente via websocket
 function updateDeaths(deaths, oldRols) {
 	console.log("Entrada en updateDeaths");
 	console.log("Array de jugadores: " + deaths);
-	console.log("Array de roles antiguos: " + oldRols);
 	for(var p in deaths){
 		console.log("Jugador leído del players: " + p);
 		if(deaths[p] == "DEAD"){

@@ -187,7 +187,6 @@ public class Game {
         st.acciones = new ArrayList<>();
         st.played = new HashMap<>();
 		st.players = new HashMap<>();
-		st.oldRols = new HashMap<>();
 		st.availableWitchActions = 3;
         
         String[] roles = initialRoles();
@@ -213,7 +212,6 @@ public class Game {
             roles[pos] = roles[users.size() - st.players.size()];
         }
         
-        st.oldRols = st.players;
     	status = getStatusStringFromObj(st);
     }
     
@@ -225,11 +223,11 @@ public class Game {
             roles[count] = "VAMPIRE";
         }
 
-//		roles[count] = "WITCH";
-//		++count;
-        roles[count] = "HUNTER";
+		roles[count] = "WITCH";
+		++count;
+/*        roles[count] = "HUNTER";
         ++count;
-
+*/
         
         for(; count < users.size(); ++count) {
             roles[count] = "FARMER";
