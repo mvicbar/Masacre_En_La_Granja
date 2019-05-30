@@ -1,5 +1,4 @@
 var turno = "";
-var endGame = 1;
 var currentDeaths = [];
 var option = -1;
 
@@ -24,7 +23,6 @@ function cargarPartida() {
             	logEntry("Night falls, the farmers go to bed, vampires rise...");
                 console.log("Status leído del getStatus: " + text);
                 var status = JSON.parse(text);
-                endGame = (status.gameState == "FINISHED") ? 1 : 0;
                 currentDeaths = status.currentDeaths;
                 console.log(status.played);
                 turno = status.turno;
@@ -62,41 +60,34 @@ function vote(player) {
     }
 }
 
-function witchPlay(objetive) {
-    if (option < 0) {
-        noteEntry("Select an action, Witch");
-    }
-    else {
-        if (option == 0 || (option == 1 && currentDeaths[0] != objetive) ||
-            option == 2 && currentDeaths[0] == objetive) {
-            hideOptions();
-            var playJSON = {
-                rol: 'WITCH',
-                client: clientPlayer,
-                victim: objetive,
-                option: "" + option
-            }
-        } else {
-            noteEntry("You can't do that, Witch");
-        }
+// Option 0 -> no hace nada
+// Option 1 -> mata al objetivo
+// Option 2 -> protege al jugador víctima de los vampiros
+function witchPlay(objective) {
+    console.log("Entrada en la funcion witchPlay");
+    var playJSON = {
+        rol: 'WITCH',
+        client: clientPlayer,
+        victim: objective,
+        option: "" + option
+    };
 
-        var text = JSON.stringify(playJSON);
-        const headers = {
-            "Content-Type": "application/json",
-            "X-CSRF-TOKEN": config.csrf.value
-        };
-        const params = {
-            method: 'POST',
-            headers: headers,
-            body: text
-        };
-        fetch("/api/game/receivePlay", params).then((response) => {
-            if (response.status == 200) console.log("JUGADA ENVIADA");
-            else {
-                console.log("ALGO HA SALIDO MAL");
-            }
-        });
-    }
+    var text = JSON.stringify(playJSON);
+    const headers = {
+        "Content-Type": "application/json",
+        "X-CSRF-TOKEN": config.csrf.value
+    };
+    const params = {
+        method: 'POST',
+        headers: headers,
+        body: text
+    };
+    fetch("/api/game/receivePlay", params).then((response) => {
+        if (response.status == 200) console.log("JUGADA ENVIADA");
+        else {
+            console.log("ALGO HA SALIDO MAL");
+        }
+    })
 }
 
 function popularPlay(victim_) {
@@ -209,6 +200,7 @@ function receiveStatus(newState)//Actualiza el estado del cliente via websocket
     console.log("Nuevo estado recibido con turno: " + newState.turno);
     printLogs(newState.logs);
     turno = newState.turno;
+    currentDeaths = newState.currentDeaths;
     if(turno == "VAMPIRES_WON" || turno == "FARMERS_WON" || turno == "TIE"){
     	for(p in newState.players)
     		newState.players[p] = "DEAD";
@@ -219,29 +211,20 @@ function receiveStatus(newState)//Actualiza el estado del cliente via websocket
     case "VAMPIRES_WON":    	
     	logEntry("The weak farmers have fallen...");
     	noteEntry("VAMPIRES WIN!");
-    	revealRoles(newState.players, newState.oldRols);
+    	//revealRoles(newState.players, newState.oldRols);
         break;
     case "FARMERS_WON":
     	logEntry("The vampires have been eliminated.");
     	noteEntry("FARMERS WIN!");
-    	revealRoles(newState.players, newState.oldRols);
+    	//revealRoles(newState.players, newState.oldRols);
         break;
     case "TIE":
     	logEntry("The farmers and vampires befriended each other!");
     	noteEntry("PEACE! LOVE!");
-    	revealRoles(newState.players, newState.oldRols);
-    	break;
+    	//revealRoles(newState.players, newState.oldRols);
+        break;
     }
     
-}
-
-function witchInfo(message) {
-    printLogs(message);
-    document.getElementById('controls').style.display = 'flex';
-}
-
-function resetPlay() {
-    played = 0;
 }
 
 function updateDeaths(deaths, oldRols) {

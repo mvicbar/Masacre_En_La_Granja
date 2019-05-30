@@ -11,6 +11,7 @@ function createStatus() {
 	this.oldRols = {};
 	this.played = [];
 	this.gameState = "";
+	this.availableWitchActions = 0; //0 = Ninguna, 1 = matar, 2 = revivir, 3 = ambas
 }
 
 function receivePlay(oldStateJSON, playJSON) //También recibirá el estado de la partida
@@ -29,6 +30,7 @@ function receivePlay(oldStateJSON, playJSON) //También recibirá el estado de l
 	object.gameState = oldState.gameState;
 	object.turno = oldState.turno;
 	object.oldRols = oldState.oldRols;
+	object.availableWitchActions = oldState.availableWitchActions;
 
 	switch (play.rol) {
 		case 'VAMPIRE':
@@ -58,24 +60,43 @@ function receivePlay(oldStateJSON, playJSON) //También recibirá el estado de l
 		acciones: object.acciones,
 		currentDeaths: object.currentDeaths,
 		votes: object.votation,
-		played: object.played
+		played: object.played,
+		availableWitchActions: object.availableWitchActions
 	};
 
 	return Java.to([JSON.stringify(object), JSON.stringify(newStatus), JSON.stringify(cosasQuePasan)], "java.lang.String[]");
 }
 
+// option 0 -> no hace nada
+// option 1 -> mata al objetivo
+// option 2 -> protege al jugador víctima de los vampiros
 function witchMove(play, object) {
-	if (play.action != 0) {
-		if (play.action == 1) {//Bruja mata
+
+	if (play.option == 1) {// La bruja mata
+		var victimaCorrecta = 0;
+		if (object.currentDeaths.length > 0) {
+			if (play.victim != object.currentDeaths[0]) {
+				victimaCorrecta = 1;
+			}
+		} else {
+			victimaCorrecta = 1;
+		}
+		if (victimaCorrecta == 1) {
+			object.availableWitchActions = object.availableWitchActions == 3 ? 2 : 0;
 			object.currentDeaths.push(play.victim);
-			object.logs.push("The witch slayed " + play.victim + " tonight!");
-		} else if (play.action == 2) {//Bruja revive
-			object.currentDeaths = [];
-			object.logs.push("The witch revived " + play.victim + " tonight!");
+			object.logs.push("The witch invoked the powers of Hell and forced " + play.victim + " to stab their own heart! You all shall fear the Dark Lord!");
 		}
 	}
-	object.turno = 'WITCH_PLAYED';
-	endNight(object); //La bruja acaba la noche    
+	else if (play.option == 2) { // La bruja protege
+		object.availableWitchActions = object.availableWitchActions == 3 ? 1 : 0;
+		object.currentDeaths = []; //ojo que si mata y luego revive... revive a los dos....
+		object.logs.push("The witch begged to her unholy god and protected " + play.victim + "'s soul ! Hail the Dark Lord!");
+	}
+	//Sin else para que si gasta sus opciones tambien haga end nigth
+	if (play.option == 0 || object.availableWitchActions == 0) { // La bruja no hace nada
+		endNight(object);
+	}
+
 }
 
 function popularMove(play, object) {
@@ -182,18 +203,20 @@ function nextRol(rol, object) {
 			break;
 		}
 		j++;
-	}
+	}//j rol por el que vamos
 	if (j >= rolOrder.length - 1) {
 		return endNight(object);
-	}
+	}//si es el ultimo entonces end night
 	else {
 		j++;
 		while (j < rolOrder.length) {
 			if (countRol(rolOrder[j], object) > 0) {
+				// si la bruja ya no puede jugar mas nos la saltamos
+				if(rolOrder[j] == "WITCH" && object.availableWitchActions == 0) continue;
 				return rolOrder[j];
 			}
 			j++;
-		}
+		}//siguiente rol o si no end night
 		return endNight(object);
 	}
 
@@ -270,7 +293,7 @@ function checkWin(object)//Comprueba si un bando ha ganado
         object.turno = "TIE";
         object.gameState = "FINISHED";
     }
-	else if (farmersLeft <= vampiresLeft) {
+	else if (farmersLeft == 0) {
 		object.turno = "VAMPIRES_WON";
 		object.gameState = "FINISHED";
 	}
