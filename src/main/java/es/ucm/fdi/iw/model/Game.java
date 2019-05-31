@@ -174,7 +174,7 @@ public class Game {
 	}
     
     public boolean canBegin() {
-        return users.size() >= 8;
+        return users.size() >= 4;
     }
 
     public void init() {
