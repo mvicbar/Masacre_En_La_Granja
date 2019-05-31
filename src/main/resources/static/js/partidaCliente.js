@@ -21,7 +21,8 @@ function cargarPartida() {
     fetch("/api/game/getStatus", params).then((response) => {
         if (response.status == 200) {
             response.text().then(function (text) {
-                logEntry("Night falls, the farmers go to bed, vampires rise...");
+                logEntry("El ocaso se acerca y con él la sed de sangre de los " +
+                    "vampiros. Rezad vuestras plegarias.");
                 console.log("Status leído del getStatus: " + text);
                 var status = JSON.parse(text);
                 currentDeaths = status.currentDeaths;
@@ -216,7 +217,7 @@ function receiveStatus(newState)//Actualiza el estado del cliente via websocket
     	logEntry("Para sorpresa de todos, el último vampiro se deshace en " +
             "polvo y cenizas. Los granjeros respiran aliviados. Ya pueden volver" +
             "a morir por las causas habituales de siempre.");
-    	noteEntry("Contra todo pronóstico, parece que el pueblo gana.");
+    	noteEntry("Contra todo pronóstico, el pueblo gana.");
         break;
     case "TIE":
     	logEntry("El pueblo se queda en silencio, habitado únicamente por " +

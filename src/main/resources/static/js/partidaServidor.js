@@ -103,7 +103,7 @@ function witchMove(play, object) {
 	else if (play.option == 2 && (object.availableWitchActions == 2 || object.availableWitchActions == 3)) { // La bruja protege
 		object.availableWitchActions = object.availableWitchActions == 3 ? 1 : 0;
 		object.currentDeaths = object.currentDeaths.length == 1 ? [] : [object.currentDeaths[1]];
-		object.logs.push("La bruja ha quemado los huesos de sus ancestros, implorando a su dios pagano que proteja el alma de " + play.victim + ". ¡Alab todos al Ominoso!");
+		object.logs.push("La bruja ha quemado los huesos de sus ancestros, implorando a su dios pagano que proteja el alma de " + play.victim + ". ¡Alabad todos al Ominoso!");
 	}
 	//Sin else para que si gasta sus opciones tambien haga end nigth
 	if (play.option == 0 || object.availableWitchActions == 0) { // La bruja no hace nada
