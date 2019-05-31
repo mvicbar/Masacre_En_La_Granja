@@ -143,7 +143,7 @@ function popularMove(play, object) {
 }
 
 function hunterMove(play, object) {
-	//La víctima muere
+//La víctima muere
 	object.currentDeaths.push(play.victim);
 	object.turno = 'HUNTER_SHOT';
 
@@ -151,19 +151,18 @@ function hunterMove(play, object) {
 	object.logs.push("Con sus últimas fuerzas, " + play.client +
 		" vacía el cargador de su fiel winchester sobre " + play.victim + ".");
 
-	//El cazador muere
+//El cazador muere
 	object.players[play.client] = "DEAD";
 	object.currentDeaths.push(play.client);
-    object.turno = nextRol("HUNTER", object);
-    playedNextTurn(object);
-    object.votation = {};
 
-	if (object.dia) {//Si le ha matado el pueblo, empieza la noche
+	if(object.dia == 1){
 		startNight(object);
-	}
-	else {//Si le han matado los vampiros, termina la noche
+	}else{
 		endNight(object);
 	}
+
+	playedNextTurn(object);
+	object.votation = {};
 
 }
 
@@ -280,6 +279,7 @@ function processDeaths(object) {
 				"famoso cazavampiros y no morirá sin oponer resistencia hasta su" +
 				"último aliento." );
 			object.turno = "HUNTER";
+			playedNextTurn(object);
 			object.currentDeaths.splice(i, 1);
 		} else {
 			object.logs.push((object.currentDeaths[i] + " ha muerto."));
@@ -356,5 +356,8 @@ function playedNextTurn(object) {
 		if ((object.players[i] == object.turno)
 			|| (object.turno == "POPULAR_VOTATION" && object.players[i] != "DEAD"))
 			object.played[i] = 1;
+		else {
+			object.played[i] = 0;
+		}
 	}
 }
