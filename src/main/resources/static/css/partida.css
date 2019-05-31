@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Felipa');
+@import url('https://fonts.googleapis.com/css?family=Asul');
 
 *{
     padding: 0;
@@ -18,7 +18,7 @@ div.contenedor_principal{
     grid-template-columns: 25% 50% 25%;
     align-content: center;
     background-color: #5c1414;
-    font-family: 'Felipa', cursive;
+    font-family: 'Asul', sans-serif;
 }
 
 div.notas{
@@ -185,12 +185,24 @@ div.playerRol
     font-size: 2vw;
     top: -50%;
     left: 12%;
+    display: flex;
+    flex-direction: column;
     justify-content: space-evenly;
     align-content: center;
     align-items: center;
     -webkit-box-shadow: 2px 2px 5px #999;
     -moz-box-shadow: 2px 2px 5px #999;
     filter: shadow(color=#999999, direction=135, strength=2);
+}
+
+#AllControls{
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+    align-content: center;
+    background: none;
+    border: none;
+    margin-bottom: 2%;
 }
 
 #finalizar_partida{
