@@ -74,7 +74,9 @@ a:-webkit-any-link:active {
 
 .img-fluid {
     width: 68px;
+    min-width: 68px;
     height: 68px;
+    min-height: 68px;
     border-radius: 50%;
     margin: 2%;
 }

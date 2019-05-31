@@ -143,9 +143,11 @@ public class ApiController {
 			// uno para el string y otro para el json
 			String divWitch = "<div id=\\\"controls\\\" style=\\\"display:flex\\\"> " + "<div class=\\\"haMuerto\\\" id=\\\"haMuerto\\\">"
 					+ nuevoEstadoObj.currentDeaths.get(0) + "</div>"
+					+ "<div id=\\\"AllControls\\\" class=\\\"control\\\">"
 					+ "<div id=\\\"controlA\\\" class=\\\"control\\\">Kill</div>"
 					+ "<div id=\\\"controlB\\\" class=\\\"control\\\">Revive</div>"
-					+ "<div id=\\\"controlC\\\" class=\\\"control\\\">Pass</div>" + "</div>";
+					+ "<div id=\\\"controlC\\\" class=\\\"control\\\">Pass</div>" + "</div>"
+					+ "</div>";
 			String mensaje = "{" + "\"mostrarBruja\":{ \"divWitch\":\"" + divWitch + "\", \"availableWitchActions\":"
 					+ nuevoEstadoObj.availableWitchActions + ", \"gonnaDie\": \"" + nuevoEstadoObj.currentDeaths.get(0) + "\"}}";
 			for (User u : users) {
@@ -153,7 +155,7 @@ public class ApiController {
 					continue;
 				iwSocketHandler.sendText(u.getName(), mensaje);
 			}
-		}else if(!nuevoEstadoObj.turno.equals(turnoAnterior) && turnoAnterior.equals("WITCH")){
+		}else if((!nuevoEstadoObj.turno.equals(turnoAnterior) || nuevoEstadoObj.gameState.equals("FINISHED")) && turnoAnterior.equals("WITCH")){
 			String mensaje = "{" + "\"ocultarBruja\": \"a\"}";
 			for (User u : users) {
 				if (!g.getStatusObj().players.get(u.getName()).equals("WITCH"))
