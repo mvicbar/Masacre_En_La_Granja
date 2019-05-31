@@ -46,14 +46,14 @@ function vote(player) {
     console.log("Entrada en la función vote con player: " + player);
     return function () {
         switch (turno) {
-            case "VAMPIRE":
-                vampirePlay(player);
+            case "VAMPIRO":
+                vampiroPlay(player);
                 break;
-            case "HUNTER":
-                hunterPlay(player);
+            case "CAZAVAMPIROS":
+                cazavampirosPlay(player);
                 break;
-            case "WITCH":
-                witchPlay(player);
+            case "BRUJA":
+                brujaPlay(player);
                 break;
             case "POPULAR_VOTATION":
                 popularPlay(player);
@@ -65,10 +65,10 @@ function vote(player) {
 // Option 0 -> no hace nada
 // Option 1 -> mata al objetivo
 // Option 2 -> protege al jugador víctima de los vampiros
-function witchPlay(objective) {
-    console.log("Entrada en la funcion witchPlay");
+function brujaPlay(objective) {
+    console.log("Entrada en la funcion brujaPlay");
     var playJSON = {
-        rol: 'WITCH',
+        rol: 'BRUJA',
         client: clientPlayer,
         victim: objective,
         option: "" + option
@@ -124,11 +124,11 @@ function popularPlay(victim_) {
     });
 }
 
-function vampirePlay(victim_) {
-    console.log("Entrada en vampirePlay con victim_: " + victim_);
+function vampiroPlay(victim_) {
+    console.log("Entrada en vampiroPlay con victim_: " + victim_);
 
     var playJSON = {
-        rol: 'VAMPIRE',
+        rol: 'VAMPIRO',
         client: clientPlayer,
         victim: victim_,
         option: ""
@@ -156,8 +156,8 @@ function vampirePlay(victim_) {
 
 }
 
-function hunterPlay(victim_) {
-    console.log("Entrada en hunterPlay con victim_: " + victim_);
+function cazavampirosPlay(victim_) {
+    console.log("Entrada en cazavampirosPlay con victim_: " + victim_);
 
     // players[clientPlayer][1] = 1;
 
@@ -165,7 +165,7 @@ function hunterPlay(victim_) {
     //Envía jugada al servidor vía Ajax
 
     var playJSON = {
-        rol: 'HUNTER',
+        rol: 'CAZAVAMPIROS',
         client: clientPlayer,
         victim: victim_,
         option: ""
@@ -207,13 +207,13 @@ function receiveStatus(newState)//Actualiza el estado del cliente via websocket
     updateDeaths(deaths);
 
     switch (turno) {
-    case "VAMPIRES_WON":    	
+    case "VAMPIROS_WON":
     	logEntry("Las vísceras y entrañas de los granjeros se esparcen por " +
             "todo el pueblo y los vampiros disfrutan de su festín de sangre, " +
             "mientras eligen dónde será el próximo");
     	noteEntry("¡Los vampiros vuelven a ganar!");
         break;
-    case "FARMERS_WON":
+    case "GRANJEROS_WON":
     	logEntry("Para sorpresa de todos, el último vampiro se deshace en " +
             "polvo y cenizas. Los granjeros respiran aliviados. Ya pueden volver" +
             "a morir por las causas habituales de siempre.");
@@ -239,16 +239,16 @@ function updateDeaths(deaths) {
 
         var icono;
         switch (deaths[p]) {
-            case "VAMPIRE":
+            case "VAMPIRO":
                 icono = "\uD83E\uDDDB\u200D♂️";
                 break;
-            case "FARMER":
+            case "GRANJERO":
                 icono = "\uD83D\uDC68\u200D\uD83C\uDF3E ";
                 break;
-            case "WITCH":
+            case "BRUJA":
                 icono = "\uD83E\uDDD9\u200D♀️";
                 break;
-            case "HUNTER":
+            case "CAZAVAMPIROS":
                 icono = "\uD83C\uDFF9";
                 break;
         }
