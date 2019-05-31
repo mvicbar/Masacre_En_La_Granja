@@ -44,13 +44,13 @@ public class Game {
 	public static String getIcon(String rol) {
 		String icon = "";
 		
-		if (rol.equals("VAMPIRO")) {
+		if (rol.equals("VAMPIRE")) {
 			icon = "\uD83E\uDDDB\u200D♂️";
-		} else if (rol.equals("GRANJERO")) {
+		} else if (rol.equals("FARMER")) {
 			icon = "\uD83D\uDC68\u200D\uD83C\uDF3E ";
-		} else if (rol.equals("BRUJA")) {
+		} else if (rol.equals("WITCH")) {
 			icon = "\uD83E\uDDD9\u200D♀️";
-		} else if (rol.equals("CAZAVAMPIROS")) {
+		} else if (rol.equals("HUNTER")) {
 			icon = "\uD83C\uDFF9";
 		} else {
 			icon = "⚰";
@@ -179,7 +179,7 @@ public class Game {
 
     public void init() {
         Status st = new Status();
-		st.turno = "VAMPIRO";
+		st.turno = "VAMPIRE";
 		st.gameState = "INGAME";
         st.dia = 0;
         st.currentDeaths = new ArrayList<>();
@@ -204,7 +204,7 @@ public class Game {
             
             st.players.put(user.getName(), roles[pos]);
             
-            if(roles[pos].equals("VAMPIRO")) {
+            if(roles[pos].equals("VAMPIRE")) {
             	st.played.put(user.getName(), 1);
 			} else {
             	st.played.put(user.getName(), 0);
@@ -222,17 +222,17 @@ public class Game {
         String[] roles = new String[users.size()];
         
         for(; count < 1 || count < users.size() / 4; ++count) {
-            roles[count] = "VAMPIRO";
+            roles[count] = "VAMPIRE";
         }
 
-        roles[count] = "BRUJA";
+        roles[count] = "WITCH";
 		++count;
-        //roles[count] = "CAZAVAMPIROS";
+        //roles[count] = "HUNTER";
         //++count;
 
         
         for(; count < users.size(); ++count) {
-            roles[count] = "GRANJERO";
+            roles[count] = "FARMER";
         }
         
         return roles;
