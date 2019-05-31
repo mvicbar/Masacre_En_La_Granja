@@ -275,8 +275,8 @@ function startNight(object) {
 function processDeaths(object) {
 	for (var i in object.currentDeaths) {
 		if (object.players[object.currentDeaths[i]] == "CAZAVAMPIROS") {//Si el cazador muere, será su turno
-			object.logs.push("¡Idiotas!" + object.currentDeaths[i] + " era un " +
-				"famoso cazavampiros y no morirá sin oponer resistencia hasta su" +
+			object.logs.push("¡Idiotas! " + object.currentDeaths[i] + " era un " +
+				"famoso cazavampiros y no morirá sin oponer resistencia hasta su " +
 				"último aliento." );
 			object.turno = "CAZAVAMPIROS";
 			playedNextTurn(object);
