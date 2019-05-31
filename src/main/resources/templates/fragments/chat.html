@@ -31,10 +31,7 @@
 						body: text
 					}
 					fetch("/api/chat/enviar",params).then((response) => {
-						if (response.status == 200){
-							lineInput.value = "";
-							document.getElementById('recibido').scrollTop = document.getElementById('recibido').scrollHeight;
-						}
+						if (response.status == 200) lineInput.value = "";
 					});
 
 					return false;

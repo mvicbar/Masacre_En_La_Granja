@@ -101,6 +101,7 @@ public class ApiController {
 		// Si rol no coincide
 		if (!s.players.get(user.getName()).equals(a.rol) && !a.rol.equals("POPULAR_VOTE"))
 			return ResponseEntity.badRequest().build();
+		// Si vampiro vota a vampiro por la noche
 		if (a.rol.equals(s.players.get(a.victim)) && !a.rol.equals("POPULAR_VOTE") && !a.rol.equals("WITCH"))
 			return ResponseEntity.badRequest().build();
 		// Si la víctima no existe o esta muerta
@@ -140,7 +141,7 @@ public class ApiController {
 		List<User> users = new ArrayList<>(g.getUsers());
 
 		String[] result = procesarJugada(jugada, g.getStatus());
-		if (result == null)
+		if (result == null) 
 			return ResponseEntity.badRequest().build();
 		String nuevoEstado = result[1];
 		log.info("NUEVO ESTADO --> " + nuevoEstado);
