@@ -21,8 +21,7 @@ function cargarPartida() {
     fetch("/api/game/getStatus", params).then((response) => {
         if (response.status == 200) {
             response.text().then(function (text) {
-                logEntry("El ocaso se acerca y con él la sed de sangre de los " +
-                    "vampiros. Rezad vuestras plegarias.");
+                logEntry("Night falls, the farmers go to bed, vampires rise...");
                 console.log("Status leído del getStatus: " + text);
                 var status = JSON.parse(text);
                 currentDeaths = status.currentDeaths;
@@ -116,7 +115,7 @@ function popularPlay(victim_) {
     fetch("/api/game/receivePlay", params).then((response) => {
         if (response.status == 200) {
             console.log("JUGADA ENVIADA");
-            noteEntry("Has votado ejecutar a " + victim_);
+            noteEntry("Your vote is for " + victim_);
         }
         else {
             console.log("ALGO HA SALIDO MAL");
@@ -146,7 +145,7 @@ function vampirePlay(victim_) {
 
     fetch("/api/game/receivePlay", params).then((response) => {
         if (response.status == 200) {
-            noteEntry("Propones devorar a " + victim_);
+            noteEntry("Your victim is " + victim_);
             console.log("JUGADA ENVIADA");
         }
         else {
@@ -186,7 +185,7 @@ function hunterPlay(victim_) {
 
     fetch("/api/game/receivePlay", params).then((response) => {
         if (response.status == 200) {
-            noteEntry("Has disparado a " + victim_);
+            noteEntry("You shot " + victim_);
             console.log("JUGADA ENVIADA");
         }
         else {
@@ -208,22 +207,16 @@ function receiveStatus(newState)//Actualiza el estado del cliente via websocket
 
     switch (turno) {
     case "VAMPIRES_WON":    	
-    	logEntry("Las vísceras y entrañas de los granjeros se esparcen por " +
-            "todo el pueblo y los vampiros disfrutan de su festín de sangre, " +
-            "mientras eligen dónde será el próximo");
-    	noteEntry("¡Los vampiros vuelven a ganar!");
+    	logEntry("The weak farmers have fallen...");
+    	noteEntry("VAMPIRES WIN!");
         break;
     case "FARMERS_WON":
-    	logEntry("Para sorpresa de todos, el último vampiro se deshace en " +
-            "polvo y cenizas. Los granjeros respiran aliviados. Ya pueden volver" +
-            "a morir por las causas habituales de siempre.");
-    	noteEntry("Contra todo pronóstico, el pueblo gana.");
+    	logEntry("The vampires have been eliminated.");
+    	noteEntry("FARMERS WIN!");
         break;
     case "TIE":
-    	logEntry("El pueblo se queda en silencio, habitado únicamente por " +
-            "buitres y fantasmas. Brujas, cazadores, vampiros y granjeros... " +
-            "Todos han muerto.");
-    	noteEntry("Todos sois perdedores. Solo gana el Ominoso.");
+    	logEntry("The farmers and vampires befriended each other!");
+    	noteEntry("PEACE! LOVE!");
         break;
     }
 
