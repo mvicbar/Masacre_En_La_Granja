@@ -12,6 +12,7 @@ function removePlayerFromLobby(name) {
 function receiveChatMessage(message) {
 	const lineOutput = document.getElementById("recibido");
 	lineOutput.value = lineOutput.value + '\n' + message.propietario + ": " + message.mensaje;
+	lineOutput.scrollTop = lineOutput.scrollHeight;
 }
 
 const handleNewPlayer = (name) => {
