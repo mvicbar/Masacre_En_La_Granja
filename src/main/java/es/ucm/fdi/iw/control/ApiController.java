@@ -95,6 +95,9 @@ public class ApiController {
 		// Si nombre no coincide
 		if (!user.getName().equals(a.client))
 			return ResponseEntity.badRequest().build();
+		//Si está muerto
+		if (s.players.get(a.client).equals("DEAD"))
+			return ResponseEntity.badRequest().build();
 		// Si rol no coincide
 		if (!s.players.get(user.getName()).equals(a.rol) && !a.rol.equals("POPULAR_VOTE"))
 			return ResponseEntity.badRequest().build();
@@ -143,9 +146,11 @@ public class ApiController {
 			// uno para el string y otro para el json
 			String divWitch = "<div id=\\\"controls\\\" style=\\\"display:flex\\\"> " + "<div class=\\\"haMuerto\\\" id=\\\"haMuerto\\\">"
 					+ nuevoEstadoObj.currentDeaths.get(0) + "</div>"
+					+ "<div id=\\\"AllControls\\\" class=\\\"control\\\">"
 					+ "<div id=\\\"controlA\\\" class=\\\"control\\\">Kill</div>"
 					+ "<div id=\\\"controlB\\\" class=\\\"control\\\">Revive</div>"
-					+ "<div id=\\\"controlC\\\" class=\\\"control\\\">Pass</div>" + "</div>";
+					+ "<div id=\\\"controlC\\\" class=\\\"control\\\">Pass</div>" + "</div>"
+					+ "</div>";
 			String mensaje = "{" + "\"mostrarBruja\":{ \"divWitch\":\"" + divWitch + "\", \"availableWitchActions\":"
 					+ nuevoEstadoObj.availableWitchActions + ", \"gonnaDie\": \"" + nuevoEstadoObj.currentDeaths.get(0) + "\"}}";
 			for (User u : users) {
@@ -153,7 +158,7 @@ public class ApiController {
 					continue;
 				iwSocketHandler.sendText(u.getName(), mensaje);
 			}
-		}else if(!nuevoEstadoObj.turno.equals(turnoAnterior) && turnoAnterior.equals("WITCH")){
+		}else if(!nuevoEstadoObj.turno.equals(turnoAnterior) || nuevoEstadoObj.gameState.equals("FINISHED")){
 			String mensaje = "{" + "\"ocultarBruja\": \"a\"}";
 			for (User u : users) {
 				if (!g.getStatusObj().players.get(u.getName()).equals("WITCH"))
@@ -172,6 +177,8 @@ public class ApiController {
 			String mensaje = "{" + "\"mostrarFinPartida\":\"" + divFin + "\"}";
 			for (User u : users) {
 				iwSocketHandler.sendText(u.getName(), mensaje);
+				if (g.getStatusObj().oldRols.get(u.getName()).equals("WITCH"))
+					iwSocketHandler.sendText(u.getName(), "{" + "\"ocultarBruja\": \"a\"}");
 			}
 		}
 
