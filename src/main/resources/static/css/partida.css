@@ -179,21 +179,20 @@ div.playerRol
 
 #controls{
     position: relative;
-    width: 44vw;
-    height: 9vw;
+    width: 575px;
+    height: 15%;
     background-image: linear-gradient(to bottom right, #acaba1, #d4d4cb);
     border: solid;
     border-width: 1px;
     border-radius: 5px;
     font-size: 2vw;
     top: -50%;
-    left: 5%;
+    left: 12%;
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
     align-content: center;
     align-items: center;
-    justify-items: center;
     -webkit-box-shadow: 2px 2px 5px #999;
     -moz-box-shadow: 2px 2px 5px #999;
     filter: shadow(color=#999999, direction=135, strength=2);
@@ -209,14 +208,14 @@ div.playerRol
     margin-bottom: 2%;
 }
 
-#finalizar_partida {
+#finalizar_partida{
     position: relative;
-    width: 50vw;
-    height: 12vw;
+    width: 391px;
+    height: 100px;
     background-image: linear-gradient(to bottom right, #acaba1, #d4d4cb);
     font-size: 2vw;
-    top: -38%;
-    left: 3%;
+    top: -35%;
+    left: 20%;
     align-items: center;
     justify-content: space-evenly;
     border: solid 1px;
@@ -225,25 +224,27 @@ div.playerRol
     -moz-box-shadow: 2px 2px 5px #999;
     filter: shadow(color=#999999, direction=135, strength=2);
 }
-form{
-    width: 22vw;
-    height: 5vw;
+
+button{
+    width: 105px;
+    min-width: 105px;
+    max-width: 105px;
+    height: 45px;
+    min-height: 45px;
+    max-height: 45px;
 }
 
 #finalizar_partida .boton {
     background-color: rgb(63, 63, 63);
     color: rgb(196, 196, 196);
+    padding: 10px;
     border-radius: 5px;
     display: flex;
+    justify-content: center;
     align-items: center;
     border: solid 4px;
     border-color: #4d0b0b #711818 #711818 #4d0b0b;
-    font-family: 'Asul', sans-serif;
-    width: 100%;
-    height: 100%;
-    justify-content: center;
-    align-content: center;
-    font-size: 1.8vw;
+	font-family: 'Asul', sans-serif;
 }
 
 #finalizar_partida  .boton:hover{
@@ -269,8 +270,8 @@ form{
 
 .control
 {
-    width: 11vw;
-    height: 3vw;
+    width: 25%;
+    height: 32px;
     text-align: center;
     border-radius: 4px;
     border: solid;
