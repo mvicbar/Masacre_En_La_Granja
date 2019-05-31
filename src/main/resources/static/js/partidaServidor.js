@@ -179,11 +179,12 @@ function vampireMove(play, object) {
 		}
 		else {
 			object.currentDeaths.push(i);
-			object.logs.push("Vampires chose " + play.victim + " as their prey...")
+			object.logs.push(play.victim + ", puedes correr, puedes suplicar, puedes " +
+				"tratar inútilmente de esconderte, pero no escaparás de tu destino. " +
+				"Los vampiros te acechan y cada vez los oyes más cerca. Reza lo que sepas.");
+
 		}
-		object.logs.push(play.victim + ", puedes correr, puedes suplicar, puedes " +
-			"tratar inútilmente de esconderte, pero no escaparás de tu destino. " +
-			"Los vampiros te acechan y cada vez los oyes más cerca. Reza lo que sepas.");
+
 		object.turno = nextRol("VAMPIRE", object);
 		playedNextTurn(object);
 		object.votation = {};
