@@ -4,7 +4,6 @@ var option = -1;
 var deaths = {};
 
 function cargarPartida() {
-    console.log("Entrada en cargarPartida");
     var deads = document.getElementsByClassName("deathInfo");
     for (var i = 0; i < deads.length; i++)
         deads[i].style.display = "none";
@@ -23,15 +22,13 @@ function cargarPartida() {
             response.text().then(function (text) {
                 logEntry("El ocaso se acerca y con él la sed de sangre de los " +
                     "vampiros. Rezad vuestras plegarias.");
-                console.log("Status leído del getStatus: " + text);
                 var status = JSON.parse(text);
                 currentDeaths = status.currentDeaths;
-                console.log(status.played);
                 turno = status.turno;
             });
         }
         else {
-            console.log("NO HA SIDO POSIBLE CARGAR LA PARTIDA");
+
         }
     });
 
@@ -43,7 +40,6 @@ function cargarPartida() {
 }
 
 function vote(player) {
-    console.log("Entrada en la función vote con player: " + player);
     return function () {
         switch (turno) {
             case "VAMPIRO":
@@ -66,7 +62,6 @@ function vote(player) {
 // Option 1 -> mata al objetivo
 // Option 2 -> protege al jugador víctima de los vampiros
 function brujaPlay(objective) {
-    console.log("Entrada en la funcion brujaPlay");
     var playJSON = {
         rol: 'BRUJA',
         client: clientPlayer,
@@ -85,15 +80,10 @@ function brujaPlay(objective) {
         body: text
     };
     fetch("/api/game/receivePlay", params).then((response) => {
-        if (response.status == 200) console.log("JUGADA ENVIADA");
-        else {
-            console.log("ALGO HA SALIDO MAL");
-        }
     })
 }
 
 function popularPlay(victim_) {
-    console.log("Entrada en popularPlay con victim_: " + victim_);
 
     var playJSON = {
         rol: 'POPULAR_VOTE',
@@ -102,7 +92,6 @@ function popularPlay(victim_) {
         option: ""
     };
     var text = JSON.stringify(playJSON);
-    console.log("Jugada enviada: " + text);
     const headers = {
         "Content-Type": "application/json",
         "X-CSRF-TOKEN": config.csrf.value
@@ -113,19 +102,10 @@ function popularPlay(victim_) {
         body: text
     };
 
-    fetch("/api/game/receivePlay", params).then((response) => {
-        if (response.status == 200) {
-            console.log("JUGADA ENVIADA");
-            noteEntry("Has votado ejecutar a " + victim_);
-        }
-        else {
-            console.log("ALGO HA SALIDO MAL");
-        }
-    });
+    fetch("/api/game/receivePlay", params).then((response) => {});
 }
 
 function vampiroPlay(victim_) {
-    console.log("Entrada en vampiroPlay con victim_: " + victim_);
 
     var playJSON = {
         rol: 'VAMPIRO',
@@ -144,20 +124,11 @@ function vampiroPlay(victim_) {
         body: text
     };
 
-    fetch("/api/game/receivePlay", params).then((response) => {
-        if (response.status == 200) {
-            noteEntry("Propones devorar a " + victim_);
-            console.log("JUGADA ENVIADA");
-        }
-        else {
-            console.log("ALGO HA SALIDO MAL");
-        }
-    });
+    fetch("/api/game/receivePlay", params).then((response) => {});
 
 }
 
 function cazavampirosPlay(victim_) {
-    console.log("Entrada en cazavampirosPlay con victim_: " + victim_);
 
     // players[clientPlayer][1] = 1;
 
@@ -184,21 +155,12 @@ function cazavampirosPlay(victim_) {
         body: text
     };
 
-    fetch("/api/game/receivePlay", params).then((response) => {
-        if (response.status == 200) {
-            noteEntry("Has disparado a " + victim_);
-            console.log("JUGADA ENVIADA");
-        }
-        else {
-            console.log("ALGO HA SALIDO MAL");
-        }
-    });
+    fetch("/api/game/receivePlay", params).then((response) => {});
 }
 
 
 function receiveStatus(newState)//Actualiza el estado del cliente via websocket
 {
-    console.log("Nuevo estado recibido con turno: " + newState.turno);
     printLogs(newState.logs);
     turno = newState.turno;
     currentDeaths = newState.currentDeaths;
@@ -230,8 +192,6 @@ function receiveStatus(newState)//Actualiza el estado del cliente via websocket
 }
 
 function updateDeaths(deaths) {
-    console.log("Entrada en updateDeaths");
-    console.log("Array de jugadores: " + deaths);
     for (var p in deaths) {
         document.getElementById(p + 'Death').style.display = 'flex';
         document.getElementById(p + 'Death').style.alignSelf = 'center';
@@ -270,7 +230,6 @@ function logEntry(message) {
 }
 
 function noteEntry(message) {
-    console.log("Entrada en noteEntry");
     document.getElementById('note').innerHTML = message;
 }
 
