@@ -160,9 +160,9 @@ public class ApiController {
 					+ ((nuevoEstadoObj.currentDeaths.size() > 0) ? "Va a morir: " + nuevoEstadoObj.currentDeaths.get(0)
 							: "Hoy no va a morir nadie")
 					+ "</div>" + "<div id=\\\"AllControls\\\" class=\\\"control\\\">"
-					+ "<div id=\\\"controlA\\\" class=\\\"control\\\">Kill</div>"
-					+ "<div id=\\\"controlB\\\" class=\\\"control\\\">Revive</div>"
-					+ "<div id=\\\"controlC\\\" class=\\\"control\\\">Pass</div>" + "</div>" + "</div>";
+					+ "<div id=\\\"controlA\\\" class=\\\"control\\\">Matar</div>"
+					+ "<div id=\\\"controlB\\\" class=\\\"control\\\">Proteger</div>"
+					+ "<div id=\\\"controlC\\\" class=\\\"control\\\">Pasar</div>" + "</div>" + "</div>";
 			String mensaje = "{" + "\"mostrarBruja\":{ \"divBruja\":\"" + divBruja + "\", \"availableBrujaActions\":"
 					+ nuevoEstadoObj.availableBrujaActions + ", \"gonnaDie\": \""
 					+ ((nuevoEstadoObj.currentDeaths.size() > 0) ? nuevoEstadoObj.currentDeaths.get(0) : null) + "\"}}";
