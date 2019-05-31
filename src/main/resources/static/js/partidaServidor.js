@@ -180,7 +180,7 @@ function vampiroMove(play, object) {
 	if (countNumVotes(object) == countRol("VAMPIRO", object)) {
 		var i = mostVotedPlayer(object);
 		if (i == "") {
-			object.logs.push("Los vampiros han sido demasiado sibaritas esta " +
+			object.logs.push("Los vampiros han sido demasiado sibaritas esta" +
 				"noche (parece que hoy ayunarán).");
 		} else {
 			object.currentDeaths.push(i);
