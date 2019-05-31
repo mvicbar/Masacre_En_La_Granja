@@ -5,6 +5,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import javax.validation.constraints.NotEmpty;
 
 /**
  * 
@@ -19,13 +22,18 @@ import javax.persistence.*;
 public class User {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 
+	@NotNull
+	@NotEmpty
     @Column(unique = true)
 	private String name;
- 
+
+	@NotNull
+	@Size(min=8)
 	private String password;
+
 	private String role;
 
 	@ManyToMany
@@ -114,5 +122,12 @@ public class User {
 
 	public boolean equals(Object other) {
 		return other instanceof User && id == ((User) other).id;
+	}
+
+	public Game getActiveGame(){
+		for(Game g: this.games){
+			if(!g.finished()) return g;
+		}
+		return null;
 	}
 }

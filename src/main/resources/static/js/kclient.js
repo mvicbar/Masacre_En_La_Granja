@@ -1,149 +1,118 @@
-/**
- * Main Karmometro script. Simplifies calling the server-side API.
- */
-
-
-/**
- * Replaces dates with relative deltas to the current moment.
- * @param {Element} e, an element with a data-timestamp attribute
- * 		representing nanoseconds since the unich epoch
- */
-function prettyDelta(e) {
-	const now = Number(new Date()),
-	 	  then = e.dataset.timestamp;
-	let diff = now - then;
-	const days =  Math.floor(diff / (24 * 60 * 60 * 1000)), 	
-	 	  hours = Math.floor(diff / (60 * 60 * 1000)) % 24, 
-	 	  mins =  Math.floor(diff / (60 * 1000)) % 60, 
-	 	  secs =  Math.floor(diff / (1000)) % 60;
-	let result = ["hace "];
-	if (days > 0)  result.push("" + days + " d");
-	if (hours > 0) result.push("" + hours + " h");
-	if (mins > 0)  result.push("" + mins + " m");
-	if (secs > 0)  result.push("" + secs+ " s");
-	e.innerText = result.length > 1 ? result.join(" ") : "ahora";
+function addNewPlayerToLobby(name) {
+	const miembros = document.getElementsByClassName("miembros");
+	miembros[0].innerHTML = miembros[0].innerHTML + "<div class=\"nombre\" id=" + name + "><span>" + name + "</span></div>";
 }
 
-/**
- * Listens to the specified form, and posts to the vote API when
- * its value changes.
- * 
- * @param {Element} e, a form to listen to  
- * @returns nothing 
- */
-function addVoteListener(e) {
-	const input = e.querySelector("input[type=range]");
-	const numeric = e.querySelector(".numeric");
-	const headers = {
-		"Content-Type": "application/json",
-		"X-CSRF-TOKEN": km.csrf.value
-	};
-	input.onchange = () => {
-		numeric.innerText = input.value;
-		fetch(e.action, {
-			method: 'POST',
-			headers: headers,
-			body: JSON.stringify({value: input.value})
-		}).then(response => console.log(response));
-	};
-	const button = e.querySelector(".delq");
-	if (button) {
-		button.onclick = () => {
-			const target = e.action.replace(/\/v\//, '/d/')
-			console.log("removing q: ", target);
-			fetch(target, {
-				method: 'POST',
-				headers: headers,
-			}).then(response => console.log(response));
-			return false;
+function removePlayerFromLobby(name) {
+	console.log("REMOVE" + name);
+	var elem = document.getElementById(name);
+	elem.parentNode.removeChild(elem);
+}
+
+function receiveChatMessage(message) {
+	const lineOutput = document.getElementById("recibido");
+	lineOutput.value = lineOutput.value + '\n' + message.propietario + ": " + message.mensaje;
+	lineOutput.scrollTop = lineOutput.scrollHeight;
+}
+
+const handleNewPlayer = (name) => {
+	addNewPlayerToLobby(name);
+}
+
+const handleChatMessage = (chatMessage) => {
+	receiveChatMessage(chatMessage);
+}
+
+const handleNuevoEstado = (obj) => {
+	receiveStatus(obj); //esta funcion esta en partidaCliente.js
+}
+
+const handleComenzarPartida = (idGame) => {
+	console.log(idGame);
+	window.location.href = "/game/";
+}
+
+const handleRemovePlayer = (name) => {
+	removePlayerFromLobby(name);
+}
+
+const handleMostrarBruja = (obj) => {
+	const miembros = document.getElementsByClassName("center");
+	miembros[0].innerHTML = miembros[0].innerHTML + obj.divBruja;
+
+	if (obj.availableBrujaActions == 1 || obj.availableBrujaActions == 3) {
+		document.getElementById("controlA").addEventListener("click", function () {
+			option = 1;
+			document.getElementById("controlA").style.backgroundColor = '#1D1C1C';
+		});
+	} else {
+		document.getElementById("controlA").style.backgroundColor = '#1D1C1C';
+	}
+
+	if (obj.availableBrujaActions == 2 || obj.availableBrujaActions == 3) {
+		document.getElementById("controlB").addEventListener("click", function () {
+			option = 2;
+			document.getElementById("controlB").style.backgroundColor = '#1D1C1C';
+			vote(obj.gonnaDie)();
+		});
+	} else {
+		document.getElementById("controlB").style.backgroundColor = '#1D1C1C';
+	}
+
+	document.getElementById("controlC").addEventListener("click", function () {
+		option = 0; vote(obj.gonnaDie)();
+	});
+}
+
+const handleMostrarFinPartida = (divHtml) => {
+	const miembros = document.getElementsByClassName("center");
+	miembros[0].innerHTML = miembros[0].innerHTML + divHtml;
+}
+
+const handleOcultarBruja = (o) => {
+	var elem = document.getElementById("controls");
+	if(elem !== null)
+		elem.parentNode.removeChild(elem);
+}
+
+const handleMessage = (o) => {
+	console.log(o);
+	if (o.newPlayer) handleNewPlayer(o.newPlayer);
+	if (o.chatMessage) handleChatMessage(o.chatMessage);
+	if (o.nuevoEstado) handleNuevoEstado(o.nuevoEstado);
+	if (o.comienzaLaPartida) handleComenzarPartida(o.comienzaLaPartida);
+	if (o.removePlayer) handleRemovePlayer(o.removePlayer);
+	if (o.mostrarBruja) handleMostrarBruja(o.mostrarBruja);
+	if (o.ocultarBruja) handleOcultarBruja(o.ocultarBruja);
+	if (o.mostrarFinPartida) handleMostrarFinPartida(o.mostrarFinPartida);
+}
+
+window.addEventListener('load', () => {
+	if (config.socketUrl !== false) {
+		ws.initialize(config.socketUrl);
+	}
+	ws.receive = (text) => {
+		console.log("just in:", text);
+		try {
+			const o = JSON.parse(text);
+			handleMessage(o);
+		} catch (e) {
+			console.log("...not json: ", e);
 		}
 	}
-}
+	window.setInterval(() => { }, 5000);
+});
 
 /**
- * Listens to the specified form, and posts new questions when they 
- * are submitted.
- * 
- * @param {Element} e, a form to listen to  
- * @returns nothing 
- */
-function addQuestionListener(e) {
-	const button = e.querySelector("button");
-	const textarea = e.querySelector("textarea");
-	const headers = {
-		"Content-Type": "application/json",				
-		"X-CSRF-TOKEN": km.csrf.value
-	};
-	e.onsubmit = () => {
-		const body = JSON.stringify({
-			text: textarea.value, 
-			poll: document.getElementById('poll_t').checked ? 'true' : 'false' 
-		});
-		console.log("asking ", body);
-		fetch(e.action, {
-			method: 'POST',
-			headers: headers,
-			body: body				
-		}).then(response => {
-			e.reset();
-			console.log(response)
-		});
-		return false;	
-	}
-}
-
-/**
- * Creates a new voting form based on a question's data. Also
- * appends it wherever it should go.
- * 
- * @param data (as returned by the server after adding a question)
- * @returns nothing
- */
-function addQuestion(data) {
-	const questionDiv = document.createElement("div");
-	const canDelete = (data.author.id == km.userId) || km.admin;
-	const deleteButton = canDelete ?
-		'	<button class="delq">🗑</button>' :
-		'	<!-- cannot delete -->';
-	console.log(deleteButton, canDelete, data.author.id, km.userId, km.admin);
-	questionDiv.classList.add("question");
-	questionDiv.id = "q_" + data.id;
-	questionDiv.innerHTML = [
-		'<form class="vote" action="' + km.voteApiUrl + data.id + '" method="post">',
-		'	<div class="metadata">',
-		'		<span class="delta" data-timestamp="' + Number(new Date(data.time)) + '">??</span>',
-		'		<img class="userthumb" alt="' + data.author.login + '" ', 
-		'			 src="/user/' + data.author.id + '/photo">',
-		'	</div>',
-		'	<div class="bars">',
-		'	<div class="me">',
-		'		<span class="barlabel">👤</span>',
-		'		<input type="range" name="vote" min="0" max="100" value="0"/>',
-		'		<span class="numeric">??</span>',
-		'	</div>',
-		'	<div class="others">',
-		'		<span class="barlabel">👥 ×0</span>',
-		'		<input disabled type="range" min="0" max="100" value="0"/>',
-		'		<span class="numeric">??</span>',
-		'	</div>',
-		'	</div>',
-		'	<span class="qtext">' + data.text + '</span>',
-		deleteButton,
-		'</form>'].join('\n');	
-	document.querySelector(data.poll ? ".polls" : ".questions").append(questionDiv);
-	addVoteListener(questionDiv.querySelector(".vote"));
-}
-
-/**
- * WebSocket API, which only works once initialized
- */
+			 * WebSocket API, which only works once initialized
+			 */
 const ws = {
-		
+
 	/**
 	 * WebSocket, or null if none connected
 	 */
 	socket: null,
-	
+
 	/**
 	 * Sends a string to the server via the websocket.
 	 * @param {string} text to send 
@@ -161,8 +130,10 @@ const ws = {
 	 */
 	receive: (text) => {
 		console.log(text);
+		obj = JSON.parse(text);
+		handleMessage(obj);
 	},
-	
+
 	/**
 	 * Attempts to establish communication with the specified
 	 * web-socket endpoint. If successfull, will call 
@@ -171,25 +142,20 @@ const ws = {
 	initialize: (endpoint) => {
 		try {
 			ws.socket = new WebSocket(endpoint);
-			console.log(endpoint);
 			ws.socket.onmessage = (e) => ws.receive(e.data);
 			console.log("Connected to WS '" + endpoint + "'")
 		} catch (e) {
 			console.log("Error, connection to WS '" + endpoint + "' FAILED: ", e);
 		}
 	}
-} 
+}
 
 /**
  * Actions to perform once the page is fully loaded
  */
 window.addEventListener('load', () => {
-	document.querySelectorAll(".vote").forEach(e => addVoteListener(e));
-	document.querySelectorAll(".ask").forEach(e => addQuestionListener(e));
-	if (km.socketUrl !== false) {
-		ws.initialize(km.socketUrl);
+	if (config.socketUrl !== false) {
+		ws.initialize(config.socketUrl);
 	}
-	window.setInterval(() => {
-		document.querySelectorAll(".delta").forEach(e => prettyDelta(e));
-	}, 5000);
+
 });

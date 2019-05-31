@@ -14,7 +14,7 @@ nav {
     border-bottom-right-radius: 30px;
     align-items: center;
     justify-content: space-evenly;
-    height: auto;
+    height: 80px;
 }
 
 .logx {
@@ -24,11 +24,36 @@ nav {
     max-height: 77px;
 }
 
+span.logx {
+    display: flex;
+    justify-content: space-evenly;
+    width: 100%;
+    max-height: 77px;
+    align-items: center;
+}
+
 div.loggedUser {
     display: flex;
     flex-direction: row;
     width: 15%;
     min-width: 141px;
+    max-height: 70px;
+}
+
+a{
+    cursor: pointer;
+    text-decoration: none;
+    color: white;
+    display: flex;
+    align-items: center;
+}
+
+a:hover{
+    color: darkgrey;
+}
+
+a:active{
+    color: darkred;
 }
 
 a:-webkit-any-link {
@@ -48,9 +73,10 @@ a:-webkit-any-link:active {
 }
 
 .img-fluid {
-    max-width: 74px;
+    width: 68px;
     min-width: 68px;
-    height: auto;
+    height: 68px;
+    min-height: 68px;
     border-radius: 50%;
     margin: 2%;
 }

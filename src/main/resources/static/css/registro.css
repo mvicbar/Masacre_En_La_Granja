@@ -51,7 +51,11 @@ width: 100%;
 
 input{
    width: 60%;
-    height: auto;
+    max-height: 28px;
+}
+
+input:invalid {
+    border: 2px solid red;
 }
 
 div.dato.photo input{
@@ -76,6 +80,7 @@ button{
     background-color: rgb(63, 63, 63);
     border-radius: 5px;
     margin-top: 2%;
+    align-items: center;
 }
 
 

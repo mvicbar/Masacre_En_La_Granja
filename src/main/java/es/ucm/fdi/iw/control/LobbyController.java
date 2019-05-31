@@ -1,6 +1,5 @@
 package es.ucm.fdi.iw.control;
 
-import es.ucm.fdi.iw.LocalData;
 import es.ucm.fdi.iw.model.Game;
 import es.ucm.fdi.iw.model.User;
 import org.apache.logging.log4j.LogManager;
@@ -8,10 +7,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpSession;
@@ -19,58 +15,88 @@ import javax.transaction.Transactional;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
 @Controller
 @RequestMapping("lobby")
 public class LobbyController {
-    
+
     private static final Logger log = LogManager.getLogger(LobbyController.class);
-    
+
     @Autowired
     private EntityManager entityManager;
-    
+
     @Autowired
-    private LocalData localData;
-    
+    private IwSocketHandler iwSocketHandler;
+
     @Transactional
-    public void addUserToGame(HttpSession session, Game game) {
-        User user = (User) session.getAttribute("user");     // <-- este usuario no está conectado a la bd
-        user = entityManager.find(User.class, user.getId()); // <-- obtengo usuario de la BD
-  
-        if(!game.getUsers().contains(user)) { // Añadimos al usuario si no está ya dentro
+    public void addUserToGame(User user, Game game) {
+        if (!game.getUsers().contains(user)) { // Añadimos al usuario si no está ya dentro
             game.addUser(user);
-            log.info("He aquí nuestro usuario ->" + user);
             user.getGames().add(game);
-            
+            entityManager.persist(user);
             entityManager.persist(game);
             entityManager.flush();
+            List<User> users = new ArrayList<>(game.getUsers());
+            String message = "{\"newPlayer\": \" " + user.getName() + " \" }";
+            for (User u : users) {
+                if (u == user)
+                    continue;
+                iwSocketHandler.sendMessageLobby(u.getName(), message);
+            }
         }
     }
-    
+
     @Transactional
     @GetMapping("/newgame")
     public String newGame(HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        user = entityManager.find(User.class, user.getId());
+        Game activeGame = user.getActiveGame();
+        
+        if (activeGame != null && activeGame.started()) {
+            return "redirect:/game/";
+        }
+        
         Game game = new Game();
         game.setCreationTime(Date.valueOf(LocalDate.now()));
-        addUserToGame(session, game);
-               
+        game.initLobby();
+        addUserToGame(user, game);
         return "redirect:/lobby/" + game.getId();
     }
-    
+
     @GetMapping("/{idGame}")
     @Transactional
     public String showLobby(Model model, @PathVariable String idGame) {
-        Game game = entityManager.find(Game.class, Long.parseLong(idGame));
+        long longID = -1;
+        
+        try{
+            longID = Long.parseLong(idGame);
+        } catch(NumberFormatException ignored){
+        }
+        
+        Game game = entityManager.find(Game.class, longID);
+        return getLobby(model, game);
+    }
+
+    @PostMapping("/{idGame}")
+    @Transactional
+    public String showLobbyPost(Model model, @PathVariable String idGame) {
+        long longID = -1;
+    
+        try {
+            longID = Long.parseLong(idGame);
+        } catch(NumberFormatException ignored){ }
+    
+        Game game = entityManager.find(Game.class, longID);
         return getLobby(model, game);
     }
     
     @Transactional
     public String getLobby(Model model, Game game) {
         model.addAttribute("game", game);
-        
+
         if (game != null) { // Si el juego exite
             log.info("El juego existe");
             List<User> users = new ArrayList<>(game.getUsers());
@@ -78,58 +104,90 @@ public class LobbyController {
         } else {
             log.info("El juego no existe");
         }
-    
         return "lobby";
     }
-    
+
     @GetMapping("/{idGame}/join")
     @Transactional
     public String joinLobby(Model model, HttpSession session, @PathVariable String idGame) {
-        Game game = entityManager.find(Game.class, Long.parseLong(idGame));
-        addUserToGame(session, game);
-        
-        return getLobby(model, game);
-    }
+        long longID = -1;
     
+        try{
+            longID = Long.parseLong(idGame);
+        } catch(NumberFormatException ignored){
+        }
+    
+        Game game = entityManager.find(Game.class, longID);
+
+        if (game == null) {
+            model.addAttribute("errorMessage", "¡Esa partida no existe!");
+            return "elegirPartida";
+        } else if (game.started()) {
+             model.addAttribute("errorMessage", "¡La partida ya ha empezado!");
+            return "elegirPartida";
+        } else {
+            User user = (User) session.getAttribute("user");
+            user = entityManager.find(User.class, user.getId());
+    
+            addUserToGame(user, game);
+            return getLobby(model, game);
+        }
+    }
+
     @PostMapping("/{idGame}/leave")
     @Transactional
     public String leaveLobby(HttpSession session, @PathVariable String idGame) {
         User user = (User) session.getAttribute("user");
-        log.info("El usuario " + user.getId() + " solicita abandonar la partida " + idGame);
-        
         Game game = entityManager.find(Game.class, Long.parseLong(idGame));
-        
-        if(game != null) {
+
+        if (game != null && !game.started()) {
             user = entityManager.find(User.class, user.getId());
-            
             game.getUsers().remove(user);
             user.getGames().remove(game);
+            entityManager.persist(user);
             entityManager.persist(game);
             entityManager.flush();
-        }
-        
-        return "redirect:/user/" + user.getId();
-    }
     
+            List<User> users = new ArrayList<>(game.getUsers());
+            String message = "{\"removePlayer\": \"" + user.getName() + "\" }";
+            for (User u : users) {
+                if (u != user) {
+                    iwSocketHandler.sendMessageLobby(u.getName(), message);
+                }
+            }
+        }
+
+        return "redirect:/user/searchGame";
+    }
+  
+    @GetMapping("select")
+    public String showSelect() {
+        return "elegirPartida";
+    }
+
+    @PostMapping("select")
+    @Transactional
+    public String selectGame(Model model, HttpSession session, @RequestParam String gameID) {
+        return joinLobby(model, session, gameID);
+    }
+
     @GetMapping("/random")
     @Transactional
-    public String randomGame() {
-        
+    public String randomGame(Model model, HttpSession session) {
         List<Game> games = entityManager.createNamedQuery("Game.all", Game.class).getResultList();
         Iterator<Game> iterator = games.iterator();
         Game game = null;
-        
-        if (iterator.hasNext()) {
-            game = iterator.next();
-            while (iterator.hasNext() && game.started()) {
-                game = iterator.next();
-            }
+
+        while(iterator.hasNext()) {
+        	Game g = iterator.next();
+        	if(!g.started())
+        		game = g;
         }
-        
+
         if (game != null) {
-            return "redirect:/lobby/" + game.getId() + "/join";
-        } else {
-            return "a_otra_parte"; // TODO la otra parte
+            return joinLobby(model, session, String.valueOf(game.getId()));
+        } else { // Si no hay un juego disponible, entonces lo crea
+            return newGame(session);
         }
     }
 }
