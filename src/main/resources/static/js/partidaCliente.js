@@ -20,7 +20,8 @@ function cargarPartida() {
     fetch("/api/game/getStatus", params).then((response) => {
         if (response.status == 200) {
             response.text().then(function (text) {
-            	logEntry("Night falls, the farmers go to bed, vampires rise...");
+            	logEntry("El ocaso se acerca y con él la insaciable sed de los vampiros." +
+                    "¡Escondeos y rezad por vuestras almas!");
                 console.log("Status leído del getStatus: " + text);
                 var status = JSON.parse(text);
                 currentDeaths = status.currentDeaths;
@@ -44,13 +45,13 @@ function vote(player) {
     console.log("Entrada en la función vote con player: " + player);
     return function () {
         switch (turno) {
-            case "VAMPIRE":
+            case "VAMPIRO":
                 vampirePlay(player);
                 break;
-            case "HUNTER":
+            case "CAZAVAMPIROS":
                 hunterPlay(player);
                 break;
-            case "WITCH":
+            case "BRUJA":
                 witchPlay(player);
                 break;
             case "POPULAR_VOTATION":
@@ -66,7 +67,7 @@ function vote(player) {
 function witchPlay(objective) {
     console.log("Entrada en la funcion witchPlay");
     var playJSON = {
-        rol: 'WITCH',
+        rol: 'BRUJA',
         client: clientPlayer,
         victim: objective,
         option: "" + option
@@ -126,7 +127,7 @@ function vampirePlay(victim_) {
     console.log("Entrada en vampirePlay con victim_: " + victim_);
 
     var playJSON = {
-        rol: 'VAMPIRE',
+        rol: 'VAMPIRO',
         client: clientPlayer,
         victim: victim_,
         option: ""
@@ -142,7 +143,8 @@ function vampirePlay(victim_) {
         body: text
     };
     
-    noteEntry("Your victim is " + victim_);
+    noteEntry("Esta noche quieres devorar a " + victim_ + "."
+    );
     fetch("/api/game/receivePlay", params).then((response) => {
         if (response.status == 200) {
             console.log("JUGADA ENVIADA");
@@ -163,7 +165,7 @@ function hunterPlay(victim_) {
     //Envía jugada al servidor vía Ajax
 
     var playJSON = {
-        rol: 'HUNTER',
+        rol: 'CAZAVAMPIROS',
         client: clientPlayer,
         victim: victim_,
         option: ""
@@ -209,18 +211,22 @@ function receiveStatus(newState)//Actualiza el estado del cliente via websocket
     
     switch (turno) {
     case "VAMPIRES_WON":    	
-    	logEntry("The weak farmers have fallen...");
-    	noteEntry("VAMPIRES WIN!");
+    	logEntry("Las vísceras y entrañas de los habitantes decoran el pueblo. " +
+            "Los vampiros disfrutan del festín de sangre, mientras debaten dónde " +
+            "será el siguiente.");
+    	noteEntry("¡Los vampiros ganan!");
     	//revealRoles(newState.players, newState.oldRols);
         break;
     case "FARMERS_WON":
-    	logEntry("The vampires have been eliminated.");
-    	noteEntry("FARMERS WIN!");
+    	logEntry("Deshaciéndose en polvo y cenizas cae el último vampiro. Ahora " +
+            "los aldeanos podrán volver a morir por las mismas causas de siempre.");
+    	noteEntry("¡Los aldeanos ganan!");
     	//revealRoles(newState.players, newState.oldRols);
         break;
     case "TIE":
-    	logEntry("The farmers and vampires befriended each other!");
-    	noteEntry("PEACE! LOVE!");
+    	logEntry("No queda ni un alma en pie. Vampiros y humanos se han matado entre ellos y en el " +
+            "pueblo solo se oye el graznido de los buitres.");
+    	noteEntry("Todos habéis perdido.");
     	//revealRoles(newState.players, newState.oldRols);
         break;
     }
@@ -239,16 +245,16 @@ function updateDeaths(deaths, oldRols) {
 			
 			var icono;
 			switch(oldRols[p]){
-			case "VAMPIRE":
+			case "VAMPIRO":
 				icono = "\uD83E\uDDDB\u200D♂️";
 				break;
-			case "FARMER":
+			case "GRANJERO":
 				icono = "\uD83D\uDC68\u200D\uD83C\uDF3E ";
 				break;
-			case "WITCH":
+			case "BRUJA":
 				icono = "\uD83E\uDDD9\u200D♀️";
 				break;
-			case "HUNTER":
+			case "CAZAVAMPIROS":
 				icono = "\uD83C\uDFF9";
 				break;
 			}
