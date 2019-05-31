@@ -22,7 +22,7 @@ function receivePlay(oldStateJSON, playJSON) //También recibirá el estado de l
 	var play = JSON.parse(playJSON);
 	var object = new createStatus();
 
-	object.currentDeaths = [];
+	object.currentDeaths = oldState.currentDeaths;
 	object.dia = oldState.dia;
 	object.players = oldState.players;
 	object.votation = oldState.votes;
@@ -89,7 +89,7 @@ function witchMove(play, object) {
 	}
 	else if (play.option == 2 && (object.availableWitchActions == 2 || object.availableWitchActions == 3)) { // La bruja protege
 		object.availableWitchActions = object.availableWitchActions == 3 ? 1 : 0;
-		object.currentDeaths = []; //ojo que si mata y luego revive... revive a los dos....
+		object.currentDeaths = object.currentDeaths.length == 1 ? [] : [object.currentDeaths[1]];
 		object.logs.push("The witch begged to her unholy god and protected " + play.victim + "'s soul ! Hail the Dark Lord!");
 	}
 	//Sin else para que si gasta sus opciones tambien haga end nigth
