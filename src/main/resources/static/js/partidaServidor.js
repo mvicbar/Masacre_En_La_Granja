@@ -64,8 +64,8 @@ function receivePlay(oldStateJSON, playJSON) //También recibirá el estado de l
 	};
 
 	var deaths = {};
-	for (var i in object.players){
-		if(object.players[i] == "DEAD" || object.gameState == "FINISHED"){
+	for (var i in object.players) {
+		if (object.players[i] == "DEAD" || object.gameState == "FINISHED") {
 			deaths[i] = object.oldRols[i];
 		}
 	}
@@ -128,11 +128,11 @@ function popularMove(play, object) {
 				+ ". Será decapitado y luego llenarán su boca de ajos y " +
 				"estacarán su corazón (por si acaso).");
 		}
-		
+
 		startNight(object);
-		if(object.turno !== "HUNTER" && object.turno !== "VAMPIRES_WON" && object.turno !== "FARMERS_WON" && object.turno !== "TIE") {
-            object.turno = "VAMPIRE";
-        }
+		if (object.turno !== "HUNTER" && object.turno !== "VAMPIRES_WON" && object.turno !== "FARMERS_WON" && object.turno !== "TIE") {
+			object.turno = "VAMPIRE";
+		}
 		playedNextTurn(object);
 		object.votation = {};
 	} else {
@@ -142,15 +142,15 @@ function popularMove(play, object) {
 }
 
 function hunterMove(play, object) {
-    //La víctima muere
+	//La víctima muere
 	object.currentDeaths.push(play.victim);
 	object.turno = 'HUNTER_SHOT';
-  
+
 	object.played[play.client] = 0;
 	object.logs.push("Con sus últimas fuerzas, " + play.client +
 		" vacía el cargador de su fiel winchester sobre " + play.victim + ".");
 
-    //El cazador muere
+	//El cazador muere
 	object.players[play.client] = "DEAD";
 	object.currentDeaths.push(play.client);
     object.turno = nextRol("HUNTER", object);
@@ -179,6 +179,7 @@ function vampireMove(play, object) {
 		}
 		else {
 			object.currentDeaths.push(i);
+			object.logs.push("Vampires chose " + play.victim + " as their prey...")
 		}
 		object.logs.push(play.victim + ", puedes correr, puedes suplicar, puedes " +
 			"tratar inútilmente de esconderte, pero no escaparás de tu destino. " +
@@ -227,7 +228,7 @@ function nextRol(rol, object) {
 		while (j < rolOrder.length) {
 			if (countRol(rolOrder[j], object) > 0) {
 				// si la bruja ya no puede jugar mas nos la saltamos
-				if(rolOrder[j] == "WITCH" && object.availableWitchActions == 0){
+				if (rolOrder[j] == "WITCH" && object.availableWitchActions == 0) {
 					j++;
 					continue;
 				}
@@ -250,15 +251,15 @@ function endNight(object) {
 	if (object.turno != "HUNTER") {
 		object.dia = 1;
 		object.turno = "POPULAR_VOTATION";
-		for(var i in object.players){
-			if(object.players[i] != "DEAD"){
+		for (var i in object.players) {
+			if (object.players[i] != "DEAD") {
 				object.played[i] = 1;
 			}
 		}
 		object.logs.push("Los primeros rayos de sol se asoman por el horizonte " +
 			"y los aldeanos pueden seguir un día más con sus miserables vidas.");
 	}
-    else return "HUNTER";
+	else return "HUNTER";
 
 	return "POPULAR_VOTATION";
 }
@@ -292,7 +293,8 @@ function processDeaths(object) {
 }
 
 function checkWin(object)//Comprueba si un bando ha ganado
-{   var hunterAlive = false;
+{
+	var hunterAlive = false;
 	var vampiresLeft = 0;
 	var farmersLeft = 0;
 	for (var i in object.players) {
@@ -300,9 +302,9 @@ function checkWin(object)//Comprueba si un bando ha ganado
 			vampiresLeft++;
 		}
 		else if (object.players[i] != "DEAD") {
-            if(object.players[i] == "HUNTER"){
-                hunterAlive = true;
-            }
+			if (object.players[i] == "HUNTER") {
+				hunterAlive = true;
+			}
 			farmersLeft++;
 			cosasQuePasan += "Ha entrado en farmersLeft '\n'";
 		}
@@ -311,10 +313,10 @@ function checkWin(object)//Comprueba si un bando ha ganado
 	if (vampiresLeft == 0) {
 		object.turno = "FARMERS_WON";
 		object.gameState = "FINISHED";
-	} else if(hunterAlive && farmersLeft == 1 && vampiresLeft == 1){
-        object.turno = "TIE";
-        object.gameState = "FINISHED";
-    }
+	} else if (hunterAlive && farmersLeft == 1 && vampiresLeft == 1) {
+		object.turno = "TIE";
+		object.gameState = "FINISHED";
+	}
 	else if (farmersLeft == 0) {
 		object.turno = "VAMPIRES_WON";
 		object.gameState = "FINISHED";
