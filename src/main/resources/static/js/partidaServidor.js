@@ -64,8 +64,8 @@ function receivePlay(oldStateJSON, playJSON) //También recibirá el estado de l
 	};
 
 	var deaths = {};
-	for (var i in object.players){
-		if(object.players[i] == "DEAD" || object.gameState == "FINISHED"){
+	for (var i in object.players) {
+		if (object.players[i] == "DEAD" || object.gameState == "FINISHED") {
 			deaths[i] = object.oldRols[i];
 		}
 	}
@@ -126,11 +126,11 @@ function popularMove(play, object) {
 			object.currentDeaths.push(i);
 			object.logs.push("The farmers decided to hang " + i);
 		}
-		
+
 		startNight(object);
-		if(object.turno !== "HUNTER" && object.turno !== "VAMPIRES_WON" && object.turno !== "FARMERS_WON" && object.turno !== "TIE") {
-            object.turno = "VAMPIRE";
-        }
+		if (object.turno !== "HUNTER" && object.turno !== "VAMPIRES_WON" && object.turno !== "FARMERS_WON" && object.turno !== "TIE") {
+			object.turno = "VAMPIRE";
+		}
 		playedNextTurn(object);
 		object.votation = {};
 	}
@@ -141,21 +141,21 @@ function popularMove(play, object) {
 }
 
 function hunterMove(play, object) {
-    //La víctima muere
+	//La víctima muere
 	object.currentDeaths.push(play.victim);
 	object.turno = 'HUNTER_SHOT';
-  
+
 	object.played[play.client] = 0;
 	object.logs.push(play.client + " has shot " + play.victim + "!");
 
-    //El cazador muere
+	//El cazador muere
 	object.players[play.client] = "DEAD";
 	object.currentDeaths.push(play.client);
 
-    object.logs.push("The hunter has used his last bullet...")
-    object.turno = nextRol("HUNTER", object);
-    playedNextTurn(object);
-    object.votation = {};
+	object.logs.push("The hunter has used his last bullet...")
+	object.turno = nextRol("HUNTER", object);
+	playedNextTurn(object);
+	object.votation = {};
 
 	if (object.dia) {//Si le ha matado el pueblo, empieza la noche
 		startNight(object);
@@ -178,8 +178,8 @@ function vampireMove(play, object) {
 		}
 		else {
 			object.currentDeaths.push(i);
+			object.logs.push("Vampires chose " + play.victim + " as their prey...")
 		}
-		object.logs.push("Vampires chose " + play.victim + " as their prey...")
 		object.turno = nextRol("VAMPIRE", object);
 		playedNextTurn(object);
 		object.votation = {};
@@ -225,7 +225,7 @@ function nextRol(rol, object) {
 		while (j < rolOrder.length) {
 			if (countRol(rolOrder[j], object) > 0) {
 				// si la bruja ya no puede jugar mas nos la saltamos
-				if(rolOrder[j] == "WITCH" && object.availableWitchActions == 0){
+				if (rolOrder[j] == "WITCH" && object.availableWitchActions == 0) {
 					j++;
 					continue;
 				}
@@ -248,14 +248,14 @@ function endNight(object) {
 	if (object.turno != "HUNTER") {
 		object.dia = 1;
 		object.turno = "POPULAR_VOTATION";
-		for(var i in object.players){
-			if(object.players[i] != "DEAD"){
+		for (var i in object.players) {
+			if (object.players[i] != "DEAD") {
 				object.played[i] = 1;
 			}
 		}
 		object.logs.push("The farmers wake up");
 	}
-    else return "HUNTER";
+	else return "HUNTER";
 
 	return "POPULAR_VOTATION";
 }
@@ -286,7 +286,8 @@ function processDeaths(object) {
 }
 
 function checkWin(object)//Comprueba si un bando ha ganado
-{   var hunterAlive = false;
+{
+	var hunterAlive = false;
 	var vampiresLeft = 0;
 	var farmersLeft = 0;
 	for (var i in object.players) {
@@ -294,9 +295,9 @@ function checkWin(object)//Comprueba si un bando ha ganado
 			vampiresLeft++;
 		}
 		else if (object.players[i] != "DEAD") {
-            if(object.players[i] == "HUNTER"){
-                hunterAlive = true;
-            }
+			if (object.players[i] == "HUNTER") {
+				hunterAlive = true;
+			}
 			farmersLeft++;
 			cosasQuePasan += "Ha entrado en farmersLeft '\n'";
 		}
@@ -305,10 +306,10 @@ function checkWin(object)//Comprueba si un bando ha ganado
 	if (vampiresLeft == 0) {
 		object.turno = "FARMERS_WON";
 		object.gameState = "FINISHED";
-	} else if(hunterAlive && farmersLeft == 1 && vampiresLeft == 1){
-        object.turno = "TIE";
-        object.gameState = "FINISHED";
-    }
+	} else if (hunterAlive && farmersLeft == 1 && vampiresLeft == 1) {
+		object.turno = "TIE";
+		object.gameState = "FINISHED";
+	}
 	else if (farmersLeft == 0) {
 		object.turno = "VAMPIRES_WON";
 		object.gameState = "FINISHED";
