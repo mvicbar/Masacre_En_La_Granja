@@ -211,17 +211,14 @@ function receiveStatus(newState)//Actualiza el estado del cliente via websocket
     case "VAMPIRES_WON":    	
     	logEntry("The weak farmers have fallen...");
     	noteEntry("VAMPIRES WIN!");
-    	//revealRoles(newState.players, newState.oldRols);
         break;
     case "FARMERS_WON":
     	logEntry("The vampires have been eliminated.");
     	noteEntry("FARMERS WIN!");
-    	//revealRoles(newState.players, newState.oldRols);
         break;
     case "TIE":
     	logEntry("The farmers and vampires befriended each other!");
     	noteEntry("PEACE! LOVE!");
-    	//revealRoles(newState.players, newState.oldRols);
         break;
     }
     
@@ -266,6 +263,8 @@ function logEntry(message) {
         + date.getMinutes() + ":"
         + date.getSeconds() + "  "
         + message;
+    
+    document.getElementById('log').scrollTop = document.getElementById('log').scrollHeight;
 }
 
 function noteEntry(message) {

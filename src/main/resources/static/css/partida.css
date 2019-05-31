@@ -101,9 +101,12 @@ textarea{
     width: 100%;
     height: 100%;
     resize: none;
-    font-family:'Felipa', cursive;
     font-size: 1.5vw;
+	font-family: 'Asul', sans-serif;
+}
 
+::placeholder{
+	font-family: 'Asul', sans-serif;
 }
 
 div.card{
@@ -211,8 +214,8 @@ div.playerRol
     height: 100px;
     background-image: linear-gradient(to bottom right, #acaba1, #d4d4cb);
     font-size: 2vw;
-    top: -54%;
-    left: 26%;
+    top: -35%;
+    left: 20%;
     align-items: center;
     justify-content: space-evenly;
     border: solid 1px;
@@ -241,7 +244,7 @@ button{
     align-items: center;
     border: solid 4px;
     border-color: #4d0b0b #711818 #711818 #4d0b0b;
-
+	font-family: 'Asul', sans-serif;
 }
 
 #finalizar_partida  .boton:hover{
@@ -263,7 +266,6 @@ button{
     color: white;
     cursor: pointer;
     padding: 4%;
-    font-family: 'Felipa', cursive;
 }
 
 .control
@@ -302,3 +304,4 @@ div.chat{
 div.chat input{
 	width: 100%;
 }
+
