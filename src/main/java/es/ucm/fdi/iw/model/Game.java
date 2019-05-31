@@ -227,8 +227,8 @@ public class Game {
 
         roles[count] = "WITCH";
 		++count;
-        //roles[count] = "HUNTER";
-        //++count;
+        roles[count] = "HUNTER";
+        ++count;
 
         
         for(; count < users.size(); ++count) {
