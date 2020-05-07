@@ -7,6 +7,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import es.ucm.fdi.iw.model.User;
 import es.ucm.fdi.iw.model.UserStat;
@@ -31,8 +32,13 @@ public class RootController {
 	private IwSocketHandler iwSocketHandler;
 
 	@GetMapping("/")
-	public String index(Model model) {
-		return "iniciosesion";
+	public String index(Model model, HttpSession session) {
+		User u = (User) session.getAttribute("user");
+
+		if(u == null)
+			return "inicio";
+		else
+			return "redirect:/user/" + u.getId();
 	}
 	
 	@GetMapping("/reglas")
@@ -44,6 +50,14 @@ public class RootController {
 	public String faq(Model model) {
 		return "faq";
 	}
+	
+	@GetMapping("/partida")
+	public String partida(Model model) {
+		return "partida";
+	}
+	
+	@GetMapping("/login")
+	public String getLogin(Model model) { return "iniciosesion"; }
 	
 	@GetMapping("/estadisticas")
 	public String globalStats(Model model) {

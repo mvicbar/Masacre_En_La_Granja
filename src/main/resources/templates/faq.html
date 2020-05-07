@@ -3,6 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<link rel="stylesheet" th:href="@{/css/faq.css}">
+	<link rel="stylesheet" type="text/css" media="screen" th:href="@{/css/nav.css}">
 	<title>FAQ | Masacre en la granja</title>
 </head>
 
@@ -11,6 +12,9 @@
 	<nav th:replace="fragments/nav.html :: nav">
 		Nav goes here
 	</nav>
+	<div th:replace="fragments/footer.html :: bootstrap">
+		Nav goes here
+	</div>
 
 <header>
 	<h1>FAQ - Preguntas frecuentes</h1>
@@ -19,9 +23,7 @@
 <div class="faq">
 	<ul class="categorias-faq">
 		<li><a href="#basicas">Básicas</a></li>
-		<li><a href="#social">Social</a></li>
 		<li><a href="#partidas">Partidas</a></li>
-		<li><a href="#grupos">Grupos</a></li>
 	</ul> <!-- categorias-faq -->
 
 	<div class="items-faq">
@@ -36,27 +38,18 @@
 			</li>
 		</ul> <!-- grupo-faq -->
 
-		<ul id="social" class="grupo-faq">
-			<li class="titulo-faq"><h2>Social</h2></li>
-			<li>
-				<a class="pregunta-faq" href="#0">¿Qué hago si otro usuario está molestando?</a>
-				<div class="respuesta-faq">
-					<p>No nos gusta oír eso, pero tenemos la solución. Si se
-							quiere echar a un usuario de una partida por molestar, sólo se
-							tiene que...</p>
-				</div> <!-- respuesta-faq -->
-			</li>
-		</ul> <!-- grupo-faq -->
-
 		<ul id="partidas" class="grupo-faq">
 			<li class="titulo-faq"><h2>Partidas</h2></li>
 			<li>
 				<a class="pregunta-faq" href="#0">¿Cómo empiezo a jugar?</a>
 				<div class="respuesta-faq">
-					<p>¡Muy fácil! En la barra de navegación de la parte superior
-							de la pantalla, pulsa sobre "Partida" y, en el menú desplegable,
-							pulsa "Aleatoria". Serás colocado en una partida aleatoria con
-							otros usuarios, ¡a masacrar!</p>
+					<p>
+						¡Muy fácil! En la barra de navegación de la parte superior
+						de la pantalla, pulsa sobre "Partida" y, luego,
+						sobre "Partida Aleatoria" para ser colocado en una
+						partida aleatoria con otros usuarios o sobre "Elegir Partida"
+						para escoger una partida ya creada.
+					</p>
 				</div> <!-- respuesta-faq -->
 			</li>
 
@@ -64,55 +57,22 @@
 				<a class="pregunta-faq" href="#0">¿Puedo crear una partida?</a>
 				<div class="respuesta-faq">
 					<p>Tememos que no, no es posible crear partidas privadas (al
-							menos de momento). Sin embargo, si lo que te interesa es
-							asegurarte de que tú y tus amigos estáis en la misma partida,
-							échale un vistazo a la sección de "Grupos".</p>
+							menos de momento).
+					</p>
 				</div> <!-- respuesta-faq -->
 			</li>
 
 			<li>
 				<a class="pregunta-faq" href="#0">¿De cuántos jugadores son las partidas?</a>
 				<div class="respuesta-faq">
-					<p>Para que una partida se inicie necesita un mínimo de ¿8?
-							jugadores. Una vez llegado a ese número, se preguntará a los
-							jugadores si quieren iniciar la partida o esperar a que se unan
-							más usuarios.</p>
+					<p>
+						Para que una partida se inicie necesita un mínimo de 8
+						jugadores. Una vez llegado a ese número, se puede
+						iniciar la partida pulsando en el botón "Iniciar".
+					</p>
 				</div> <!-- respuesta-faq -->
 			</li>
-		</ul> <!-- grupo-faq -->
-
-		<ul id="grupos" class="grupo-faq">
-			<li class="titulo-faq"><h2>Grupos</h2></li>
-			<li>
-				<a class="pregunta-faq" href="#0">¿Qué son los grupos?</a>
-				<div class="respuesta-faq">
-					<p>Buena pregunta. Un grupo es un conjunto de usuarios que se
-							juntan para unirse todos a una misma partida. ¡Todos a una!</p>
-				</div> <!-- respuesta-faq -->
-			</li>
-
-			<li>
-				<a class="pregunta-faq" href="#0">¿Cómo creo un grupo con
-						mis amigos?</a>
-				<div class="respuesta-faq">
-					<p>Trabajo en equipo, ¡así nos gusta!</p>
-						<p>Para crear un grupo debes pulsar en el enlace "Partida" de
-							la barra de navegación y, a continuación, pulsar sobre "Crear
-							grupo".</p>
-						<p>Esto abrirá una ventana con un código. Pásale ese código a
-							tus amigos para que puedan unirse haciendo click en
-							"Partida"->"Grupos"->"Unirse a un grupo". Allí deberán introducir
-							el código que les has pasado y darle a "¡Unirse a mis
-							camaradas!". Podrás ver en tiempo real cuáles de tus amigos se
-							han unido al grupo.</p>
-						<p>Por último, cuando estéis todos, sólo tienes que pulsar el
-							botón de "¡Palante!" para que vuestro grupo se una a una partida
-							aleatoria. ¡A masacrar!</p>
-				</div> <!-- respuesta-faq -->
-			</li>
-
-		</ul> <!-- grupo-faq -->
-
+		</ul>
 	</div> <!-- items-faq -->
 </div> <!-- faq -->
 </body>

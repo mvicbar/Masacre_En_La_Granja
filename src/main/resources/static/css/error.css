@@ -1,0 +1,31 @@
+@import url('https://fonts.googleapis.com/css?family=Asul');
+body {
+    background-color: #5c1414;
+    font-family: 'Asul', sans-serif;
+}
+
+div.container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    align-content: center;
+    justify-items: center;
+    align-items: center;
+}
+
+h1{
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+    font-size: 5.5vw;
+    color: #918d8d;
+    overflow: hidden;
+    margin: 1%;
+}
+
+img{
+    width: 30vw;
+    height: 30vw;
+    border-radius: 50%;
+    border: none;
+    display: flex;
+    align-self: center;
+}

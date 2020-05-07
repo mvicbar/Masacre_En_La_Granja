@@ -44,12 +44,17 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 	    String login = ((org.springframework.security.core.userdetails.User)
 				authentication.getPrincipal()).getUsername();
 
-	    // add a 'u' session variable, accessible from thymeleaf via ${session.u}
+	    // add a 'user' session variable, accessible from thymeleaf via ${session.user}
 	    log.info("Storing user info for {} in session {}", login, session.getId());
 		User u = entityManager.createNamedQuery("User.ByName", User.class)
-		        .setParameter("userLogin", login)
+		        .setParameter("userName", login)
 		        .getSingleResult();
-		session.setAttribute("u", u);
+		session.setAttribute("user", u);
+		
+		// add a 'ws' session variable
+		session.setAttribute("ws", request.getRequestURL().toString()
+			.replaceFirst("[^:]*", "ws")	// http[s]://... => ws://...
+			.replaceFirst("/[^/]*$", "/ws"));	// .../foo		 => .../ws
 
 		// redirects to 'admin' or 'user/{id}', depending on the user
 		response.sendRedirect(u.hasRole("ADMIN") ? "admin" : "user/" + u.getId());

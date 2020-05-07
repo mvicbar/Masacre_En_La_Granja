@@ -8,16 +8,25 @@
 <body>
   <main class="wrapper">
           <div class= "titulo">MASACRE EN LA GRANJA</div>
-          <ul>
-            <a class="button">Buscar Partida</a>
-            <a href="http://localhost:8080/crear_grupo.html" class="button">Crear Grupo</a>
-            <a href="http://localhost:8080/estadisticas-globales.html" class="button">Estadísticas</a>
-            <a href="http://localhost:8080/reglas.html" class="button">Reglas</a>
-            <a href="http://localhost:8080/faq.html" class="button">FAQ</a>
-          </ul>
-          <ul th:class="|ruta_${algo}|">
-          	<li th:each="x: ${xs}" th:text="${x}">Esto no se ve</li>
-          </ul>
+          
+          <div class="intro">
+          	Estás a punto de entrar en un emocionante juego de rol online en el que un grupo de vampiros se
+          	alían para chuparle la sangre a los pobres mortales de la granja, los cuales se verán olbigados 
+          	a juzgar y clavar estacas a los vampiros hasta acabar con todos los chupasangre.
+          </div>
+          
+          <div class="acciones">
+          	<h3>¿Qué quieres hacer?</h3>
+          	<form th:action="@{/login}" method="GET">
+                <button type="submit">Iniciar sesión</button>
+            </form>
+            <form th:action="@{/user/register}" method="GET">
+                <button type="submit">Registrarse</button>
+            </form>
+            <form th:action="@{/reglas}" method="GET">
+                <button type="submit">Saber más</button>
+            </form>
+          </div>
   </main>
 </body>
 </html>

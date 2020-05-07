@@ -1,26 +1,47 @@
-@import url('https://fonts.googleapis.com/css?family=Felipa');
-
-*{
-    padding: 0;
-    margin: 0;
-    font-size: 20px;
-}
-
 body{
   background-color: #5c1414;
-    font-family: 'Felipa', cursive;
 }
 
 .titulo{
   display: flex;
   font-size: 58PX;
-  line-height: 225px;
+  padding-top: 10%;
+  padding-left: 3%;
   color: rgb(165, 165, 165);
   text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
   justify-content: center;
 }
 
-.button {
+.intro{
+	width: 80%;
+    margin-top: 3%;
+    margin-left: 8%;
+    font-size: larger;
+    text-align: center;
+}
+
+.acciones{
+	display: flex;
+    flex-direction: column;
+    background-image: linear-gradient(to bottom right, #acaba1, #d4d4cb);
+    margin-top: 5%;
+    margin-left: auto;
+    margin-right: auto;
+    width: 60%;
+    height: auto;
+    padding: 15px;
+    border-radius: 8px;
+    color: #161616;
+    font-size: 20px;
+	align-items: center;
+}
+
+h3{
+	padding: 2%;
+   	font-size: x-large;
+}
+
+button {
   display: block;
   text-align: center;
   font-size: 30px;
@@ -35,6 +56,6 @@ body{
   border-radius: 5px;
 }
 
-.button:hover {
+button:hover {
   background-color: rgb(49, 49, 49);
 }
